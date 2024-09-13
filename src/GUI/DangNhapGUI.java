@@ -35,6 +35,9 @@ public class DangNhapGUI extends JFrame {
     DangNhapBUS dangNhapBUS = new DangNhapBUS();
 
     public DangNhapGUI() {
+        validate();
+        repaint();
+
         addControls();
         addEvents();
         this.setTitle("Đăng nhập");
@@ -103,7 +106,9 @@ public class DangNhapGUI extends JFrame {
         JPanel pnBtn = new JPanel();
         pnBtn.setBackground(Color.WHITE);
         btnLogin = new JButton("Đăng nhập");
+        btnLogin.setOpaque(true);
         btnLogin.setFocusable(false);
+        btnLogin.setBorderPainted(false);
         btnLogin.setFont(font);
         btnLogin.setForeground(Color.white);
         btnLogin.setBackground(ClMain);
@@ -133,6 +138,14 @@ public class DangNhapGUI extends JFrame {
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                btnLogin.setOpaque(true);
+                btnLogin.setFocusable(false);
+                btnLogin.setFont(font);
+                btnLogin.setForeground(Color.white);
+                btnLogin.setBackground(ClMain);
+                btnLogin.setBorderPainted(false);
+                validate();
+                repaint();
                 xulydangnhap();
             }
         });
