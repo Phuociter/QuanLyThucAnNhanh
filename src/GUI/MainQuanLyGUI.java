@@ -1,6 +1,5 @@
 package GUI;
 
-import BUS.DangNhapBUS;
 import BUS.PhanQuyenBUS;
 import java.awt.*;
 import java.awt.event.*;
@@ -13,7 +12,7 @@ public class MainQuanLyGUI extends JFrame {
 
     CardLayout cardListMenu;
 
-    JLabel btnDoiMatKhau, btnClose, btnMinimize, lbBanhang, lbKhuyenmai, lbNhaphang, lbSanpham, lbNhanvien, lbKhachhang, lbThongke, lbDangXuat;
+    JLabel btnDoiMatKhau, btnClose, btnMinimize, lbBanhang, lbKhuyenmai, lbNhaphang, lbSanpham, lbNhanvien, lbKhachhang, lbThongke;
 
     Font FtTitleText = new Font("Montserrat", Font.BOLD, 20);
 
@@ -103,7 +102,6 @@ public class MainQuanLyGUI extends JFrame {
         lbKhachhang = new JLabel(new ImageIcon("image/Menu/lblKhachHang.png"));
         lbNhaphang = new JLabel(new ImageIcon("image/Menu/lblNhapHang.png"));
         lbThongke = new JLabel(new ImageIcon("image/Menu/lblThongke.png"));
-        lbDangXuat = new JLabel(new ImageIcon("image/Menu/lblDangXuat.png"));
 
         listMenuLeft = new ArrayList<>();
         listMenuLeft.add(lbBanhang);
@@ -113,7 +111,6 @@ public class MainQuanLyGUI extends JFrame {
         listMenuLeft.add(lbKhachhang);
         listMenuLeft.add(lbNhaphang);
         listMenuLeft.add(lbThongke);
-        listMenuLeft.add(lbDangXuat);
 
         for (JLabel opt : listMenuLeft) {
             opt.setVisible(false);
@@ -143,23 +140,18 @@ public class MainQuanLyGUI extends JFrame {
         pnCardListMenu.add(pnNhapHang, "6");
         pnCardListMenu.add(pnThongKe, "7");
 
-        
-        PhanQuyenBUS phanQuyenBUS = new PhanQuyenBUS();
-        phanQuyenBUS.UpdateCurrentQuyen();
-
         PnQuanLyBanHangGUI pnQuanLyBanHangGUI = new PnQuanLyBanHangGUI();
         pnBanHang.setLayout(new BorderLayout());
         pnBanHang.add(pnQuanLyBanHangGUI, BorderLayout.CENTER);
         lbBanhang.setVisible(true);
 
+        PnQuanLyKhuyenMaiGUI pnQuanLyKhuyenMaiGUI = new PnQuanLyKhuyenMaiGUI();
+        pnKhuyenMai.setLayout(new BorderLayout());
+        pnKhuyenMai.add(pnQuanLyKhuyenMaiGUI, BorderLayout.CENTER);
+        lbKhuyenmai.setVisible(true);
 
-        if (PhanQuyenBUS.currentQuyen.getTenQuyen().equals("Quản trị")) {
-            PnQuanLyKhuyenMaiGUI pnQuanLyKhuyenMaiGUI = new PnQuanLyKhuyenMaiGUI();
-            pnKhuyenMai.setLayout(new BorderLayout());
-            pnKhuyenMai.add(pnQuanLyKhuyenMaiGUI, BorderLayout.CENTER);
-            lbKhuyenmai.setVisible(true);
-        }
-
+        PhanQuyenBUS phanQuyenBUS = new PhanQuyenBUS();
+        phanQuyenBUS.UpdateCurrentQuyen();
 
         if (PhanQuyenBUS.currentQuyen != null) {
             if (PhanQuyenBUS.currentQuyen.getQlNhanVien() == 1) {
@@ -192,10 +184,9 @@ public class MainQuanLyGUI extends JFrame {
                 pnThongKe.add(pnQuanLyThongKe, BorderLayout.CENTER);
                 lbThongke.setVisible(true);
             }
-            lbDangXuat.setVisible(true);
         }
 
-        pnMain.add(pnCardListMenu, BorderLayout.CENTER);    
+        pnMain.add(pnCardListMenu, BorderLayout.CENTER);
         pnMain.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
         con.add(pnMain);
 
@@ -379,12 +370,6 @@ public class MainQuanLyGUI extends JFrame {
                         cardName = "6";
                     } else if (opt == lbThongke) {
                         cardName = "7";
-                    } else if (opt == lbDangXuat) {
-                        DangNhapBUS.taiKhoanLogin = null;
-                        dispose();
-                        DangNhapGUI dangNhapGUI = new DangNhapGUI();
-                        dangNhapGUI.setVisible(true);
-                        return;
                     }
                     cardListMenu.show(pnCardListMenu, cardName);
                 }

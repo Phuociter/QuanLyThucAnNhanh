@@ -42,6 +42,7 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
         dtmKhachHang.addColumn("Email");
         dtmKhachHang.addColumn("Địa chỉ");
         dtmKhachHang.addColumn("Tổng chi tiêu");
+        dtmKhachHang.addColumn("Trạng thái");
 
         tbKhachHang.setModel(dtmKhachHang);
         tbKhachHang.getColumnModel().getColumn(0).setPreferredWidth(10);
@@ -49,6 +50,7 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
     }
 
     private void showDlg() {
+
         this.setVisible(true);
     }
 
@@ -61,7 +63,7 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
         for (KhachHang khachHang : khachHangs) {
             dtmKhachHang.addRow(new Object[]{khachHang.getMaKH(), khachHang.getTen(),
                 khachHang.getGioiTinh(), khachHang.getDienThoai(), khachHang.getEmail(), khachHang.getDiaChi(),
-                khachHang.getTongChiTieu()});
+                khachHang.getTongChiTieu(), khachHang.getTrangThai()});
         }
     }
 
@@ -96,6 +98,7 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
         txtDT = new javax.swing.JTextField();
         jPanel10 = new javax.swing.JPanel();
         btnAdd = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         edit = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jPanel11 = new javax.swing.JPanel();
@@ -106,6 +109,8 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
         jPanel17 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jPanel21 = new javax.swing.JPanel();
+        rdbOnl = new javax.swing.JRadioButton();
+        rdbOff = new javax.swing.JRadioButton();
         jPanel18 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         txtDiaChi = new javax.swing.JTextField();
@@ -266,6 +271,15 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
         });
         jPanel10.add(btnAdd);
 
+        jButton2.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(0, 160, 80));
+        jButton2.setText("DELETE");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteActionPerformed(evt);
+            }
+        });
+        jPanel10.add(jButton2);
 
         edit.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
         edit.setForeground(new java.awt.Color(0, 160, 80));
@@ -279,7 +293,7 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
 
         jButton6.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
         jButton6.setForeground(new java.awt.Color(0, 160, 80));
-        jButton6.setText("Refresh");
+        jButton6.setText("RESET");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetActionPerformed(evt);
@@ -308,12 +322,27 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
         jPanel17.setBorder(javax.swing.BorderFactory.createEmptyBorder(25, 40, 25, 20));
         jPanel17.setLayout(new java.awt.BorderLayout());
 
-        
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel8.setText("Trạng thái:");
+        jLabel8.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 27, 1, 1));
+        jLabel8.setPreferredSize(new java.awt.Dimension(150, 16));
+        jPanel17.add(jLabel8, java.awt.BorderLayout.LINE_START);
+
+        jPanel21.setLayout(new java.awt.GridLayout(1, 2));
+
+        buttonGroup2.add(rdbOnl);
+        rdbOnl.setText("Còn hoạt động");
+        jPanel21.add(rdbOnl);
+
+        buttonGroup2.add(rdbOff);
+        rdbOff.setText("Ngưng hoạt động");
+        jPanel21.add(rdbOff);
+
         jPanel17.add(jPanel21, java.awt.BorderLayout.CENTER);
 
         jPanel4.add(jPanel17);
 
-        jPanel18.setBorder(javax.swing.BorderFactory.createEmptyBorder(17, 40, 25, 20));
+        jPanel18.setBorder(javax.swing.BorderFactory.createEmptyBorder(25, 40, 25, 20));
         jPanel18.setLayout(new java.awt.BorderLayout());
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -428,6 +457,12 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
         if (rdbNu.isSelected()) {
             gioiTinh = rdbNu.getText();
         }
+        if (rdbOnl.isSelected()) {
+            trangthai = 1;
+        }
+        if (rdbOff.isSelected()) {
+            trangthai = 0;
+        }
         khachHang.setGioiTinh(gioiTinh);
         khachHang.setTrangThai(trangthai);
         khachHang.setMaKH(0);
@@ -481,6 +516,12 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
         if (rdbNu.isSelected()) {
             gioiTinh = rdbNu.getText();
         }
+        if (rdbOnl.isSelected()) {
+            trangthai = 1;
+        }
+        if (rdbOff.isSelected()) {
+            trangthai = 0;
+        }
         khachHang.setGioiTinh(gioiTinh);
         khachHang.setTrangThai(trangthai);
         khachHang.setMaKH(Integer.parseInt(txtMaKH.getText()));
@@ -488,7 +529,7 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
         khachHang.setDienThoai(txtDT.getText());
         khachHang.setEmail(txtEmail.getText());
         khachHang.setDiaChi(txtDiaChi.getText());
-        khachHang.setTongChiTieu(Integer.parseInt(txtTongChiTieu.getText()));
+        khachHang.setTrangThai(1);
         if (khachHangBus.Update(khachHang)) {
             loadData();
         txtMaKH.setText("");
@@ -526,6 +567,11 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
                 } else {
                     
                     rdbNam.setSelected(true);
+                }
+                if (khachHang.getTrangThai() == 1) {
+                    rdbOnl.setSelected(true);
+                } else {
+                    rdbOff.setSelected(true);
                 }
             }
         });
@@ -608,6 +654,7 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JButton edit;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -649,6 +696,8 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JRadioButton rdbNam;
     private javax.swing.JRadioButton rdbNu;
+    private javax.swing.JRadioButton rdbOff;
+    private javax.swing.JRadioButton rdbOnl;
     private javax.swing.JButton search;
     private javax.swing.JTable tbKhachHang;
     private javax.swing.JTextField txtDT;
