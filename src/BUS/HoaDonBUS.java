@@ -5,7 +5,6 @@ import Custom.dialog;
 import DAO.HoaDonDAO;
 import DTO.HoaDon;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -32,7 +31,6 @@ public class HoaDonBUS {
         String temp = "" + MHD;
         temp = temp.trim();
         if (!InputValidator.isPositiveNumber(temp)) {
-            new dialog("Vui lòng nhập đúng định dạng", dialog.ERROR_DIALOG);
             return null;
         }
         int MHDint = Integer.parseInt(temp);
@@ -42,7 +40,7 @@ public class HoaDonBUS {
         return HDDAO.getHoaDonTheoMHD(MHDint);
     }
 
-    public ArrayList<HoaDon> getListHD_Price_Date(Date Min, Date Max, String GiaMin, String GiaMax) throws SQLException {
+    public ArrayList<HoaDon> getListHD_Price_Date(Date Min, Date Max, String GiaMin, String GiaMax) {
         GiaMin = GiaMin.trim();
         GiaMax = GiaMax.trim();
         java.sql.Date sqlMin = new java.sql.Date(Min.getTime());
@@ -51,46 +49,18 @@ public class HoaDonBUS {
             if (InputValidator.IsEmpty(GiaMin) && InputValidator.IsEmpty(GiaMax)) {
                 return HDDAO.getListHoaDonTheoDate(sqlMin, sqlMax);
             }
-//            if (InputValidator.IsEmpty(GiaMin) || InputValidator.IsEmpty(GiaMax)) {
-//                new dialog("Vui lòng nhập đầy đủ ô giá", dialog.ERROR_DIALOG);
-//                return null;
-//            }
-            if (InputValidator.IsEmpty(GiaMax)){
-                try {
-                    int PriceMin = Integer.parseInt(GiaMin);
-                    int PriceMax = HDDAO.getMaxTongTien();
-                    return HDDAO.getListHoaDonTheoDateVaTongTien(sqlMin,sqlMax,PriceMin,PriceMax);
-                }
-                catch (Exception e){
-                    new dialog("Vui lòng nhập đúng định dạng", dialog.ERROR_DIALOG);
-                    return null;
-                }
-            }
-            if (InputValidator.IsEmpty(GiaMin)){
-                try {
-                    int PriceMax = Integer.parseInt(GiaMax);
-                    return HDDAO.getListHoaDonTheoDateVaTongTien(sqlMin,sqlMax,0,PriceMax);
-                }
-                catch (Exception e){
-                    new dialog("Vui lòng nhập đúng định dạng", dialog.ERROR_DIALOG);
-                    return null;
-                }
-
+            if (InputValidator.IsEmpty(GiaMin) || InputValidator.IsEmpty(GiaMax)) {
+                new dialog("Vui lòng nhập đầy đủ ô giá", dialog.ERROR_DIALOG);
+                return null;
             }
             if (!InputValidator.IsEmpty(GiaMin) && !InputValidator.IsEmpty(GiaMax)) {
-                try{
-                    int PriceMin = Integer.parseInt(GiaMin);
-                    int PriceMax = Integer.parseInt(GiaMax);
-                    if (PriceMin > PriceMax || PriceMin < 0 || PriceMax < 0) {
-                        new dialog("Vui lòng nhập khoảng giá hợp lệ", dialog.ERROR_DIALOG);
-                        return null;
-                    } else {
-                        return HDDAO.getListHoaDonTheoDateVaTongTien(sqlMin, sqlMax, PriceMin, PriceMax);
-                    }
-                }
-                catch (Exception e){
-                    new dialog("Vui lòng nhập đúng định dạng", dialog.ERROR_DIALOG);
+                int PriceMin = Integer.parseInt(GiaMin);
+                int PriceMax = Integer.parseInt(GiaMax);
+                if (PriceMin > PriceMax || PriceMin < 0 || PriceMax < 0) {
+                    new dialog("Vui lòng nhập khoảng giá hợp lệ", dialog.ERROR_DIALOG);
                     return null;
+                } else {
+                    return HDDAO.getListHoaDonTheoDateVaTongTien(sqlMin, sqlMax, PriceMin, PriceMax);
                 }
             }
         } else {
