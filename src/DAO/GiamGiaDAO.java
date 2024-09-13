@@ -167,27 +167,4 @@ public class GiamGiaDAO {
             return null;
         }
     }
-    public String getTenMaGiam(int maGiam) {
-        String tenMG = "";
-        Connection c = null;
-        try {
-            c = JDBCUtil.getConnection();
-            String sql = "select tenGiamGia as tmg from giamgia Where maGiam = ?";
-            PreparedStatement ps = c.prepareStatement(sql);
-            ps.setInt(1, maGiam);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()){
-                tenMG = rs.getString("tmg");
-            }
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        finally {
-            if (c!=null){
-                JDBCUtil.closeConnection(c);
-            }
-        }
-        return tenMG;
-    }
 }

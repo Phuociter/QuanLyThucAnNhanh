@@ -14,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -229,12 +228,7 @@ public class PnHoaDon extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tble.setRowCount(0);
-                ArrayList<HoaDon> listHD = null;
-                try {
-                    listHD = list.getListHD_Price_Date(dateMin.getDate(), dateMax.getDate(), priceMin.getText(), priceMax.getText());
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
+                ArrayList<HoaDon> listHD = list.getListHD_Price_Date(dateMin.getDate(), dateMax.getDate(), priceMin.getText(), priceMax.getText());
                 if (listHD != null) {
                     for (int i = 0; i < listHD.size(); i++) {
                         Object[] newRowData = {listHD.get(i).getMaHD(), listHD.get(i).getMaKH(), listHD.get(i).getMaNV(), listHD.get(i).getMaGiam(), listHD.get(i).getNgayLap(), listHD.get(i).getTongTien()};

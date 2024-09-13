@@ -1,12 +1,9 @@
 package GUI;
 
 import BUS.CTHoaDonBUS;
-import BUS.GiamGiaBUS;
 import BUS.HoaDonBUS;
 import BUS.SanPhamBUS;
 import Custom.Mytable;
-import DAO.GiamGiaDAO;
-import DAO.HoaDonDAO;
 import DTO.CTHoaDon;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -22,7 +19,6 @@ public class PnChiTietHoaDon extends JPanel {
     final Color ClHover = new Color(0, 192, 96);
     final Color ClSelect = new Color(76, 204, 76);
     Font FtTitleText = new Font("Montserrat", Font.BOLD, 15);
-
 
     public PnChiTietHoaDon(int MHD) {
         addGUI(MHD);
@@ -66,22 +62,13 @@ public class PnChiTietHoaDon extends JPanel {
 
         JScrollPane Scl = new JScrollPane(TB); // Thêm JTable vào JScrollPane
         this.add(Scl, BorderLayout.CENTER);
-        HoaDonDAO hd = new HoaDonDAO();
-        GiamGiaDAO KM = new GiamGiaDAO();
-        JLabel KhuyenMai = new JLabel("Chương trình khuyến mãi: " + KM.getTenMaGiam(hd.GetMaGiam(MHD)));
-        KhuyenMai.setFont(FtTitleText);
-        Panel pnKhuyenMai = new  Panel(new FlowLayout(FlowLayout.CENTER));
-        pnKhuyenMai.add(KhuyenMai);
 
         HoaDonBUS TongTienHD = new HoaDonBUS();
         JLabel KQTongTien = new JLabel("" + TongTienHD.getlisttheoMHD(MHD + "").getTongTien() + "đ");// thay giá trị tổng tiền
         KQTongTien.setFont(FtTitleText);
         Panel pnTongTien = new Panel(new FlowLayout(FlowLayout.RIGHT));
         pnTongTien.add(KQTongTien);
-        Panel Content = new Panel(new GridLayout(2,1));
-        Content.add(pnKhuyenMai);
-        Content.add(pnTongTien);
-        this.add(Content,BorderLayout.SOUTH);
+        this.add(pnTongTien, BorderLayout.SOUTH);
     }
 
     public void addRowtable(DefaultTableModel tble, int MHD) {
