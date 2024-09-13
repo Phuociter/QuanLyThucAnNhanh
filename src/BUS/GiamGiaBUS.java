@@ -45,14 +45,14 @@ public class GiamGiaBUS {
         return false;
     }
 
-    public boolean Delete(int maGiamGia) {
-        if (giamGiaDAO.deleteGiamGia(maGiamGia)) {
-            new dialog("Xóa giảm giá thành công", dialog.SUCCESS_DIALOG);
-            return true;
-        }
-        new dialog("Không thể xóa giảm giá mã "+maGiamGia, dialog.ERROR_DIALOG);
-        return false;
-    }
+//    public boolean Delete(int maGiamGia) {
+//        if (giamGiaDAO.deleteGiamGia(maGiamGia)) {
+//            new dialog("Xóa giảm giá thành công", dialog.SUCCESS_DIALOG);
+//            return true;
+//        }
+//        new dialog("Không thể xóa giảm giá mã "+maGiamGia, dialog.ERROR_DIALOG);
+//        return false;
+//    }
 
     private int getNextMaGiam() {
         return giamGiaDAO.getNewMa() + 1;
