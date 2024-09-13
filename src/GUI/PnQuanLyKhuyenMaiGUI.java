@@ -86,7 +86,7 @@ public class PnQuanLyKhuyenMaiGUI extends javax.swing.JPanel {
         spnDieuKien = new javax.swing.JSpinner();
         jPanel12 = new javax.swing.JPanel();
         btnAdd = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
+//        btnDelete = new javax.swing.JButton();
         btnEdit = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
         jPanel21 = new javax.swing.JPanel();
@@ -304,8 +304,8 @@ public class PnQuanLyKhuyenMaiGUI extends javax.swing.JPanel {
 
         jPanel10.add(jPanel11, java.awt.BorderLayout.PAGE_START);
 
-        jPanel12.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 100, 10, 100));
-        jPanel12.setLayout(new java.awt.GridLayout(2, 2));
+        jPanel12.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 100, 10, 100));
+        jPanel12.setLayout(new java.awt.GridLayout(1, 3));
 
         btnAdd.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
         btnAdd.setForeground(new java.awt.Color(0, 160, 80));
@@ -317,15 +317,15 @@ public class PnQuanLyKhuyenMaiGUI extends javax.swing.JPanel {
         });
         jPanel12.add(btnAdd);
 
-        btnDelete.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
-        btnDelete.setForeground(new java.awt.Color(0, 160, 80));
-        btnDelete.setText("DELETE");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
-        jPanel12.add(btnDelete);
+//        btnDelete.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
+//        btnDelete.setForeground(new java.awt.Color(0, 160, 80));
+//        btnDelete.setText("DELETE");
+//        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+//            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//                btnDeleteActionPerformed(evt);
+//            }
+//        });
+//        jPanel12.add(btnDelete);
 
         btnEdit.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
         btnEdit.setForeground(new java.awt.Color(0, 160, 80));
@@ -462,22 +462,23 @@ public class PnQuanLyKhuyenMaiGUI extends javax.swing.JPanel {
         resetInfo();
     }//GEN-LAST:event_btnResetActionPerformed
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        int[] rows=tblGiamGia.getSelectedRows();
-        if(rows.length == 0){
-            new dialog("Chọn giảm giá muốn xóa", dialog.ERROR_DIALOG);
-            return;
-        }
-        for(int i =0;i<rows.length;i++){
-            int maGiamGia=Integer.parseInt(tblGiamGia.getValueAt(rows[i], 0)+"");
-            if(!giamGiaBUS.Delete(maGiamGia))
-            {
-                return;
-            }
-        }
-        loadData();
-        resetInfo();
-    }//GEN-LAST:event_btnDeleteActionPerformed
+//    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+//        int[] rows=tblGiamGia.getSelectedRows();
+//        if(rows.length == 0){
+//            new dialog("Chọn giảm giá muốn xóa", dialog.ERROR_DIALOG);
+//            return;
+//        }
+//        for(int i =0;i<rows.length;i++){
+//            int maGiamGia=Integer.parseInt(tblGiamGia.getValueAt(rows[i], 0)+"");
+//            if(!giamGiaBUS.Delete(maGiamGia))
+//            {
+//                return;
+//            }
+//        }
+//        loadData();
+//        resetInfo();
+//    }
+    //GEN-LAST:event_btnDeleteActionPerformed
 
     private void resetInfo() {
         txtmaKM.setText("");
@@ -539,7 +540,7 @@ public class PnQuanLyKhuyenMaiGUI extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnDelete;
+//    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnReset;
     private javax.swing.JLabel jLabel1;
