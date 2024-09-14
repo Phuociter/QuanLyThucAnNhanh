@@ -154,7 +154,29 @@ public class GiamGiaDAO {
             return ma;
         }
     }
-
+    public String getTenMaGiam(int maGiam) {
+        String tenMG = "";
+        Connection c = null;
+        try {
+            c = JDBCUtil.getConnection();
+            String sql = "select tenGiamGia as tmg from giamgia Where maGiam = ?";
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, maGiam);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()){
+                tenMG = rs.getString("tmg");
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            if (c!=null){
+                JDBCUtil.closeConnection(c);
+            }
+        }
+        return tenMG;
+    }
     public ArrayList<GiamGia> searchGiamGias(String keyword) {
         ArrayList<GiamGia> dsgg = new ArrayList<>();
         try {
@@ -180,10 +202,5 @@ public class GiamGiaDAO {
             ex.printStackTrace();
             return null;
         }
-    }
-
-    public String getTenMaGiam(int getMaGiam) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTenMaGiam'");
     }
 }
