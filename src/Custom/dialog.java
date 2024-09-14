@@ -57,6 +57,8 @@ public class dialog extends JDialog {
         Show();
     }
 
+
+
     private void addControls() {
         Container con = this.getContentPane();
 
