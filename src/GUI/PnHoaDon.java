@@ -3,6 +3,7 @@ package GUI;
 import BUS.HoaDonBUS;
 import Custom.InputValidator;
 import Custom.Mytable;
+import Custom.dialog;
 import DTO.HoaDon;
 import com.toedter.calendar.JDateChooser;
 
@@ -206,19 +207,26 @@ public class PnHoaDon extends JPanel {
         btnTimKiem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (InputValidator.IsEmpty(txt.getText())) {
-                    tble.setRowCount(0);
-                    addrowTable(tble);
-                } else {
-                    String MHD = txt.getText();
-                    if (HD.getlisttheoMHD(MHD) == null) {
+                if (InputValidator.isPositiveNumber(txt.getText()) || txt.getText().trim().isEmpty()){
+                    if (InputValidator.IsEmpty(txt.getText())) {
                         tble.setRowCount(0);
+                        addrowTable(tble);
                     } else {
-                        tble.setRowCount(0);
-                        Object[] data = {HD.getlisttheoMHD(MHD).getMaHD(), HD.getlisttheoMHD(MHD).getMaKH(), HD.getlisttheoMHD(MHD).getMaNV(), HD.getlisttheoMHD(MHD).getMaGiam(), HD.getlisttheoMHD(MHD).getNgayLap(), HD.getlisttheoMHD(MHD).getTongTien()};
-                        tble.addRow(data);
+                        String MHD = txt.getText();
+                        if (HD.getlisttheoMHD(MHD) == null) {
+                            tble.setRowCount(0);
+                        } else {
+                            tble.setRowCount(0);
+                            Object[] data = {HD.getlisttheoMHD(MHD).getMaHD(), HD.getlisttheoMHD(MHD).getMaKH(), HD.getlisttheoMHD(MHD).getMaNV(), HD.getlisttheoMHD(MHD).getMaGiam(), HD.getlisttheoMHD(MHD).getNgayLap(), HD.getlisttheoMHD(MHD).getTongTien()};
+                            tble.addRow(data);
+                        }
                     }
                 }
+                else {
+                    new dialog("Vui lòng nhập đúng định dạng",1);
+                    return;
+                }
+
             }
         });
     }
