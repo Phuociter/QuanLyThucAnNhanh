@@ -446,4 +446,23 @@ public class SanPhamDAO {
             return null;
         }
     }
+    // đình thái thêm đoạn này
+    public String getTenSPByMaSP(int maSP) {
+        String tenSP = "";
+        try {
+            Connection c = JDBCUtil.getConnection();
+            String sql = "SELECT tenSP FROM SanPham WHERE maSP = ?";
+            PreparedStatement stmt = c.prepareStatement(sql);
+            stmt.setInt(1, maSP);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                tenSP = rs.getString("tenSP");
+            }
+            JDBCUtil.closeConnection(c);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return tenSP;
+    }
+
 }
