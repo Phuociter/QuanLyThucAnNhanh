@@ -382,8 +382,8 @@ public class MainQuanLyGUI extends JFrame {
                     } else if (opt == lbDangXuat) {
                         DangNhapBUS.taiKhoanLogin = null;
                         dispose();
-                        DangNhapGUI dangNhapGUI = new DangNhapGUI();
-                        dangNhapGUI.setVisible(true);
+                        DangNhapGUI dangNhapGUI1 = new DangNhapGUI();
+                        dangNhapGUI1.setVisible(true);
                         return;
                     }
                     cardListMenu.show(pnCardListMenu, cardName);

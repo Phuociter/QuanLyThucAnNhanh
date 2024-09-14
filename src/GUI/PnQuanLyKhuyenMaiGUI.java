@@ -339,7 +339,7 @@ public class PnQuanLyKhuyenMaiGUI extends javax.swing.JPanel {
 
         btnReset.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
         btnReset.setForeground(new java.awt.Color(0, 160, 80));
-        btnReset.setText("RESET");
+        btnReset.setText("Refresh");
         btnReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnResetActionPerformed(evt);

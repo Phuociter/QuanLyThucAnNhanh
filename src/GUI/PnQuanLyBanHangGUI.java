@@ -15,7 +15,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class PnBanHang extends JPanel {
+public class PnQuanLyBanHangGUI extends JPanel {
 
     final Color ClMain = new Color(0, 160, 80);
     final Color ClHover = new Color(0, 192, 96);
@@ -34,7 +34,7 @@ public class PnBanHang extends JPanel {
 
     public static DefaultTableModel dtmGioHang;
 
-    public PnBanHang() {
+    public PnQuanLyBanHangGUI() {
         addControls();
         XoaPhanTuTrongGioHang();
         ResetCart();

@@ -335,7 +335,7 @@ public class PnNhapHang extends javax.swing.JPanel {
 
         btnResetTT.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         btnResetTT.setForeground(new java.awt.Color(0, 160, 80));
-        btnResetTT.setText("Reset");
+        btnResetTT.setText("Refresh");
         btnResetTT.setPreferredSize(new java.awt.Dimension(141, 41));
         btnResetTT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

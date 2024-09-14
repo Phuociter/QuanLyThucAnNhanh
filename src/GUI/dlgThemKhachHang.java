@@ -155,7 +155,7 @@ public class dlgThemKhachHang extends javax.swing.JDialog {
 
         btnReset.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         btnReset.setForeground(new java.awt.Color(0, 160, 80));
-        btnReset.setText("Reset");
+        btnReset.setText("Refresh");
         btnReset.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnReset.setFocusable(false);
         btnReset.setPreferredSize(new java.awt.Dimension(100, 50));
