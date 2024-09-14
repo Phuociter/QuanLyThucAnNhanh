@@ -130,9 +130,6 @@ public class PnNhapHang extends javax.swing.JPanel {
             }
         });
 
-    
-    
-
 
         txtTimKiem.getDocument().addDocumentListener(new DocumentListener() {
             @Override

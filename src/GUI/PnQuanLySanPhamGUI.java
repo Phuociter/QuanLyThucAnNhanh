@@ -318,6 +318,8 @@ public class PnQuanLySanPhamGUI extends JPanel {
                 loadDataCmbLoai();
                 txtMa.setText("");
                 txtTen.setText("");
+                txtgiaNhap.setText("");
+                txtphanTram.setText("");
                 txtdonGia.setText("");
                 txtdonViTinh.setText("");
                 txtsoLuong.setText("");
@@ -483,8 +485,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
 
     private void xuLyClickTblSanPham() {
         int row = tblSanPham.getSelectedRow();
-        int dg;
-
 
         if (row > -1) {
             
@@ -497,22 +497,46 @@ public class PnQuanLySanPhamGUI extends JPanel {
             String anh = tblSanPham.getValueAt(row, 6) + "";
 
             txtMa.setText(ma);
-
-            CTPhieuNhapBUS listBUS = new CTPhieuNhapBUS();
-            ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
-            listCTPN = listBUS.getlistPhieuNhaps();
-            for (int j = 0; j < listCTPN.size(); j++) {
-                if (listCTPN.get(j).getMaSP() == Integer.parseInt(txtMa.getText())) {
-                    int dongia = listCTPN.get(j).getDonGia();
-                    txtgiaNhap.setText(String.valueOf(dongia));
-                    
-                }
-            }
-            
             txtTen.setText(ten);
             txtdonGia.setText(donGia);
             txtsoLuong.setText(soLuong);
             txtdonViTinh.setText(donViTinh.replace(",", ""));
+            int maSP = Integer.parseInt(ma);
+
+            CTPhieuNhapBUS ctPhieuNhapBUS = new CTPhieuNhapBUS();
+            CTPhieuNhap ctPhieuNhap = new CTPhieuNhap();
+            ctPhieuNhap = ctPhieuNhapBUS.getCTPhieuNhapByMaSP(maSP);
+
+            CTPhieuNhapBUS listBUS = new CTPhieuNhapBUS();
+            ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
+            ArrayList<CTPhieuNhap> listCTPN2 = new ArrayList<>();
+            ArrayList<Integer> listtmp = new ArrayList<>();
+            listCTPN = listBUS.getlistPhieuNhaps();
+            for (int j = 0; j < listCTPN.size(); j++) {
+                
+                if (listCTPN.get(j).getMaSP() == Integer.parseInt(txtMa.getText())) {
+                    System.out.println(listCTPN.get(j).getMaPN());
+                    listtmp.add(listCTPN.get(j).getMaPN());
+                    
+                    listCTPN2.add(listCTPN.get(j));
+                    // int dongia = listCTPN.get(j).getDonGia();
+                    if(listCTPN.size()-1 == j ){
+                        findMax(listtmp);
+                        int dongia = listCTPN2.get(listCTPN2.size() - 1).getDonGia();
+                        txtgiaNhap.setText(String.valueOf(dongia));
+                    }   
+                    
+                }
+                else
+                    txtgiaNhap.setText("");
+            }
+
+            // if(ctPhieuNhap != null && !String.valueOf(ctPhieuNhap.getMaPN()).equals("")){
+            //     if (ctPhieuNhap.getMaSP() == Integer.parseInt(txtMa.getText()) ) {
+            //         int dongia = ctPhieuNhap.getDonGia();
+            //         txtgiaNhap.setText(String.valueOf(dongia));
+            //     }
+            // }
 
             int flag = 0;
             for (int i = 0; i < cmbLoai.getItemCount(); i++) {
@@ -524,6 +548,24 @@ public class PnQuanLySanPhamGUI extends JPanel {
             cmbLoai.setSelectedIndex(flag);
             loadAnh("image/products/" + anh);
         }
+    }
+
+    public static int findMax(ArrayList<Integer> list) {
+        // Kiểm tra nếu danh sách rỗng
+        if (list == null || list.isEmpty()) {
+            throw new IllegalArgumentException("Danh sách không được rỗng");
+        }
+
+        int max = list.get(0); // Giả sử phần tử đầu tiên là lớn nhất
+
+        // Duyệt qua các phần tử còn lại trong danh sách
+        for (int i = 1; i < list.size(); i++) {
+            if (list.get(i) > max) {
+                max = list.get(i); // Cập nhật giá trị lớn nhất
+            }
+        }
+
+        return max;
     }
 
     private void loadDataLenBangSanPham() {
@@ -608,9 +650,14 @@ public class PnQuanLySanPhamGUI extends JPanel {
                 
         //     }
         // }
-        double dongia = Integer.parseInt(txtgiaNhap.getText())*(Double.parseDouble(txtphanTram.getText())/100) + Integer.parseInt(txtgiaNhap.getText());
-        int dg = (int) dongia;
-        txtdonGia.setText(String.valueOf(dg));
+        double dongia;
+        int dg;
+        
+        if (!txtphanTram.getText().equals("")){
+            dongia = Integer.parseInt(txtgiaNhap.getText())*(Double.parseDouble(txtphanTram.getText())/100) + Integer.parseInt(txtgiaNhap.getText());
+            dg = (int) dongia;
+            txtdonGia.setText(String.valueOf(dg));
+        }
         SPBUS.capNhatThongTinSanPham(txtMa.getText(),
                 txtTen.getText(),
                 cmbLoai.getSelectedItem() + "",
