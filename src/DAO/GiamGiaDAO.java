@@ -181,4 +181,9 @@ public class GiamGiaDAO {
             return null;
         }
     }
+
+    public String getTenMaGiam(int getMaGiam) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTenMaGiam'");
+    }
 }
