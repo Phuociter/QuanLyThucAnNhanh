@@ -7,7 +7,21 @@ import java.util.ArrayList;
 
 public class GiamGiaDAO {
 
+    public void updateExpiredDiscounts() {
+        try {
+            Connection connection = JDBCUtil.getConnection();
+            String sql = "UPDATE GiamGia SET trangThai = 0 WHERE ngayKT < GETDATE() AND trangThai = 1";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            int result = ps.executeUpdate();
+            JDBCUtil.closeConnection(connection);
+            System.out.println("Updated " + result + " expired discounts.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public ArrayList<GiamGia> getListGiamGia() {
+        updateExpiredDiscounts();
         ArrayList<GiamGia> dsgg = new ArrayList<>();
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -166,28 +180,5 @@ public class GiamGiaDAO {
             ex.printStackTrace();
             return null;
         }
-    }
-    public String getTenMaGiam(int maGiam) {
-        String tenMG = "";
-        Connection c = null;
-        try {
-            c = JDBCUtil.getConnection();
-            String sql = "select tenGiamGia as tmg from giamgia Where maGiam = ?";
-            PreparedStatement ps = c.prepareStatement(sql);
-            ps.setInt(1, maGiam);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()){
-                tenMG = rs.getString("tmg");
-            }
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        finally {
-            if (c!=null){
-                JDBCUtil.closeConnection(c);
-            }
-        }
-        return tenMG;
     }
 }
