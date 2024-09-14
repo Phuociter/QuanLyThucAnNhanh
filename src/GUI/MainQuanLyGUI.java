@@ -12,7 +12,7 @@ public class MainQuanLyGUI extends JFrame {
 
     CardLayout cardListMenu;
 
-    JLabel btnDoiMatKhau, btnClose, btnMinimize, lbBanhang, lbKhuyenmai, lbNhaphang, lbSanpham, lbNhanvien, lbKhachhang, lbThongke;
+    JLabel btnDoiMatKhau, btnClose, btnMinimize, lbBanhang, lbKhuyenmai, lbNhaphang, lbSanpham, lbNhanvien, lbKhachhang, lbThongke, lbDangXuat;
 
     Font FtTitleText = new Font("Montserrat", Font.BOLD, 20);
 
@@ -102,6 +102,7 @@ public class MainQuanLyGUI extends JFrame {
         lbKhachhang = new JLabel(new ImageIcon("image/Menu/lblKhachHang.png"));
         lbNhaphang = new JLabel(new ImageIcon("image/Menu/lblNhapHang.png"));
         lbThongke = new JLabel(new ImageIcon("image/Menu/lblThongke.png"));
+        lbDangXuat = new JLabel(new ImageIcon("image/Menu/lblDangXuat.png"));
 
         listMenuLeft = new ArrayList<>();
         listMenuLeft.add(lbBanhang);
@@ -111,6 +112,7 @@ public class MainQuanLyGUI extends JFrame {
         listMenuLeft.add(lbKhachhang);
         listMenuLeft.add(lbNhaphang);
         listMenuLeft.add(lbThongke);
+        listMenuLeft.add(lbDangXuat);
 
         for (JLabel opt : listMenuLeft) {
             opt.setVisible(false);
@@ -184,6 +186,7 @@ public class MainQuanLyGUI extends JFrame {
                 pnThongKe.add(pnQuanLyThongKe, BorderLayout.CENTER);
                 lbThongke.setVisible(true);
             }
+            lbDangXuat.setVisible(true);
         }
 
         pnMain.add(pnCardListMenu, BorderLayout.CENTER);
@@ -370,6 +373,12 @@ public class MainQuanLyGUI extends JFrame {
                         cardName = "6";
                     } else if (opt == lbThongke) {
                         cardName = "7";
+                    } else if (opt == lbDangXuat) {
+                        DangNhapBUS.taiKhoanLogin = null;
+                        dispose();
+                        DangNhapGUI dangNhapGUI1 = new DangNhapGUI();
+                        dangNhapGUI1.setVisible(true);
+                        return;
                     }
                     cardListMenu.show(pnCardListMenu, cardName);
                 }
