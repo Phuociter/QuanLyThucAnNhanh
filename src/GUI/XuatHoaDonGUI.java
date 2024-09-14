@@ -96,7 +96,7 @@ public class XuatHoaDonGUI extends javax.swing.JDialog {
                 break;  // Chọn khuyến mãi đầu tiên phù hợp
             }
         }
-    
+        
         // Áp dụng khuyến mãi nếu có
         if (giamGia != null) {
             txtKhuyenMai.setText(giamGia.getMaGiam() + " - " + giamGia.getTenGiamGia());
@@ -105,6 +105,7 @@ public class XuatHoaDonGUI extends javax.swing.JDialog {
         } else {
             txtKhuyenMai.setText("Không có khuyến mãi phù hợp");
             tongTienDaGiam = tongTien;  // Không có khuyến mãi
+            giamGia = new GiamGia(0, "Không giảm giá", 0, 0, null, null, 0);
         }
     
         txtTongTien.setText(DinhDangTongTien(tongTienDaGiam));
