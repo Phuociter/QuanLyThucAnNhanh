@@ -1,6 +1,5 @@
 package GUI;
 
-import BUS.CTPhieuNhapBUS;
 import BUS.DangNhapBUS;
 import BUS.NhanVienBUS;
 import BUS.SanPhamBUS;
@@ -83,25 +82,6 @@ public class PnNhapHang extends javax.swing.JPanel {
         }
     }
 
-    // private void addEvents() {
-    //     tblKhoHang.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-    //         @Override
-    //         public void valueChanged(ListSelectionEvent e) {
-    //             if (e.getValueIsAdjusting()) {
-    //                 return;
-    //             }
-    //             int row = tblKhoHang.getSelectedRow();
-    //             if (row < 0) {
-    //                 return;
-    //             }
-    //             int maSP = Integer.parseInt(tblKhoHang.getValueAt(row, 0) + "");
-    //             currentSanPham = sanPhamBUS.getById(maSP);
-    //             ImageIcon imageIcon = ScaleImage.scaleImage("image/products/" + currentSanPham.getHinhAnh(), 200, 200);
-    //             lbAnh.setIcon(imageIcon);
-
-    //         }
-    //     });
-    // Đã sửa xong phần a của đình thái
     private void addEvents() {
         tblKhoHang.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -115,24 +95,10 @@ public class PnNhapHang extends javax.swing.JPanel {
                 }
                 int maSP = Integer.parseInt(tblKhoHang.getValueAt(row, 0) + "");
                 currentSanPham = sanPhamBUS.getById(maSP);
-                
-                // Hiển thị ảnh sản phẩm
                 ImageIcon imageIcon = ScaleImage.scaleImage("image/products/" + currentSanPham.getHinhAnh(), 200, 200);
                 lbAnh.setIcon(imageIcon);
-                
-                // Hiển thị đơn giá nhập sản phẩm
-                CTPhieuNhap ctPhieuNhap = ctPhieuNhapBUS.getCTPhieuNhapByMaSP(maSP);
-                if (ctPhieuNhap != null) {
-                    txtDonGia.setText(String.valueOf(ctPhieuNhap.getDonGia())); // Hiển thị đơn giá nhập sản phẩm
-                } else {
-                    txtDonGia.setText(""); // Xóa nội dung nếu không tìm thấy thông tin
-                }
             }
         });
-
-    
-    
-
 
         txtTimKiem.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -349,8 +315,6 @@ public class PnNhapHang extends javax.swing.JPanel {
         txtDonGia.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         txtDonGia.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jPanel19.add(txtDonGia);
-       
-    
 
         pnThongTin1.add(jPanel19);
 
@@ -364,7 +328,6 @@ public class PnNhapHang extends javax.swing.JPanel {
         txtSoLuong.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         txtSoLuong.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jPanel26.add(txtSoLuong);
-        
 
         pnThongTin1.add(jPanel26);
 
@@ -542,8 +505,6 @@ public class PnNhapHang extends javax.swing.JPanel {
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
 
-    
-
     private void btnChonNhaCungCapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChonNhaCungCapActionPerformed
         dlgChonNhaCungCap dlChonNhaCungCap = new dlgChonNhaCungCap();
         currentNCC = dlChonNhaCungCap.getSelectedNhaCungCap();
@@ -628,8 +589,6 @@ public class PnNhapHang extends javax.swing.JPanel {
 
     }//GEN-LAST:event_btnNhapActionPerformed
 
-  
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChonNhaCungCap;
@@ -672,6 +631,5 @@ public class PnNhapHang extends javax.swing.JPanel {
     private javax.swing.JTextField txtNhaCungCap;
     private javax.swing.JTextField txtSoLuong;
     private javax.swing.JTextField txtTimKiem;
-    private CTPhieuNhapBUS ctPhieuNhapBUS = new CTPhieuNhapBUS();
     // End of variables declaration//GEN-END:variables
 }

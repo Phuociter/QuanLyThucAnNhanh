@@ -1,6 +1,10 @@
 package GUI;
 
+import BUS.DangNhapBUS;
 import BUS.PhanQuyenBUS;
+import DAO.PhanQuyenDAO;
+import DTO.PhanQuyen;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -31,7 +35,7 @@ public class MainQuanLyGUI extends JFrame {
 
     public MainQuanLyGUI() {
         this.setTitle("Quản lý bán đồ ăn thức uống");
-        this.setSize(1535, 790);
+        this.setSize(1280, 900);
         Image icon = new ImageIcon("image/logo/logo32x32.png").getImage();
         this.setIconImage(icon);
         this.setUndecorated(true);
@@ -144,11 +148,12 @@ public class MainQuanLyGUI extends JFrame {
         pnBanHang.setLayout(new BorderLayout());
         pnBanHang.add(pnQuanLyBanHangGUI, BorderLayout.CENTER);
         lbBanhang.setVisible(true);
-
-        PnQuanLyKhuyenMaiGUI pnQuanLyKhuyenMaiGUI = new PnQuanLyKhuyenMaiGUI();
-        pnKhuyenMai.setLayout(new BorderLayout());
-        pnKhuyenMai.add(pnQuanLyKhuyenMaiGUI, BorderLayout.CENTER);
-        lbKhuyenmai.setVisible(true);
+        if(DangNhapBUS.taiKhoanLogin.getMaQuyen() != 1){
+            PnQuanLyKhuyenMaiGUI pnQuanLyKhuyenMaiGUI = new PnQuanLyKhuyenMaiGUI();
+            pnKhuyenMai.setLayout(new BorderLayout());
+            pnKhuyenMai.add(pnQuanLyKhuyenMaiGUI, BorderLayout.CENTER);
+            lbKhuyenmai.setVisible(true);
+        }
 
         PhanQuyenBUS phanQuyenBUS = new PhanQuyenBUS();
         phanQuyenBUS.UpdateCurrentQuyen();

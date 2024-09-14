@@ -1,7 +1,6 @@
 package GUI;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import BUS.CTPhieuNhapBUS;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 
 public class PnChiTietPhieuNhap extends JPanel {
 
-    private int W = 1000;
+    private int W = 500;
     private int H = 500;
     final Color ClMain = new Color(0, 160, 80); //#00A050
     final Color ClHover = new Color(0, 192, 96);
@@ -37,26 +36,17 @@ public class PnChiTietPhieuNhap extends JPanel {
         this.add(pntlt, BorderLayout.NORTH);
 
         // table
-        String NameColume[] = {"Mã SP","Tên Sản Phẩm", "Đơn Giá","Số Lượng", "Thành Tiền"};
+        String NameColume[] = {"mã SP", "số lượng", "Đơn Giá", "Thành Tiền"};
         DefaultTableModel model = new DefaultTableModel(NameColume, 0);
         JTable TB = new JTable(model) {
             public boolean isCellEditable(int row, int column) { // không cho phép sửa nội dung trong table
                 return false;
             }
         };;
-       DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();//lấy định dạng mặc định của ô
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);//set căn giữa nội dung cho định dạng
-        TB.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-        TB.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
-        TB.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
-        TB.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
-        TB.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-
         TB.getColumnModel().getColumn(0).setPreferredWidth(50);
-        TB.getColumnModel().getColumn(1).setPreferredWidth(400);
-        TB.getColumnModel().getColumn(2).setPreferredWidth(100);
-        TB.getColumnModel().getColumn(3).setPreferredWidth(30);
-        TB.getColumnModel().getColumn(4).setPreferredWidth(120);
+        TB.getColumnModel().getColumn(1).setPreferredWidth(100);
+        TB.getColumnModel().getColumn(2).setPreferredWidth(30);
+        TB.getColumnModel().getColumn(3).setPreferredWidth(120);
         TB.getTableHeader().setFont(FtTitleText);
         addRowtable(model, MPN);
 
@@ -83,28 +73,13 @@ public class PnChiTietPhieuNhap extends JPanel {
 
     }
 
-    // public void addRowtable(DefaultTableModel tble, int MPN) {
-    //     CTPhieuNhapBUS listBUS = new CTPhieuNhapBUS();
-    //     ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
-    //     listCTPN = listBUS.getlistPhieuNhaps();
-    //     for (int i = 0; i < listCTPN.size(); i++) {
-    //         if (listCTPN.get(i).getMaPN() == MPN) {
-    //             Object[] data = {listCTPN.get(i).getMaSP(), listCTPN.get(i).getDonGia(), listCTPN.get(i).getSoLuong(), listCTPN.get(i).getThanhTien()};
-    //             tble.addRow(data);
-    //         }
-    //     }
-    // }
-    // đình thái thêm đoạn này
     public void addRowtable(DefaultTableModel tble, int MPN) {
         CTPhieuNhapBUS listBUS = new CTPhieuNhapBUS();
-        CTPhieuNhapBUS ctpnBUS = new CTPhieuNhapBUS();
-        ArrayList<CTPhieuNhap> listCTPN = listBUS.getlistPhieuNhaps();
-        
+        ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
+        listCTPN = listBUS.getlistPhieuNhaps();
         for (int i = 0; i < listCTPN.size(); i++) {
             if (listCTPN.get(i).getMaPN() == MPN) {
-                int maSP = listCTPN.get(i).getMaSP();
-                String tenSP = ctpnBUS.getTenSPByMaSP(maSP); // Lấy tên sản phẩm từ mã sản phẩm
-                Object[] data = {maSP, tenSP, listCTPN.get(i).getDonGia(), listCTPN.get(i).getSoLuong(), listCTPN.get(i).getThanhTien()};
+                Object[] data = {listCTPN.get(i).getMaSP(), listCTPN.get(i).getDonGia(), listCTPN.get(i).getSoLuong(), listCTPN.get(i).getThanhTien()};
                 tble.addRow(data);
             }
         }

@@ -6,7 +6,6 @@ import BUS.HoaDonBUS;
 import BUS.SanPhamBUS;
 import Custom.Mytable;
 import DAO.GiamGiaDAO;
-import DTO.GiamGia;
 import DAO.HoaDonDAO;
 import DTO.CTHoaDon;
 import javax.swing.*;

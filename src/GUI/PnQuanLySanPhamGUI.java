@@ -2,7 +2,6 @@ package GUI;
 
 import DTO.SanPham;
 import BUS.SanPhamBUS;
-import BUS.CTPhieuNhapBUS;
 import BUS.LoaiSPBUS;
 
 import static Main.Main.changLNF;
@@ -12,7 +11,6 @@ import Custom.dialog;
 import Custom.MyFileChooser;
 import Custom.Mytable;
 import DTO.LoaiSP;
-import DTO.CTPhieuNhap;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -45,7 +43,7 @@ import javax.swing.table.TableColumnModel;
 public class PnQuanLySanPhamGUI extends JPanel {
 
     DefaultTableModel dtmSanPham;
-    JTextField txtMa, txtTen, txtsoLuong, txtdonViTinh,txtgiaNhap,txtphanTram, txtdonGia, txtTimKiem;
+    JTextField txtMa, txtTen, txtsoLuong, txtdonViTinh, txtdonGia, txtTimKiem;
     JComboBox<String> cmbLoai;
     JButton btnThemSP, btnCapNhat, btnXoa, btnTim, btnChonAnh, btnReset, btnXuatExcel, btnNhapExcel;
     JLabel lblAnhSP;
@@ -87,30 +85,22 @@ public class PnQuanLySanPhamGUI extends JPanel {
         //================PANEL INPUT=========
         JPanel pnTextField = new JPanel();
         pnTextField.setLayout(new BoxLayout(pnTextField, BoxLayout.Y_AXIS));
-        JLabel lblMa, lblTen, lblLoai, lblSoLuong, lblDonViTinh,lblGiaNhap,lblPhanTram, lblDonGia;
+        JLabel lblMa, lblTen, lblLoai, lblSoLuong, lblDonViTinh, lblDonGia;
 
         lblMa = new JLabel("Mã SP");
         lblTen = new JLabel("Tên SP");
         lblLoai = new JLabel("Loại");
         lblSoLuong = new JLabel("Số lượng");
         lblDonViTinh = new JLabel("Đơn vị tính");
-        lblGiaNhap = new JLabel("Giá Nhập:");
-        lblPhanTram = new JLabel("% tăng:");
-        lblDonGia = new JLabel("Giá bán:");
+        lblDonGia = new JLabel("Đơn giá");
 
         txtMa = new JTextField(15);
         txtMa.setEditable(false);
         txtTen = new JTextField(15);
         cmbLoai = new JComboBox<String>();
         txtsoLuong = new JTextField(15);
-        txtsoLuong.setEditable(false);
         txtdonViTinh = new JTextField(15);
-        txtgiaNhap = new JTextField(15);
-        txtgiaNhap.setSize(getPreferredSize());
-        txtgiaNhap.setEditable(false);
-        txtphanTram = new JTextField(15);
         txtdonGia = new JTextField(15);
-        txtdonGia.setEditable(false);
 
         JPanel pnMa = new JPanel();
         lblMa.setFont(font);
@@ -131,7 +121,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
         cmbLoai.setFont(font);
         cmbLoai.setPreferredSize(txtMa.getPreferredSize());
         cmbLoai.setFocusable(false);
-        
         pnLoai.add(lblLoai);
         pnLoai.add(cmbLoai);
         pnTextField.add(pnLoai);
@@ -150,20 +139,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
         pnDonViTinh.add(txtdonViTinh);
         pnTextField.add(pnDonViTinh);
 
-        JPanel pnGiaNhap = new JPanel();
-        lblGiaNhap.setFont(font);
-        txtgiaNhap.setFont(font);
-        pnGiaNhap.add(lblGiaNhap);
-        pnGiaNhap.add(txtgiaNhap);
-        pnTextField.add(pnGiaNhap);
-
-        JPanel pnPhanTram = new JPanel();
-        lblPhanTram.setFont(font);
-        txtphanTram.setFont(font);
-        pnPhanTram.add(lblPhanTram);
-        pnPhanTram.add(txtphanTram);
-        pnTextField.add(pnPhanTram);
-
         JPanel pnDonGia = new JPanel();
         lblDonGia.setFont(font);
         txtdonGia.setFont(font);
@@ -177,8 +152,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
         lblLoai.setPreferredSize(lblSize);
         lblSoLuong.setPreferredSize(lblSize);
         lblDonViTinh.setPreferredSize(lblSize);
-        lblGiaNhap.setPreferredSize(lblSize);
-        lblPhanTram.setPreferredSize(lblSize);
         lblDonGia.setPreferredSize(lblSize);
 
         pnThongTin.add(pnTextField);
@@ -483,11 +456,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
 
     private void xuLyClickTblSanPham() {
         int row = tblSanPham.getSelectedRow();
-        int dg;
-
-
         if (row > -1) {
-            
             String ma = tblSanPham.getValueAt(row, 0) + "";
             String ten = tblSanPham.getValueAt(row, 1) + "";
             String loai = tblSanPham.getValueAt(row, 2) + "";
@@ -497,18 +466,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
             String anh = tblSanPham.getValueAt(row, 6) + "";
 
             txtMa.setText(ma);
-
-            CTPhieuNhapBUS listBUS = new CTPhieuNhapBUS();
-            ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
-            listCTPN = listBUS.getlistPhieuNhaps();
-            for (int j = 0; j < listCTPN.size(); j++) {
-                if (listCTPN.get(j).getMaSP() == Integer.parseInt(txtMa.getText())) {
-                    int dongia = listCTPN.get(j).getDonGia();
-                    txtgiaNhap.setText(String.valueOf(dongia));
-                    
-                }
-            }
-            
             txtTen.setText(ten);
             txtdonGia.setText(donGia);
             txtsoLuong.setText(soLuong);
@@ -533,7 +490,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
         ArrayList<SanPham> dssp = SPBUS.getListSP();
 
         DecimalFormat dcf = new DecimalFormat("###,###");
-        
+
         for (SanPham sp : dssp) {
             Vector<Object> vec = new Vector<>();
             vec.add(sp.getMaSP());
@@ -598,19 +555,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
         if (fileAnhSP != null) {
             anh = fileAnhSP.getName();
         }
-        // CTPhieuNhapBUS listBUS = new CTPhieuNhapBUS();
-        // ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
-        // listCTPN = listBUS.getlistPhieuNhaps();
-        // for (int i = 0; i < listCTPN.size(); i++) {
-        //     if (listCTPN.get(i).getMaSP() == Integer.parseInt(txtMa.getText())) {
-        //         int dongia = listCTPN.get(i).getDonGia() + listCTPN.get(i).getDonGia()*Integer.parseInt(txtphanTram.getText());
-        //         txtdonGia.setText(String.valueOf(dongia));
-                
-        //     }
-        // }
-        double dongia = Integer.parseInt(txtgiaNhap.getText())*(Double.parseDouble(txtphanTram.getText())/100) + Integer.parseInt(txtgiaNhap.getText());
-        int dg = (int) dongia;
-        txtdonGia.setText(String.valueOf(dg));
         SPBUS.capNhatThongTinSanPham(txtMa.getText(),
                 txtTen.getText(),
                 cmbLoai.getSelectedItem() + "",

@@ -1,7 +1,6 @@
 package GUI;
 
 import BUS.LoaiSPBUS;
-import Custom.dialog;
 import DTO.SanPham;
 import GUI.PnBanHang;
 
@@ -9,8 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.border.*;
 
 import static Main.Main.changLNF;
@@ -28,7 +25,6 @@ public class PnChiTietSP extends JPanel {
     JSpinner spinner;
     SanPham SP;
     LoaiSPBUS loaiSPBUS = new LoaiSPBUS();
-    private static boolean isSaved = false;
 
     public PnChiTietSP(SanPham Sp) {
         this.SP = Sp;
@@ -133,44 +129,13 @@ public class PnChiTietSP extends JPanel {
         spinner = new JSpinner(new SpinnerNumberModel(1, 1, Sp.getSoLuong(), 1));
         spinner.setPreferredSize(new Dimension(70, 25));
         spinner.setEditor(new JSpinner.DefaultEditor(spinner));
-        JButton saveButton = new JButton("lưu");
-        JButton actionButton = new JButton("action");
-        
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                int value = (int) spinner.getValue();
-
-                if(value > SP.getSoLuong()){
-                    new dialog("số lượng vượt quá hàng trong kho",dialog.ERROR_DIALOG);
-                    spinner.setValue(SP.getSoLuong());
-                    return;
-                }
-                isSaved=true;
-                new dialog("đã lưu thông tin",dialog.SUCCESS_DIALOG);
-                   
-    
-                
-            }
-        });
-        
-
-
-        
-        
         //set size số trong spinner
         JComponent editor = spinner.getEditor();
-        JFormattedTextField textField = ((JSpinner.DefaultEditor) editor).getTextField();
-        textField.setEditable(true);
-        
-        
         if (editor instanceof JSpinner.DefaultEditor) {
             JSpinner.DefaultEditor defaultEditor = (JSpinner.DefaultEditor) editor;
             defaultEditor.getTextField().setFont(new Font("Arial", Font.PLAIN, 15)); // Thiết lập font và kích thước cho con số
         }
-        
         north.add(spinner);
-        north.add(saveButton);
         addtoCart.add(north, BorderLayout.NORTH);
 
         JPanel south = new JPanel();
@@ -181,39 +146,18 @@ public class PnChiTietSP extends JPanel {
         btnadd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnadd.setFocusable(false);
         btnadd.setPreferredSize(new java.awt.Dimension(260, 40));
-       
         south.add(btnadd);
         addtoCart.add(south, BorderLayout.SOUTH);
         this.add(addtoCart);
-        
-      
-        
     }
-    
+
     public void addEventGioHang() {
         this.btnadd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int SoLuong = (int) spinner.getValue();
-                if(!isSaved){
-                    new dialog("bạn chưa lưu thông tin số lượng", dialog.ERROR_DIALOG);
-                    return;
-                }else{
-                    PnBanHang.addOneRow(SP, SoLuong);
-                    
-                    JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(PnChiTietSP.this);
-                    dialog.dispose();
-                    }
-
-                isSaved=false;
-                
-                
+                PnBanHang.addOneRow(SP, SoLuong);
             }
-    
         });
-    
     }
-    
-    
-    
 }

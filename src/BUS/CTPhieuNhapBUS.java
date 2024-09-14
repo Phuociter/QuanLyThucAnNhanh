@@ -4,12 +4,9 @@ import java.util.ArrayList;
 
 import Custom.dialog;
 import DAO.CTPhieuNhapDAO;
-import DAO.SanPhamDAO;
 import DTO.CTPhieuNhap;
 
-
-public class CTPhieuNhapBUS { 
-    
+public class CTPhieuNhapBUS {
     
     CTPhieuNhapDAO cTPhieuNhapDAO = new CTPhieuNhapDAO();
     
@@ -26,15 +23,4 @@ public class CTPhieuNhapBUS {
         }
         return true;
     }
-    //Đình Thái thêm phần này
-    public CTPhieuNhap getCTPhieuNhapByMaSP(int maSP) {
-        return cTPhieuNhapDAO.getCTPhieuNhapByMaSP(maSP);
-    }
-
-    public String getTenSPByMaSP(int maSP) {
-        SanPhamDAO spDAO = new SanPhamDAO();
-        return spDAO.getTenSPByMaSP(maSP);
-    }
-    
-    
 }
