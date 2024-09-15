@@ -379,11 +379,15 @@ public class MainQuanLyGUI extends JFrame {
                     } else if (opt == lbThongke) {
                         cardName = "7";
                     } else if (opt == lbDangXuat) {
-                        DangNhapBUS.taiKhoanLogin = null;
-                        dispose();
-                        DangNhapGUI dangNhapGUI1 = new DangNhapGUI();
-                        dangNhapGUI1.setVisible(true);
-                        return;
+                        if(JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất ?", "Đăng xuất", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                            DangNhapBUS.taiKhoanLogin = null;
+                            dispose();
+                            DangNhapGUI dangNhapGUI1 = new DangNhapGUI();
+                            dangNhapGUI1.setVisible(true);
+                            return;
+                        } else {
+                            System.out.println("Cancel logout");
+                        }
                     }
                     cardListMenu.show(pnCardListMenu, cardName);
                 }
