@@ -1,6 +1,7 @@
 package GUI;
 
 import BUS.PhanQuyenBUS;
+import BUS.DangNhapBUS;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
