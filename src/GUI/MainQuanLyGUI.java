@@ -142,19 +142,23 @@ public class MainQuanLyGUI extends JFrame {
         pnCardListMenu.add(pnKhachHang, "5");
         pnCardListMenu.add(pnNhapHang, "6");
         pnCardListMenu.add(pnThongKe, "7");
+        
+        PhanQuyenBUS phanQuyenBUS = new PhanQuyenBUS();
+        phanQuyenBUS.UpdateCurrentQuyen();
 
         PnQuanLyBanHangGUI pnQuanLyBanHangGUI = new PnQuanLyBanHangGUI();
         pnBanHang.setLayout(new BorderLayout());
         pnBanHang.add(pnQuanLyBanHangGUI, BorderLayout.CENTER);
         lbBanhang.setVisible(true);
 
-        PnQuanLyKhuyenMaiGUI pnQuanLyKhuyenMaiGUI = new PnQuanLyKhuyenMaiGUI();
-        pnKhuyenMai.setLayout(new BorderLayout());
-        pnKhuyenMai.add(pnQuanLyKhuyenMaiGUI, BorderLayout.CENTER);
-        lbKhuyenmai.setVisible(true);
 
-        PhanQuyenBUS phanQuyenBUS = new PhanQuyenBUS();
-        phanQuyenBUS.UpdateCurrentQuyen();
+        if (PhanQuyenBUS.currentQuyen.getMaQuyen() != 1) {
+            PnQuanLyKhuyenMaiGUI pnQuanLyKhuyenMaiGUI = new PnQuanLyKhuyenMaiGUI();
+            pnKhuyenMai.setLayout(new BorderLayout());
+            pnKhuyenMai.add(pnQuanLyKhuyenMaiGUI, BorderLayout.CENTER);
+            lbKhuyenmai.setVisible(true);
+        }
+
 
         if (PhanQuyenBUS.currentQuyen != null) {
             if (PhanQuyenBUS.currentQuyen.getQlNhanVien() == 1) {
