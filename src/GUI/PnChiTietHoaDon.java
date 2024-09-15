@@ -16,7 +16,6 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class PnChiTietHoaDon extends JPanel {
-
     private int W = 500;
     private int H = 500;
     final Color ClMain = new Color(0, 160, 80); //#00A050

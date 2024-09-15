@@ -47,6 +47,7 @@ public class XuatHoaDonGUI extends javax.swing.JDialog {
         this.tongTienDaGiam = tongTien;
         initComponents();
         Custom();
+        setSize(500, 700);
         loadData();
         showDlg();
     }
@@ -56,6 +57,8 @@ public class XuatHoaDonGUI extends javax.swing.JDialog {
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setModal(true);
         this.setVisible(true);
+        
+        
     }
 
     private void Custom() {
@@ -105,7 +108,7 @@ public class XuatHoaDonGUI extends javax.swing.JDialog {
         } else {
             txtKhuyenMai.setText("Không có khuyến mãi phù hợp");
             tongTienDaGiam = tongTien;  // Không có khuyến mãi
-            giamGia = new GiamGia(0, "Không giảm giá", 0, 0, null, null, 0);
+            giamGia = new GiamGia(0, "Không giảm giá", 0, 0, null, null, 0); 
         }
     
         txtTongTien.setText(DinhDangTongTien(tongTienDaGiam));
@@ -261,6 +264,7 @@ public class XuatHoaDonGUI extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 160, 80));
         jLabel1.setText("Thông tin hóa đơn");
+       
         jPanel2.add(jLabel1);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
