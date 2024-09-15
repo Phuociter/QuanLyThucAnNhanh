@@ -3,11 +3,10 @@ package DAO;
 import DTO.SanPham;
 import Custom.JDBCUtil;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 
 public class SanPhamDAO {
@@ -208,7 +207,7 @@ public class SanPhamDAO {
         try {
             Connection connection = JDBCUtil.getConnection();
 
-            String sql = "insert into sanpham(maSP, tenSP, maLoai, donGia, soLuong, donViTinh, hinhAnh, trangThai)  values(?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "insert into sanpham(maSP, tenSP, maLoai, donGia, soLuong, donViTinh, hinhAnh, trangThai, ngaytao)  values(?, ?, ?, ?, ?, ?, ?, ?,CURRENT_TIMESTAMP)";
             PreparedStatement pre = connection.prepareStatement(sql);
 
             int maSP = layMaSanPhamCuoiCung() + 1;
@@ -443,6 +442,33 @@ public class SanPhamDAO {
             return sanPhams;
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
+        }
+    }
+    public LocalDateTime getngaytao(int masp){
+        Connection c = null;
+        Timestamp ngaytao = null;
+        try {
+           c = JDBCUtil.getConnection();
+           String sql = "select ngaytao from sanpham where maSP = ?";
+           PreparedStatement preparedStatement = c.prepareStatement(sql);
+           preparedStatement.setInt(1,masp);
+           ResultSet rs = preparedStatement.executeQuery();
+           if (rs.next()){
+               ngaytao = rs.getTimestamp("ngaytao");
+           }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        finally {
+            if(c != null){
+                JDBCUtil.closeConnection(c);
+            }
+        }
+        if (ngaytao != null)
+            {return ngaytao.toLocalDateTime();}
+        else {
             return null;
         }
     }

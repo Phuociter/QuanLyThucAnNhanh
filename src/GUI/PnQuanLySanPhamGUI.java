@@ -1,15 +1,13 @@
 package GUI;
 
+import Custom.*;
+import DAO.SanPhamDAO;
 import DTO.SanPham;
 import BUS.SanPhamBUS;
 import BUS.LoaiSPBUS;
 
 import static Main.Main.changLNF;
 
-import Custom.XuLyFileExcel;
-import Custom.dialog;
-import Custom.MyFileChooser;
-import Custom.Mytable;
 import DTO.LoaiSP;
 
 import java.awt.*;
@@ -21,7 +19,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Timer;
 import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -286,6 +288,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
         btnReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                cmbLoai.setEnabled(true);
                 loadAnh("");
                 loadDataLenBangSanPham();
                 loadDataCmbLoai();
@@ -475,6 +478,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
             for (int i = 0; i < cmbLoai.getItemCount(); i++) {
                 if (cmbLoai.getItemAt(i).contains(loai)) {
                     flag = i;
+                    cmbLoai.setEnabled(false);
                     break;
                 }
             }
@@ -547,8 +551,18 @@ public class PnQuanLySanPhamGUI extends JPanel {
     File fileAnhSP;
 
     private void xuLySuaSanPham() {
+        SanPhamDAO sanPhamDAO = new SanPhamDAO();
         int row = tblSanPham.getSelectedRow();
         String anh = "default.png";
+        if (sanPhamDAO.getngaytao(Integer.parseInt(txtMa.getText())) == null){
+            new dialog("Đã quá thời gian cho phép sửa",2);
+            return;
+        }
+        Duration duration = Duration.between(sanPhamDAO.getngaytao(Integer.parseInt(txtMa.getText())), LocalDateTime.now());
+        if (duration.toMinutes() > 60*24 || sanPhamDAO.getngaytao(Integer.parseInt(txtMa.getText())) == null){
+            new dialog("Đã quá thời gian cho phép sửa",4);
+            return;
+        }
         if (row > -1) {
             anh = tblSanPham.getValueAt(row, 6) + ""; // lấy ảnh từ dòng được chọn nếu có
         }
@@ -605,4 +619,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
         imageIcon = new ImageIcon(newimg);  // transform it back
         return imageIcon;
     }
+
+
 }
