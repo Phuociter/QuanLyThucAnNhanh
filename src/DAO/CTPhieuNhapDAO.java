@@ -118,4 +118,27 @@ public class CTPhieuNhapDAO {
         }
         return ctpn;
     }
+    public int getmaPnBymaSP(int masp){
+        int mapn = -1;
+        Connection c = null;
+        try{
+            c = JDBCUtil.getConnection();
+            String sql = "select maPN from ctphieunhap where maSP = ?";
+            PreparedStatement preparedStatement = c.prepareStatement(sql);
+            preparedStatement.setInt(1,masp);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()){
+                mapn = rs.getInt("maPN");
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            if (c != null){
+                JDBCUtil.closeConnection(c);
+            }
+        }
+        return mapn;
+    }
 }

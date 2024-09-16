@@ -1,6 +1,8 @@
 package GUI;
 
 import Custom.*;
+import DAO.CTPhieuNhapDAO;
+import DAO.PhieuNhapDAO;
 import DAO.SanPhamDAO;
 import DTO.SanPham;
 import BUS.SanPhamBUS;
@@ -9,6 +11,7 @@ import BUS.LoaiSPBUS;
 import static Main.Main.changLNF;
 
 import DTO.LoaiSP;
+import org.apache.poi.ss.formula.functions.DateValue;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,12 +22,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -551,16 +555,30 @@ public class PnQuanLySanPhamGUI extends JPanel {
     File fileAnhSP;
 
     private void xuLySuaSanPham() {
-        SanPhamDAO sanPhamDAO = new SanPhamDAO();
+        PhieuNhapDAO phieuNhapDAO = new PhieuNhapDAO();
+        CTPhieuNhapDAO ctPhieuNhapDAO = new CTPhieuNhapDAO();
         int row = tblSanPham.getSelectedRow();
         String anh = "default.png";
-        if (sanPhamDAO.getngaytao(Integer.parseInt(txtMa.getText())) == null){
-            new dialog("Đã quá thời gian cho phép sửa",2);
+        int MaPN = -1;
+        try{
+            MaPN = ctPhieuNhapDAO.getmaPnBymaSP(Integer.parseInt(txtMa.getText()));}
+        catch (NumberFormatException e){
+            e.printStackTrace();
+        }
+        Date sqlDate = phieuNhapDAO.getngayNhapbyID(MaPN);
+        if (txtMa.getText().trim().isEmpty()){
+            new dialog("Vui lòng chọn đối tượng cần sửa",3);
+        }
+        if (sqlDate == null){
+            new dialog("Đã quá thời gian cho phép sửa",1);
             return;
         }
-        Duration duration = Duration.between(sanPhamDAO.getngaytao(Integer.parseInt(txtMa.getText())), LocalDateTime.now());
-        if (duration.toMinutes() > 60*24 || sanPhamDAO.getngaytao(Integer.parseInt(txtMa.getText())) == null){
-            new dialog("Đã quá thời gian cho phép sửa",4);
+
+        long NgayNhap = sqlDate.getTime();
+        long now = System.currentTimeMillis();
+        long duration = TimeUnit.DAYS.convert(now - NgayNhap, TimeUnit.MILLISECONDS);
+        if (duration > 1){
+            new dialog("Đã quá thời gian cho phép sửa",1);
             return;
         }
         if (row > -1) {

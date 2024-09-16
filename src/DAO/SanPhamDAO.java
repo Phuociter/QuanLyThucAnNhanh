@@ -207,7 +207,7 @@ public class SanPhamDAO {
         try {
             Connection connection = JDBCUtil.getConnection();
 
-            String sql = "insert into sanpham(maSP, tenSP, maLoai, donGia, soLuong, donViTinh, hinhAnh, trangThai, ngaytao)  values(?, ?, ?, ?, ?, ?, ?, ?,CURRENT_TIMESTAMP)";
+            String sql = "insert into sanpham(maSP, tenSP, maLoai, donGia, soLuong, donViTinh, hinhAnh, trangThai)  values(?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pre = connection.prepareStatement(sql);
 
             int maSP = layMaSanPhamCuoiCung() + 1;
@@ -445,31 +445,5 @@ public class SanPhamDAO {
             return null;
         }
     }
-    public LocalDateTime getngaytao(int masp){
-        Connection c = null;
-        Timestamp ngaytao = null;
-        try {
-           c = JDBCUtil.getConnection();
-           String sql = "select ngaytao from sanpham where maSP = ?";
-           PreparedStatement preparedStatement = c.prepareStatement(sql);
-           preparedStatement.setInt(1,masp);
-           ResultSet rs = preparedStatement.executeQuery();
-           if (rs.next()){
-               ngaytao = rs.getTimestamp("ngaytao");
-           }
-        }
-        catch (SQLException e){
-            e.printStackTrace();
-        }
-        finally {
-            if(c != null){
-                JDBCUtil.closeConnection(c);
-            }
-        }
-        if (ngaytao != null)
-            {return ngaytao.toLocalDateTime();}
-        else {
-            return null;
-        }
-    }
+
 }
