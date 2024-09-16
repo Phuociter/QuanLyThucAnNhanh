@@ -414,7 +414,7 @@ public class PnNhanVien extends JPanel {
         }
         String ma = txtMaNV.getText();
         //? check Admin không được sửa thông tin
-        if(NVBUS.getById(Integer.parseInt(ma)).getChucVu().equals("Quản Trị Viên")) {
+        if(NVBUS.getById(Integer.parseInt(ma)).getChucVu().equals("Quản Trị")) {
             new dialog("Bạn là Quản Trị Viên", dialog.ERROR_DIALOG);
             return;
         }
