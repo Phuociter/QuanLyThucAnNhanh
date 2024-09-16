@@ -1,5 +1,8 @@
 package GUI;
 
+import DAO.CTPhieuNhapDAO;
+import DAO.PhieuNhapDAO;
+import DAO.SanPhamDAO;
 import DTO.SanPham;
 import BUS.SanPhamBUS;
 import BUS.CTPhieuNhapBUS;
@@ -23,20 +26,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -308,11 +305,13 @@ public class PnQuanLySanPhamGUI extends JPanel {
         loadDataLenBangSanPham();
     }
 
+
     private void addEventsSanPham() {
 
         btnReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                cmbLoai.setEnabled(true);
                 loadAnh("");
                 loadDataLenBangSanPham();
                 loadDataCmbLoai();
@@ -503,6 +502,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
             txtdonViTinh.setText(donViTinh.replace(",", ""));
             int maSP = Integer.parseInt(ma);
 
+
             CTPhieuNhapBUS ctPhieuNhapBUS = new CTPhieuNhapBUS();
             CTPhieuNhap ctPhieuNhap = new CTPhieuNhap();
             ctPhieuNhap = ctPhieuNhapBUS.getCTPhieuNhapByMaSP(maSP);
@@ -547,6 +547,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
             }
             cmbLoai.setSelectedIndex(flag);
             loadAnh("image/products/" + anh);
+            cmbLoai.setEnabled(false);
         }
     }
 
@@ -632,44 +633,90 @@ public class PnQuanLySanPhamGUI extends JPanel {
     File fileAnhSP;
 
     private void xuLySuaSanPham() {
+        SanPhamDAO sanPhamDAO = new SanPhamDAO();
+        PhieuNhapDAO phieuNhapDAO = new PhieuNhapDAO();
+        CTPhieuNhapDAO ctPhieuNhapDAO = new CTPhieuNhapDAO();
+
+        String maSPText = txtMa.getText().trim();
+        if (maSPText.isEmpty()) {
+            new dialog("Vui lòng chọn đối tượng cần sửa", 3);
+            return;
+        }
+
+        int maSP;
+        int maPN;
+        Date sqlDate;
+
+        try {
+            maSP = Integer.parseInt(maSPText);
+            maPN = ctPhieuNhapDAO.getmaPnBymaSP(maSP);
+            sqlDate = phieuNhapDAO.getngayNhapbyID(maPN);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            new dialog("Lỗi khi xử lý mã sản phẩm", 3);
+            return;
+        } catch (Exception e) {
+            e.printStackTrace();
+            new dialog("Lỗi hệ thống", 3);
+            return;
+        }
+
+        if (sqlDate == null) {
+            new dialog("Đã quá thời gian cho phép sửa", 1);
+            return;
+        }
+
+        long ngayNhapMillis = sqlDate.getTime();
+        long nowMillis = System.currentTimeMillis();
+        long daysSinceNhap = TimeUnit.DAYS.convert(nowMillis - ngayNhapMillis, TimeUnit.MILLISECONDS);
+
+        // Kiểm tra thời gian cho phép sửa
+        if (daysSinceNhap > 1) {
+            new dialog("Đã quá thời gian cho phép sửa", 1);
+            return;
+        }
+
         int row = tblSanPham.getSelectedRow();
         String anh = "default.png";
         if (row > -1) {
-            anh = tblSanPham.getValueAt(row, 6) + ""; // lấy ảnh từ dòng được chọn nếu có
+            Object value = tblSanPham.getValueAt(row, 6);
+            if (value != null) {
+                anh = value.toString();
+            }
         }
+
         if (fileAnhSP != null) {
             anh = fileAnhSP.getName();
         }
-        // CTPhieuNhapBUS listBUS = new CTPhieuNhapBUS();
-        // ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
-        // listCTPN = listBUS.getlistPhieuNhaps();
-        // for (int i = 0; i < listCTPN.size(); i++) {
-        //     if (listCTPN.get(i).getMaSP() == Integer.parseInt(txtMa.getText())) {
-        //         int dongia = listCTPN.get(i).getDonGia() + listCTPN.get(i).getDonGia()*Integer.parseInt(txtphanTram.getText());
-        //         txtdonGia.setText(String.valueOf(dongia));
-                
-        //     }
-        // }
+
         double dongia;
-        int dg;
-        
-        if (!txtphanTram.getText().equals("")){
-            dongia = Integer.parseInt(txtgiaNhap.getText())*(Double.parseDouble(txtphanTram.getText())/100) + Integer.parseInt(txtgiaNhap.getText());
-            dg = (int) dongia;
-            txtdonGia.setText(String.valueOf(dg));
+        if (!txtphanTram.getText().trim().isEmpty()) {
+            double phanTram = Double.parseDouble(txtphanTram.getText());
+            double giaNhap = Double.parseDouble(txtgiaNhap.getText());
+            dongia = giaNhap * (phanTram / 100) + giaNhap;
+        } else {
+            dongia = Double.parseDouble(txtgiaNhap.getText());
         }
-        SPBUS.capNhatThongTinSanPham(txtMa.getText(),
+
+        int dg = (int) dongia;
+        txtdonGia.setText(String.valueOf(dg));
+
+        SPBUS.capNhatThongTinSanPham(
+                maSPText,
                 txtTen.getText(),
                 cmbLoai.getSelectedItem() + "",
                 txtsoLuong.getText(),
                 txtdonViTinh.getText(),
                 anh,
                 txtdonGia.getText(),
-                "1");
+                "1"
+        );
+
         SPBUS.readListSanPham();
         loadDataLenBangSanPham();
         luuFileAnh();
     }
+
 
     private void luuFileAnh() {
         if (fileAnhSP == null) { // nếu người dùng không chọn ảnh thì tương đương fileAnhSP = null thì return không làm gì cả

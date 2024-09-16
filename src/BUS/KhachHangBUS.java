@@ -19,7 +19,7 @@ public class KhachHangBUS {
 
     //KT có trống không
     private boolean CheckEmpty(KhachHang khachHang, String content) {
-        if (InputValidator.IsEmpty(khachHang.getTen()) || InputValidator.IsEmpty(khachHang.getDiaChi()) || InputValidator.IsEmpty(khachHang.getDienThoai()) || InputValidator.IsEmpty(khachHang.getGioiTinh()) || khachHang.getTrangThai() == -1) {
+        if (InputValidator.IsEmpty(khachHang.getTen())|| InputValidator.IsEmpty(khachHang.getDienThoai()) || InputValidator.IsEmpty(khachHang.getGioiTinh()) || khachHang.getTrangThai() == -1) {
             new dialog(content, dialog.ERROR_DIALOG);
             return true;
         }
@@ -60,9 +60,9 @@ public class KhachHangBUS {
         if (!CheckPhoneNumber(khachHang.getDienThoai(), "Số điện thoại không hợp lệ")) {
             return false;
         }
-        if (!CheckEmail(khachHang.getEmail(), "Email không hợp lệ")) {
-            return false;
-        }
+        // if (!CheckEmail(khachHang.getEmail(), "Email không hợp lệ")) {
+        //     return false;
+        // }
         if (!CheckName(khachHang.getTen(), "Tên khách hàng không hợp lệ")) {
             return false;
         }

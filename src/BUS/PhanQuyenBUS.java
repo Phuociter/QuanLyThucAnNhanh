@@ -54,7 +54,7 @@ public class PhanQuyenBUS {
         new dialog("Xóa thành công", dialog.SUCCESS_DIALOG);
         return true;
     }
-    public int getID(String name) {return phanQuyenDAO.getIdByName(name);}
+
     public PhanQuyen getById(int ma) {
         return phanQuyenDAO.selectById(new PhanQuyen(ma, null, 0, 0, 0, 0, 0, 0));
     }

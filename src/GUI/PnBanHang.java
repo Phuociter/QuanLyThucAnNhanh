@@ -2,10 +2,12 @@ package GUI;
 
 import BUS.LoaiSPBUS;
 import BUS.SanPhamBUS;
+
 import Custom.Mytable;
 import Custom.dialog;
 import Custom.listCard;
 import DTO.CTHoaDon;
+import DTO.GiamGia;
 import DTO.SanPham;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -29,8 +31,10 @@ public class PnBanHang extends JPanel {
     Mytable mtbGioHang;
     JButton btnReset;
     JButton btnThanhToan;
+    SanPham SP;
 
     SanPhamBUS list = new SanPhamBUS();
+    
 
     public static DefaultTableModel dtmGioHang;
 
@@ -199,6 +203,7 @@ public class PnBanHang extends JPanel {
         if (sanPhams == null) {
             return;
         }
+        
         listCardSP.removeAll();
         listCardSP.addCards(sanPhams);
         listCardSP.revalidate(); // cập nhật lại danh sách
@@ -207,11 +212,19 @@ public class PnBanHang extends JPanel {
 
     public static void addOneRow(SanPham SP, int SoLuong) {
         for (int i = 0; i < dtmGioHang.getRowCount(); i++) {
+            
             if (SP.getMaSP() == (int) dtmGioHang.getValueAt(i, 0)) {
-                dtmGioHang.setValueAt((int) dtmGioHang.getValueAt(i, 2) + SoLuong, i, 2);
+                int SLCart=(int) dtmGioHang.getValueAt(i, 2) + SoLuong;
+                if(SP.getSoLuong()<SLCart){
+                    new dialog("số lượng đã đạt tối đa", dialog.ERROR_DIALOG);
+                    return;
+                }else{
+                dtmGioHang.setValueAt((int) SLCart, i, 2);
                 dtmGioHang.setValueAt((int) dtmGioHang.getValueAt(i, 2) * (int) dtmGioHang.getValueAt(i, 3), i, 4);
                 return;
+                }
             }
+            
         }
         Object[] data = new Object[]{SP.getMaSP(), SP.getTenSP(), SoLuong, SP.getDonGia(), SoLuong * SP.getDonGia()};
         dtmGioHang.addRow(data);
@@ -252,6 +265,9 @@ public class PnBanHang extends JPanel {
     }
 
     private void XyLyThanhToan() {
+        
+
+        
         if (mtbGioHang.getRowCount() == 0) {
             new dialog("Giỏ hàng trống!", dialog.ERROR_DIALOG);
             return;
@@ -264,6 +280,7 @@ public class PnBanHang extends JPanel {
                 new dialog("Tổng tiền quá lớn", dialog.ERROR_DIALOG);
                 return;
             }
+            
             tongTien += thanhTien;
             int maSP = Integer.parseInt(mtbGioHang.getValueAt(i, 0) + "");
             int soLuong = Integer.parseInt(mtbGioHang.getValueAt(i, 2) + "");

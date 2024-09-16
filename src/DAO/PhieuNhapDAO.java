@@ -1,10 +1,6 @@
 package DAO;
 
 import java.sql.Connection;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -206,6 +202,59 @@ public class PhieuNhapDAO {
         }
         return dspn;
     }
+    // đình thái thêm phần này
+    public ArrayList<PhieuNhap> getPhieuNhapByNgayLapVaGiaTu(Date startDate, Date endDate, int minPrice) {
+        ArrayList<PhieuNhap> dspn = new ArrayList<>();
+        try {
+            Connection c = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM phieunhap WHERE ngayLap BETWEEN ? AND ? AND tongTien >= ?";
+            PreparedStatement stmt = c.prepareStatement(sql);
+            stmt.setDate(1, new java.sql.Date(startDate.getTime()));
+            stmt.setDate(2, new java.sql.Date(endDate.getTime()));
+            stmt.setInt(3, minPrice);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                PhieuNhap pn = new PhieuNhap();
+                pn.setMaPN(rs.getInt(1));
+                pn.setMaNCC(rs.getInt(2));
+                pn.setMaNV(rs.getInt(3));
+                pn.setNgayLap(rs.getDate(4));
+                pn.setTongTien(rs.getInt(5));
+                dspn.add(pn);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(); // Xử lý lỗi tùy ý, có thể log hoặc throw ngoại lệ.
+            return null;
+        }
+        return dspn;
+    }
+    //đình thái thêm phần này
+    public ArrayList<PhieuNhap> getPhieuNhapByNgayLapVaGiaDen(Date startDate, Date endDate, int maxPrice) {
+        ArrayList<PhieuNhap> dspn = new ArrayList<>();
+        try {
+            Connection c = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM phieunhap WHERE ngayLap BETWEEN ? AND ? AND tongTien <= ?";
+            PreparedStatement stmt = c.prepareStatement(sql);
+            stmt.setDate(1, new java.sql.Date(startDate.getTime()));
+            stmt.setDate(2, new java.sql.Date(endDate.getTime()));
+            stmt.setInt(3, maxPrice);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                PhieuNhap pn = new PhieuNhap();
+                pn.setMaPN(rs.getInt(1));
+                pn.setMaNCC(rs.getInt(2));
+                pn.setMaNV(rs.getInt(3));
+                pn.setNgayLap(rs.getDate(4));
+                pn.setTongTien(rs.getInt(5));
+                dspn.add(pn);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(); // Xử lý lỗi tùy ý, có thể log hoặc throw ngoại lệ.
+            return null;
+        }
+        return dspn;
+    }
+
 
     public PhieuNhap getById(int maPN) {
         PhieuNhap pn = null;

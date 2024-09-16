@@ -188,12 +188,14 @@ public class PnPhieuNhap extends JPanel {
         setEventTable(mtbPhieuNhap);
 
     }
-
+// đình thái sửa đoạn này
     private void loaddata() {
         ArrayList<PhieuNhap> phieuNhaps = phieuNhapBUS.getList();
-        if (phieuNhaps == null) {
-            return;
-        }
+        // if (phieuNhaps == null) {
+        //     return;
+        // }
+        phieuNhaps.sort((pn1, pn2) -> Integer.compare(pn2.getMaPN(), pn1.getMaPN()));
+
         updateTableData(phieuNhaps);
     }
 
@@ -237,6 +239,9 @@ public class PnPhieuNhap extends JPanel {
                     if(searchResults.size() == 0)
                     {
                         new dialog("không tìm thấy dữ liệu yêu cầu", dialog.INFO_DIALOG);
+                    }else {
+                        // Sắp xếp kết quả tìm kiếm theo mã phiếu nhập từ cao đến thấp
+                        searchResults.sort((pn1, pn2) -> Integer.compare(pn2.getMaPN(), pn1.getMaPN()));
                     }
                 }
                 // Update the table with search results
@@ -244,24 +249,66 @@ public class PnPhieuNhap extends JPanel {
 
             }
         });
+        // btnReset.addActionListener(new ActionListener() {
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         ArrayList<PhieuNhap> phieuNhaps = phieuNhapBUS.getList();
+        //         updateTableData(phieuNhaps);
+        //     }
+        // });
+        // đình thái sửa đoạn này
         btnReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ArrayList<PhieuNhap> phieuNhaps = phieuNhapBUS.getList();
+                // Sắp xếp danh sách theo mã phiếu nhập từ cao đến thấp
+                phieuNhaps.sort((pn1, pn2) -> Integer.compare(pn2.getMaPN(), pn1.getMaPN()));
                 updateTableData(phieuNhaps);
             }
         });
+        // btnSearchMaPN.addActionListener(new ActionListener() {
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         String text = txtSearchMaPN.getText().trim();
+
+        //         // Attempt to parse the search text as an integer
+        //         try {
+        //             int maPN = Integer.parseInt(text);
+
+        //             // If text is not empty, search by ID
+        //             if (!text.isEmpty()) {
+        //                 ArrayList<PhieuNhap> searchResults = phieuNhapBUS.FindPNByPNid(maPN);
+        //                 if (searchResults == null) {
+        //                     new dialog("không tìm thấy dữ liệu", dialog.INFO_DIALOG);
+        //                     return;
+        //                 } else {
+        //                     updateTableData(searchResults);
+        //                 }
+                
+        //             }
+        //         } catch (NumberFormatException ex) {
+        //             // Handle non-numeric input
+        //             new dialog("Vui lòng nhập mã phiếu nhập là số!", dialog.ERROR_DIALOG);
+        //         }
+        //     }
+
+        // });
+
+        // Đình Thái sửa xong tìm kiếm mã phiếu nhập
         btnSearchMaPN.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String text = txtSearchMaPN.getText().trim();
-
-                // Attempt to parse the search text as an integer
-                try {
-                    int maPN = Integer.parseInt(text);
-
-                    // If text is not empty, search by ID
-                    if (!text.isEmpty()) {
+        
+                // Kiểm tra nếu người dùng chưa nhập dữ liệu
+                if (text.isEmpty()) {
+                    new dialog("Bạn chưa nhập dữ liệu", dialog.INFO_DIALOG);
+                    return;
+                }else{
+                    try {
+                        int maPN = Integer.parseInt(text);
+            
+                        // If text is not empty, search by ID
                         ArrayList<PhieuNhap> searchResults = phieuNhapBUS.FindPNByPNid(maPN);
                         if (searchResults == null) {
                             new dialog("không tìm thấy dữ liệu", dialog.INFO_DIALOG);
@@ -269,13 +316,16 @@ public class PnPhieuNhap extends JPanel {
                         } else {
                             updateTableData(searchResults);
                         }
+                    } catch (NumberFormatException ex) {
+                        // Handle non-numeric input
+                        new dialog("Vui lòng nhập mã phiếu nhập là số!", dialog.ERROR_DIALOG);
                     }
-                } catch (NumberFormatException ex) {
-                    // Handle non-numeric input
-                    new dialog("Vui lòng nhập mã phiếu nhập là số!", dialog.ERROR_DIALOG);
-                }
-            }
 
+                }
+        
+                // Attempt to parse the search text as an integer
+                
+            }
         });
 
     }

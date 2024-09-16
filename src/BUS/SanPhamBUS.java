@@ -112,9 +112,11 @@ public class SanPhamBUS {
         try {
             String[] loaiTmp = loai.split(" - ");
             int maLoai = Integer.parseInt(loaiTmp[0]);
-            int soLuongSP = Integer.parseInt(soLuong);
-            donGia = donGia.replace(",", "");
-            int donGiaSP = Integer.parseInt(donGia);
+            // int soLuongSP = Integer.parseInt(soLuong);
+            // donGia = donGia.replace(",", "");
+            // int donGiaSP = Integer.parseInt(donGia);
+            int soLuongSP = 0;
+            int donGiaSP = 0;
             int tThai = Integer.parseInt(TrangThai);
             if (maLoai == 0) {
                 new dialog("Vui lòng chọn loại sản phẩm!", dialog.ERROR_DIALOG);
@@ -138,7 +140,7 @@ public class SanPhamBUS {
             }
         } catch (Exception e) {
             System.out.println(e);
-            new dialog("Nhập số hợp lệ cho đơn giá và số lượng!", dialog.ERROR_DIALOG);
+            // new dialog("Nhập số hợp lệ cho đơn giá và số lượng!", dialog.ERROR_DIALOG);
         }
         return false;
     }
@@ -181,9 +183,16 @@ public class SanPhamBUS {
         }
 
         int ma = Integer.parseInt(masp);
-        if (spDAO.deleteSanPham(ma)) {
-            new dialog("Xóa thành công!", dialog.SUCCESS_DIALOG);
-            return true;
+        SanPhamDAO spdao = new SanPhamDAO();
+        SanPham sptmp = spdao.getSanPhamTheoMa(ma); 
+        if(sptmp.getSoLuong()<=0){
+            if (spDAO.deleteSanPham(ma)) {
+                new dialog("Xóa thành công!", dialog.SUCCESS_DIALOG);
+                return true;
+            }
+        }
+        else{
+            new dialog("Sản phẩm vẫn còn hàng, không thể xóa!", dialog.ERROR_DIALOG);
         }
 
         new dialog("Xóa thất bại!", dialog.ERROR_DIALOG);
