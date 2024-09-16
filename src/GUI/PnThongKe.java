@@ -245,14 +245,14 @@ public class PnThongKe extends JPanel {
     }
 
     private JFreeChart createPieChart(ArrayList<Double> PhanTramTheoQuy) {
-        JFreeChart freeChart = ChartFactory.createPieChart("Doanh thu theo quý", createPieDataset(PhanTramTheoQuy), true, true, false);
+        JFreeChart freeChart = ChartFactory.createPieChart("Doanh thu theo quý (%)", createPieDataset(PhanTramTheoQuy), true, true, false);
         return freeChart;
     }
 
     private PieDataset createPieDataset(ArrayList<Double> PhanTramTheoQuy) {
         DefaultPieDataset dataSet = new DefaultPieDataset();
         for (int i = 0; i < 4; i++) {
-            dataSet.setValue("Quý " + (i + 1), PhanTramTheoQuy.get(i));
+            dataSet.setValue("Quý) " + (i + 1), PhanTramTheoQuy.get(i));
         }
         return dataSet;
     }

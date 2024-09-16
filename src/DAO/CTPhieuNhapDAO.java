@@ -118,6 +118,27 @@ public class CTPhieuNhapDAO {
         }
         return ctpn;
     }
+
+    public CTPhieuNhap timkiemCTPhieuNhap2(int maPN) {
+        CTPhieuNhap ctpn = null;
+        try ( Connection c = JDBCUtil.getConnection()) {
+            String sql = "SELECT * FROM ctphieunhap WHERE MaPN = ?";
+            PreparedStatement stmt =c.prepareStatement(sql);
+            stmt.setInt(1, maPN);
+            // System.out.println("đã conce");
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                ctpn = new CTPhieuNhap();
+                ctpn.setMaPN(rs.getInt("MaPN"));
+                ctpn.setMaSP(rs.getInt("MaSP"));
+                ctpn.setSoLuong(rs.getInt("SoLuong"));
+                ctpn.setDonGia(rs.getInt("DonGia"));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return ctpn;
+    }
     //Đình Thái thêm phần này
     public CTPhieuNhap getCTPhieuNhapByMaSP(int maSP) {
         CTPhieuNhap ctpn = null;

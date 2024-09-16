@@ -35,6 +35,12 @@ public class CTPhieuNhapBUS {
         SanPhamDAO spDAO = new SanPhamDAO();
         return spDAO.getTenSPByMaSP(maSP);
     }
+
+    public CTPhieuNhap getCTPNbyMaPhieuNhap(int mapn){
+        CTPhieuNhapDAO ctpn = new CTPhieuNhapDAO();
+        ctpn.timkiemCTPhieuNhap2(mapn);
+        return ctpn.timkiemCTPhieuNhap2(mapn);
+    }
     
     
 }

@@ -503,40 +503,34 @@ public class PnQuanLySanPhamGUI extends JPanel {
             txtdonViTinh.setText(donViTinh.replace(",", ""));
             int maSP = Integer.parseInt(ma);
 
-            CTPhieuNhapBUS ctPhieuNhapBUS = new CTPhieuNhapBUS();
-            CTPhieuNhap ctPhieuNhap = new CTPhieuNhap();
-            ctPhieuNhap = ctPhieuNhapBUS.getCTPhieuNhapByMaSP(maSP);
+            // CTPhieuNhapBUS listBUS = new CTPhieuNhapBUS();
+            // ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
+            // ArrayList<CTPhieuNhap> listCTPN2 = new ArrayList<>();
+            // ArrayList<Integer> listtmp = new ArrayList<>();
+            // listCTPN = listBUS.getlistPhieuNhaps();
+            // int o=0;
 
-            CTPhieuNhapBUS listBUS = new CTPhieuNhapBUS();
-            ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
-            ArrayList<CTPhieuNhap> listCTPN2 = new ArrayList<>();
-            ArrayList<Integer> listtmp = new ArrayList<>();
-            listCTPN = listBUS.getlistPhieuNhaps();
-            for (int j = 0; j < listCTPN.size(); j++) {
-                
-                if (listCTPN.get(j).getMaSP() == Integer.parseInt(txtMa.getText())) {
-                    System.out.println(listCTPN.get(j).getMaPN());
-                    listtmp.add(listCTPN.get(j).getMaPN());
-                    
-                    listCTPN2.add(listCTPN.get(j));
-                    // int dongia = listCTPN.get(j).getDonGia();
-                    if(listCTPN.size()-1 == j ){
-                        findMax(listtmp);
-                        int dongia = listCTPN2.get(listCTPN2.size() - 1).getDonGia();
-                        txtgiaNhap.setText(String.valueOf(dongia));
-                    }   
-                    
-                }
-                else
-                    txtgiaNhap.setText("");
-            }
-
-            // if(ctPhieuNhap != null && !String.valueOf(ctPhieuNhap.getMaPN()).equals("")){
-            //     if (ctPhieuNhap.getMaSP() == Integer.parseInt(txtMa.getText()) ) {
-            //         int dongia = ctPhieuNhap.getDonGia();
-            //         txtgiaNhap.setText(String.valueOf(dongia));
+            // for (int j = 0; j < listCTPN.size(); j++) {
+            //     if (listCTPN.get(j).getMaSP() == maSP) {
+            //         listtmp.add(listCTPN.get(j).getMaSP());
+            //         listCTPN2.add(listCTPN.get(j));
+            //         System.out.println(listCTPN2.get(o).getMaSP());
+            //         o++;
             //     }
             // }
+            // boolean hasMSP = false;
+
+            // for(int k = 0; k < listtmp.size(); k++){
+            //     if(listtmp.get(k)>=0 && listCTPN2.get(k).getMaSP() == maSP){
+            //         System.out.println(findMax(listtmp));
+            //         CTPhieuNhap ctpntemp = listBUS.getCTPhieuNhapByMaSP(findMax(listtmp));
+            //         int dongia = ctpntemp.getDonGia();
+            //         txtgiaNhap.setText(String.valueOf(dongia));
+            //         hasMSP = true;
+            //     }
+            // }
+            // if(!hasMSP)
+            //         txtgiaNhap.setText("");
 
             int flag = 0;
             for (int i = 0; i < cmbLoai.getItemCount(); i++) {

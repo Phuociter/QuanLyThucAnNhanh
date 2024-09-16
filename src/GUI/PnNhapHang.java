@@ -14,6 +14,8 @@ import DTO.NhaCungCap;
 import DTO.NhanVien;
 import DTO.SanPham;
 import java.util.ArrayList;
+
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -119,17 +121,49 @@ public class PnNhapHang extends javax.swing.JPanel {
                 // Hiển thị ảnh sản phẩm
                 ImageIcon imageIcon = ScaleImage.scaleImage("image/products/" + currentSanPham.getHinhAnh(), 200, 200);
                 lbAnh.setIcon(imageIcon);
+
+                CTPhieuNhapBUS listBUS = new CTPhieuNhapBUS();
+                ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
+                ArrayList<CTPhieuNhap> listCTPN2 = new ArrayList<>();
+                ArrayList<Integer> listtmp = new ArrayList<>();
+                int o=0;
+
+                listCTPN = listBUS.getlistPhieuNhaps();
+                for (int j = 0; j < listCTPN.size(); j++) {
+                    if (listCTPN.get(j).getMaSP() == maSP) {
+                        listtmp.add(listCTPN.get(j).getMaSP());
+                        listCTPN2.add(listCTPN.get(j));
+                        
+                        System.out.println(listCTPN2.get(o).getMaSP());
+                        o++;
+                    }
+                }
+
+                boolean hasMSP = false;
+
+                for(int k = 0; k < listtmp.size(); k++){
+
+                    if(listtmp.get(k)>=0 && listCTPN2.get(k).getMaSP() == maSP){
+                        System.out.println(findMax(listtmp));
+                        CTPhieuNhap ctpntemp = listBUS.getCTPhieuNhapByMaSP(findMax(listtmp));
+                        int dongia = ctpntemp.getDonGia();
+                        txtDonGia.setText(String.valueOf(dongia));
+                        hasMSP = true;
+                    }
+                    
+                }
+                if(!hasMSP)
+                        txtDonGia.setText("");
                 
                 // Hiển thị đơn giá nhập sản phẩm
-                CTPhieuNhap ctPhieuNhap = ctPhieuNhapBUS.getCTPhieuNhapByMaSP(maSP);
-                if (ctPhieuNhap != null) {
-                    txtDonGia.setText(String.valueOf(ctPhieuNhap.getDonGia())); // Hiển thị đơn giá nhập sản phẩm
-                } else {
-                    txtDonGia.setText(""); // Xóa nội dung nếu không tìm thấy thông tin
-                }
+                // CTPhieuNhap ctPhieuNhap = ctPhieuNhapBUS.getCTPhieuNhapByMaSP(maSP);
+                // if (ctPhieuNhap != null) {
+                //     txtDonGia.setText(String.valueOf(ctPhieuNhap.getDonGia())); // Hiển thị đơn giá nhập sản phẩm
+                // } else {
+                //     txtDonGia.setText(""); // Xóa nội dung nếu không tìm thấy thông tin
+                // }
             }
         });
-
 
         txtTimKiem.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -146,6 +180,24 @@ public class PnNhapHang extends javax.swing.JPanel {
             public void changedUpdate(DocumentEvent e) {
             }
         });
+    }
+
+    public static int findMax(ArrayList<Integer> list) {
+        // Kiểm tra nếu danh sách rỗng
+        if (list == null || list.isEmpty()) {
+            throw new IllegalArgumentException("Danh sách không được rỗng");
+        }
+
+        int max = list.get(0); // Giả sử phần tử đầu tiên là lớn nhất
+
+        // Duyệt qua các phần tử còn lại trong danh sách
+        for (int i = 1; i < list.size(); i++) {
+            if (list.get(i) > max) {
+                max = list.get(i); // Cập nhật giá trị lớn nhất
+            }
+        }
+
+        return max;
     }
 
     private int duplicateSP(SanPham sp) {
@@ -210,9 +262,13 @@ public class PnNhapHang extends javax.swing.JPanel {
         jPanel21 = new javax.swing.JPanel();
         jLabel19 = new javax.swing.JLabel();
         jPanel19 = new javax.swing.JPanel();
+        jPanel20 = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
         txtDonGia = new javax.swing.JTextField();
         jPanel26 = new javax.swing.JPanel();
+        txtphanTram = new javax.swing.JTextField(); 
+        jPanel27 = new javax.swing.JPanel();
         jLabel22 = new javax.swing.JLabel();
         txtSoLuong = new javax.swing.JTextField();
         jPanel23 = new javax.swing.JPanel();
@@ -245,7 +301,7 @@ public class PnNhapHang extends javax.swing.JPanel {
         jLabel11.setText("Kho hàng");
         jPanel12.add(jLabel11);
 
-        btnResetKho.setIcon(new javax.swing.ImageIcon("C:\\Users\\nguye\\OneDrive\\Documents\\NetBeansProjects\\DoAn_QuanLyBanDoAnNuocUong\\image\\btn\\refresh.png")); // NOI18N
+        btnResetKho.setIcon(new javax.swing.ImageIcon("DoAn_QuanLyBanDoAnNuocUong\\image\\btn\\refresh.png")); // NOI18N
         btnResetKho.setBorder(null);
         btnResetKho.setFocusable(false);
         btnResetKho.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -334,24 +390,36 @@ public class PnNhapHang extends javax.swing.JPanel {
 
         pnThongTin1.add(jPanel21);
 
-        jPanel19.setPreferredSize(new java.awt.Dimension(370, 10));
+        jPanel19.setPreferredSize(new java.awt.Dimension(370, 40));
 
         jLabel17.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel17.setText("Đơn giá nhập");
-        jLabel17.setPreferredSize(new java.awt.Dimension(116, 22));
+        jLabel17.setPreferredSize(new java.awt.Dimension(116, 20));
         jPanel19.add(jLabel17);
-
+        
+        
         txtDonGia.setColumns(15);
         txtDonGia.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         txtDonGia.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jPanel19.add(txtDonGia);
-       
-    
-
         pnThongTin1.add(jPanel19);
 
-        jPanel26.setPreferredSize(new java.awt.Dimension(370, 10));
+        jPanel20.setPreferredSize(new java.awt.Dimension(370, 40));
+
+        jLabel18.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel18.setText("Lợi Nhuận(%)");
+        jPanel20.add(jLabel18);
+
+        txtphanTram.setColumns(15);
+        txtphanTram.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        txtphanTram.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jPanel26.add(txtphanTram);
+        jPanel20.add(txtphanTram);
+
+        pnThongTin1.add(jPanel20);
+
+        jPanel26.setPreferredSize(new java.awt.Dimension(370, 20));
 
         jLabel22.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel22.setText("Số lượng nhập");
@@ -361,7 +429,6 @@ public class PnNhapHang extends javax.swing.JPanel {
         txtSoLuong.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         txtSoLuong.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jPanel26.add(txtSoLuong);
-        
 
         pnThongTin1.add(jPanel26);
 
@@ -640,7 +707,7 @@ public class PnNhapHang extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel17,jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
@@ -648,13 +715,14 @@ public class PnNhapHang extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel16;
-    private javax.swing.JPanel jPanel19;
+    private javax.swing.JPanel jPanel19,jPanel20;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel21;
     private javax.swing.JPanel jPanel23;
     private javax.swing.JPanel jPanel24;
     private javax.swing.JPanel jPanel25;
-    private javax.swing.JPanel jPanel26;
+    private javax.swing.JPanel jPanel26,jPanel27;
+    
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
@@ -665,7 +733,7 @@ public class PnNhapHang extends javax.swing.JPanel {
     private javax.swing.JScrollPane scrTblKhoHang;
     private javax.swing.JTable tblChoNhap;
     private javax.swing.JTable tblKhoHang;
-    private javax.swing.JTextField txtDonGia;
+    private javax.swing.JTextField txtDonGia,txtgiaNhap,txtphanTram;
     private javax.swing.JTextField txtNhaCungCap;
     private javax.swing.JTextField txtSoLuong;
     private javax.swing.JTextField txtTimKiem;
