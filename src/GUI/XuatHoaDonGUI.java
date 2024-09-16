@@ -5,6 +5,7 @@ import BUS.DangNhapBUS;
 import BUS.HoaDonBUS;
 import BUS.NhanVienBUS;
 import BUS.SanPhamBUS;
+import BUS.GiamGiaBUS;
 import Custom.Mytable;
 import Custom.NonEditableTableModel;
 import Custom.dialog;
@@ -26,12 +27,14 @@ public class XuatHoaDonGUI extends javax.swing.JDialog {
     NonEditableTableModel dtmCTHD;
     int tongTien;
     int tongTienDaGiam;
+    int sotiengiamgia;
     ArrayList<CTHoaDon> cTHoaDons;
 
     private SanPhamBUS sanPhamBUS = new SanPhamBUS();
     private HoaDonBUS hoaDonBUS = new HoaDonBUS();
     private CTHoaDonBUS cTHoaDonBUS = new CTHoaDonBUS();
     private NhanVienBUS nhanVienBUS = new NhanVienBUS();
+    GiamGiaBUS listGiamGia = new GiamGiaBUS();
 
     private NhanVien nhanVien = nhanVienBUS.getById(DangNhapBUS.taiKhoanLogin.getMaNhanVien());
     private KhachHang khachHang = null;
@@ -44,6 +47,7 @@ public class XuatHoaDonGUI extends javax.swing.JDialog {
         this.tongTienDaGiam = tongTien;
         initComponents();
         Custom();
+        setSize(500, 700);
         loadData();
         showDlg();
     }
@@ -53,6 +57,8 @@ public class XuatHoaDonGUI extends javax.swing.JDialog {
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setModal(true);
         this.setVisible(true);
+        
+        
     }
 
     private void Custom() {
@@ -81,23 +87,51 @@ public class XuatHoaDonGUI extends javax.swing.JDialog {
     private void loadData() {
         txtNhanVien.setText(nhanVien.getMaNV() + " - " + nhanVien.getHo() + " " + nhanVien.getTen());
         txtNgayLap.setText(DinhDangTGHienTai());
+    
+        // Lấy danh sách khuyến mãi từ BUS
+        ArrayList<GiamGia> listgg = listGiamGia.getList();
+        giamGia = null;
+    
+        // Tự động chọn khuyến mãi đủ điều kiện tốt nhất
+        for (GiamGia km : listgg) {
+            if (tongTien >= km.getDieuKien() && km.getTrangThai() == 1) {
+                giamGia = km;
+                break;  // Chọn khuyến mãi đầu tiên phù hợp
+            }
+        }
+        
+        // Áp dụng khuyến mãi nếu có
+        if (giamGia != null) {
+            txtKhuyenMai.setText(giamGia.getMaGiam() + " - " + giamGia.getTenGiamGia());
+            tongTienDaGiam = tinhTongTienGiamGia(tongTien, giamGia.getPhanTramGiam());
+            sotiengiamgia=tongTien-tongTienDaGiam;
+        } else {
+            txtKhuyenMai.setText("Không có khuyến mãi phù hợp");
+            tongTienDaGiam = tongTien;  // Không có khuyến mãi
+            giamGia = new GiamGia(0, "Không giảm giá", 0, 0, null, null, 0); 
+        }
+    
         txtTongTien.setText(DinhDangTongTien(tongTienDaGiam));
-
+    
+        // Load dữ liệu chi tiết hóa đơn vào bảng
         dtmCTHD.setRowCount(0);
         for (CTHoaDon cTHoaDon : cTHoaDons) {
             SanPham sp = sanPhamBUS.getById(cTHoaDon.getMaSP());
             dtmCTHD.addRow(new Object[]{cTHoaDon.getMaSP(), sp.getTenSP(), cTHoaDon.getSoLuong(), cTHoaDon.getDonGia(), cTHoaDon.getThanhTien()});
         }
     }
+    
 
     private void XuLyThanhToan() {
         if (khachHang == null) {
             new dialog("Chưa chọn khách hàng", dialog.ERROR_DIALOG);
             return;
         }
-        if (giamGia == null) {
-            giamGia = new GiamGia(0, "Không giảm giá", 0, 0, null, null, 0);
-        }
+        // if (giamGia == null) {
+        //     giamGia = new GiamGia(0, "Không giảm giá", 0, 0, null, null, 0);
+        // }
+        
+        
         HoaDon hoaDon = new HoaDon(0, khachHang.getMaKH(), nhanVien.getMaNV(), giamGia.getMaGiam(), new Date(), tongTienDaGiam);
         if (!hoaDonBUS.Insert(hoaDon)) {
             return;
@@ -155,12 +189,18 @@ public class XuatHoaDonGUI extends javax.swing.JDialog {
                 return;
             }
         }
-
         htmlCTHD += "<tr>";
+        htmlCTHD += "<td style='text-align:center;font-weight:bold'>giảm giá</td>";
         htmlCTHD += "<td style='text-align:center;'>" + "</td>";
         htmlCTHD += "<td style='text-align:left;'>" + "</td>";
         htmlCTHD += "<td style='text-align:center;'>" + "</td>";
+        htmlCTHD += "<td style='text-align:center;'>" + "-"+sotiengiamgia + "</td>";
+        htmlCTHD += "</tr>";
+        htmlCTHD += "<tr>";
         htmlCTHD += "<td style='text-align:center;font-weight:bold'>Tổng tiền</td>";
+        htmlCTHD += "<td style='text-align:center;'>" + "</td>";
+        htmlCTHD += "<td style='text-align:left;'>" + "</td>";
+        htmlCTHD += "<td style='text-align:center;'>" + "</td>";
         htmlCTHD += "<td style='text-align:center;'>" + DinhDangTongTien(tongTienDaGiam) + "</td>";
         htmlCTHD += "</tr>";
         htmlCTHD += "</table>";
@@ -224,6 +264,7 @@ public class XuatHoaDonGUI extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 160, 80));
         jLabel1.setText("Thông tin hóa đơn");
+       
         jPanel2.add(jLabel1);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
@@ -436,20 +477,23 @@ public class XuatHoaDonGUI extends javax.swing.JDialog {
         txtKhachHang.setText(khachHang.getMaKH() + " - " + khachHang.getTen());
     }//GEN-LAST:event_btnChonKhachHangActionPerformed
 
-    private void btnChonKhuyenMaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChonKhuyenMaiActionPerformed
+    private void btnChonKhuyenMaiActionPerformed(java.awt.event.ActionEvent evt) {
         dlgChonKhuyenMai dChonKhuyenMai = new dlgChonKhuyenMai(tongTien);
         giamGia = dChonKhuyenMai.getKhuyenMai();
         if (giamGia == null) {
-            txtKhuyenMai.setText("");
-            return;
+            txtKhuyenMai.setText("Không có khuyến mãi phù hợp");
+            tongTienDaGiam = tongTien;  // Không có khuyến mãi
+        } else {
+            txtKhuyenMai.setText(giamGia.getMaGiam() + " - " + giamGia.getTenGiamGia());
+            tongTienDaGiam = tinhTongTienGiamGia(tongTien, giamGia.getPhanTramGiam());
         }
-        txtKhuyenMai.setText(giamGia.getMaGiam() + " - " + giamGia.getTenGiamGia());
-        tongTienDaGiam = tinhTongTienGiamGia(tongTien, giamGia.getPhanTramGiam());
+        txtTongTien.setText(DinhDangTongTien(tongTienDaGiam));
         loadData();
-    }//GEN-LAST:event_btnChonKhuyenMaiActionPerformed
+    }
+    //GEN-LAST:event_btnChonKhuyenMaiActionPerformed
     private int tinhTongTienGiamGia(int tongTien, int phanTramGiam) {
         return (int) (tongTien * (1.0 - ((phanTramGiam * 1.0) / 100f)));
-    }
+    }    
 
     public boolean getIsSuccess() {
         return isSuccess;

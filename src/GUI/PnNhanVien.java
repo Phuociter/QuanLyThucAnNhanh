@@ -38,7 +38,7 @@ public class PnNhanVien extends JPanel {
     JTextField txtMaNV, txtHodem, txtTen, txtDienThoai, txtTimKiem;
     JComboBox<String> cmbGioiTinh;
     Mytable tblNhanVien;
-    JButton btnThemNV, btnLuuNV, btnXoaNV, btnTimNV, btnCapTaiKhoan, btnResetMatKhauNV, btnKhoaTaiKhoanNV, btnResetNV, btnXuatExcel, btnNhapExcel;
+    JButton btnThemNV, btnLuuNV, btnTimNV, btnCapTaiKhoan, btnResetMatKhauNV, btnKhoaTaiKhoanNV, btnResetNV, btnXuatExcel, btnNhapExcel;
 
     private void addControls() {
         Font font = new Font("", Font.PLAIN, 20);
@@ -107,7 +107,7 @@ public class PnNhanVien extends JPanel {
         JPanel pnGioiTinh = new JPanel();
         lblGioiTinh.setFont(font);
         cmbGioiTinh.setFont(font);
-        cmbGioiTinh.setPreferredSize(txtMaNV.getPreferredSize());
+        cmbGioiTinh.setPreferredSize(new Dimension(460,35));
         cmbGioiTinh.setFocusable(false); // bỏ focus 
         pnGioiTinh.add(lblGioiTinh);
         pnGioiTinh.add(cmbGioiTinh);
@@ -142,7 +142,6 @@ public class PnNhanVien extends JPanel {
 
         btnThemNV = new JButton("Thêm");
         btnLuuNV = new JButton("Lưu");
-        btnXoaNV = new JButton("Xoá");
         btnTimNV = new JButton("Tìm kiếm");
         btnCapTaiKhoan = new JButton("Cấp tài khoản");
         btnResetMatKhauNV = new JButton("Mật khẩu/Quyền");
@@ -153,7 +152,6 @@ public class PnNhanVien extends JPanel {
         Font fontButton = new Font("Tahoma", Font.PLAIN, 16);
         btnThemNV.setFont(fontButton);
         btnLuuNV.setFont(fontButton);
-        btnXoaNV.setFont(fontButton);
         btnTimNV.setFont(fontButton);
         btnCapTaiKhoan.setFont(fontButton);
         btnResetMatKhauNV.setFont(fontButton);
@@ -163,7 +161,6 @@ public class PnNhanVien extends JPanel {
 
         btnThemNV.setIcon(new ImageIcon("image/btn/plus.png"));
         btnLuuNV.setIcon(new ImageIcon("image/btn/write.png"));
-        btnXoaNV.setIcon(new ImageIcon("image/btn/bin.png"));
         btnTimNV.setIcon(new ImageIcon("image/btn/search.png"));
         btnCapTaiKhoan.setIcon(new ImageIcon("image/btn/avatar.png"));
         btnResetMatKhauNV.setIcon(new ImageIcon("image/btn/reset-password.png"));
@@ -173,7 +170,6 @@ public class PnNhanVien extends JPanel {
         //setFocusable(false) để bỏ viền khi click vào
         btnThemNV.setFocusable(false);
         btnLuuNV.setFocusable(false);
-        btnXoaNV.setFocusable(false);
         btnTimNV.setFocusable(false);
         btnCapTaiKhoan.setFocusable(false);
         btnResetMatKhauNV.setFocusable(false);
@@ -183,7 +179,6 @@ public class PnNhanVien extends JPanel {
 
         pnButton.add(btnThemNV);
         pnButton.add(btnLuuNV);
-        pnButton.add(btnXoaNV);
         pnButton.add(btnTimNV);
         pnButton.add(btnXuatExcel);
         pnButton.add(btnNhapExcel);
@@ -196,7 +191,6 @@ public class PnNhanVien extends JPanel {
         Dimension btnSize = btnTimNV.getPreferredSize();
         btnThemNV.setPreferredSize(btnSize);
         btnLuuNV.setPreferredSize(btnSize);
-        btnXoaNV.setPreferredSize(btnSize);
         btnTimNV.setPreferredSize(btnSize);
         btnXuatExcel.setPreferredSize(btnSize);
         btnNhapExcel.setPreferredSize(btnSize);
@@ -319,13 +313,6 @@ public class PnNhanVien extends JPanel {
             }
         });
 
-        btnXoaNV.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                xuLyXoaNhanVien();
-            }
-        });
-
         btnXuatExcel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -419,16 +406,6 @@ public class PnNhanVien extends JPanel {
         xuatExcel.xuatExcel(tblNhanVien);
     }
 
-    private void xuLyXoaNhanVien() {
-        String ma = txtMaNV.getText();
-        boolean flag = NVBUS.xoaNhanVien(ma);
-        if (flag) {
-            NVBUS.docDanhSach();
-            loadDataTblNhanVien();
-            //reset lại txtMaNV tránh việc lấy mã nv đã bị xóa trên form
-            txtMaNV.setText("");
-        }
-    }
 
     private void xuLySuaNhanVien() {
         if (cmbGioiTinh.getSelectedIndex() == 0) {
@@ -436,6 +413,11 @@ public class PnNhanVien extends JPanel {
             return;
         }
         String ma = txtMaNV.getText();
+        //? check Admin không được sửa thông tin
+        if(NVBUS.getById(Integer.parseInt(ma)).getChucVu().equals("Quản Trị")) {
+            new dialog("Bạn là Quản Trị Viên", dialog.ERROR_DIALOG);
+            return;
+        }
         String ho = txtHodem.getText();
         String ten = txtTen.getText();
         String gioiTinh = cmbGioiTinh.getSelectedItem() + "";

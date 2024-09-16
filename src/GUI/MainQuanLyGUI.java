@@ -1,10 +1,7 @@
 package GUI;
 
-import BUS.DangNhapBUS;
 import BUS.PhanQuyenBUS;
-import DAO.PhanQuyenDAO;
-import DTO.PhanQuyen;
-
+import BUS.DangNhapBUS;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -16,7 +13,7 @@ public class MainQuanLyGUI extends JFrame {
 
     CardLayout cardListMenu;
 
-    JLabel btnDoiMatKhau, btnClose, btnMinimize, lbBanhang, lbKhuyenmai, lbNhaphang, lbSanpham, lbNhanvien, lbKhachhang, lbThongke;
+    JLabel btnDoiMatKhau, btnClose, btnMinimize, lbBanhang, lbKhuyenmai, lbNhaphang, lbSanpham, lbNhanvien, lbKhachhang, lbThongke, lbDangXuat;
 
     Font FtTitleText = new Font("Montserrat", Font.BOLD, 20);
 
@@ -35,7 +32,7 @@ public class MainQuanLyGUI extends JFrame {
 
     public MainQuanLyGUI() {
         this.setTitle("Quản lý bán đồ ăn thức uống");
-        this.setSize(1280, 900);
+        this.setSize(1535, 790);
         Image icon = new ImageIcon("image/logo/logo32x32.png").getImage();
         this.setIconImage(icon);
         this.setUndecorated(true);
@@ -106,6 +103,7 @@ public class MainQuanLyGUI extends JFrame {
         lbKhachhang = new JLabel(new ImageIcon("image/Menu/lblKhachHang.png"));
         lbNhaphang = new JLabel(new ImageIcon("image/Menu/lblNhapHang.png"));
         lbThongke = new JLabel(new ImageIcon("image/Menu/lblThongke.png"));
+        lbDangXuat = new JLabel(new ImageIcon("image/Menu/lblDangXuat.png"));
 
         listMenuLeft = new ArrayList<>();
         listMenuLeft.add(lbBanhang);
@@ -115,6 +113,7 @@ public class MainQuanLyGUI extends JFrame {
         listMenuLeft.add(lbKhachhang);
         listMenuLeft.add(lbNhaphang);
         listMenuLeft.add(lbThongke);
+        listMenuLeft.add(lbDangXuat);
 
         for (JLabel opt : listMenuLeft) {
             opt.setVisible(false);
@@ -143,20 +142,23 @@ public class MainQuanLyGUI extends JFrame {
         pnCardListMenu.add(pnKhachHang, "5");
         pnCardListMenu.add(pnNhapHang, "6");
         pnCardListMenu.add(pnThongKe, "7");
+        
+        PhanQuyenBUS phanQuyenBUS = new PhanQuyenBUS();
+        phanQuyenBUS.UpdateCurrentQuyen();
 
         PnQuanLyBanHangGUI pnQuanLyBanHangGUI = new PnQuanLyBanHangGUI();
         pnBanHang.setLayout(new BorderLayout());
         pnBanHang.add(pnQuanLyBanHangGUI, BorderLayout.CENTER);
         lbBanhang.setVisible(true);
-        if(DangNhapBUS.taiKhoanLogin.getMaQuyen() != 1){
+
+
+        if (PhanQuyenBUS.currentQuyen.getMaQuyen() != 1) {
             PnQuanLyKhuyenMaiGUI pnQuanLyKhuyenMaiGUI = new PnQuanLyKhuyenMaiGUI();
             pnKhuyenMai.setLayout(new BorderLayout());
             pnKhuyenMai.add(pnQuanLyKhuyenMaiGUI, BorderLayout.CENTER);
             lbKhuyenmai.setVisible(true);
         }
 
-        PhanQuyenBUS phanQuyenBUS = new PhanQuyenBUS();
-        phanQuyenBUS.UpdateCurrentQuyen();
 
         if (PhanQuyenBUS.currentQuyen != null) {
             if (PhanQuyenBUS.currentQuyen.getQlNhanVien() == 1) {
@@ -189,6 +191,7 @@ public class MainQuanLyGUI extends JFrame {
                 pnThongKe.add(pnQuanLyThongKe, BorderLayout.CENTER);
                 lbThongke.setVisible(true);
             }
+            lbDangXuat.setVisible(true);
         }
 
         pnMain.add(pnCardListMenu, BorderLayout.CENTER);
@@ -375,6 +378,16 @@ public class MainQuanLyGUI extends JFrame {
                         cardName = "6";
                     } else if (opt == lbThongke) {
                         cardName = "7";
+                    } else if (opt == lbDangXuat) {
+                        if(JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất ?", "Đăng xuất", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                            DangNhapBUS.taiKhoanLogin = null;
+                            dispose();
+                            DangNhapGUI dangNhapGUI1 = new DangNhapGUI();
+                            dangNhapGUI1.setVisible(true);
+                            return;
+                        } else {
+                            System.out.println("Cancel logout");
+                        }
                     }
                     cardListMenu.show(pnCardListMenu, cardName);
                 }

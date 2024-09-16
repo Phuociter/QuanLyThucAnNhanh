@@ -50,12 +50,12 @@ public class PnBanHang extends JPanel {
         JPanel pnTitleBanHang = new JPanel();//tạo khung chứa title và nút reset
         JLabel textTitle = new JLabel("<html><h1>Danh sách sản phẩm</h1></html>");
         textTitle.setForeground(ClMain);//thêm màu xanh
-        JButton btnResetBanHang = new JButton(new ImageIcon("image/btn/refresh.png")); //đổi thành JButton
-        btnResetBanHang.setPreferredSize(new Dimension(40, 40));// đặt kích thước ưa thích 40x40
-        btnResetBanHang.setFocusable(false);// bỏ focus để mất viền của focus
-        btnResetBanHang.setBorder(null);// xóa viền
         pnTitleBanHang.add(textTitle);
-        pnTitleBanHang.add(btnResetBanHang);
+        // JButton btnResetBanHang = new JButton(new ImageIcon("image/btn/refresh.png")); //đổi thành JButton
+        // btnResetBanHang.setPreferredSize(new Dimension(40, 40));// đặt kích thước ưa thích 40x40
+        // btnResetBanHang.setFocusable(false);// bỏ focus để mất viền của focus
+        // btnResetBanHang.setBorder(null);// xóa viền
+        // pnTitleBanHang.add(btnResetBanHang);
 
         this.add(pnTitleBanHang);//thêm vào khung bán hàng
 
