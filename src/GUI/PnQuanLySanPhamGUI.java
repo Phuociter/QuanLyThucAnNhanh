@@ -45,7 +45,7 @@ import javax.swing.table.TableColumnModel;
 public class PnQuanLySanPhamGUI extends JPanel {
 
     DefaultTableModel dtmSanPham;
-    JTextField txtMa, txtTen, txtsoLuong, txtdonViTinh,txtgiaNhap,txtphanTram, txtdonGia, txtTimKiem;
+    JTextField txtMa, txtTen, txtsoLuong, txtdonViTinh, txtdonGia, txtTimKiem;
     JComboBox<String> cmbLoai;
     JButton btnThemSP, btnCapNhat, btnXoa, btnTim, btnChonAnh, btnReset, btnXuatExcel, btnNhapExcel;
     JLabel lblAnhSP;
@@ -94,8 +94,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
         lblLoai = new JLabel("Loại");
         lblSoLuong = new JLabel("Số lượng");
         lblDonViTinh = new JLabel("Đơn vị tính");
-        lblGiaNhap = new JLabel("Giá Nhập:");
-        lblPhanTram = new JLabel("% tăng:");
         lblDonGia = new JLabel("Giá bán:");
 
         txtMa = new JTextField(15);
@@ -105,10 +103,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
         txtsoLuong = new JTextField(15);
         txtsoLuong.setEditable(false);
         txtdonViTinh = new JTextField(15);
-        txtgiaNhap = new JTextField(15);
-        txtgiaNhap.setSize(getPreferredSize());
-        txtgiaNhap.setEditable(false);
-        txtphanTram = new JTextField(15);
         txtdonGia = new JTextField(15);
         txtdonGia.setEditable(false);
 
@@ -150,20 +144,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
         pnDonViTinh.add(txtdonViTinh);
         pnTextField.add(pnDonViTinh);
 
-        JPanel pnGiaNhap = new JPanel();
-        lblGiaNhap.setFont(font);
-        txtgiaNhap.setFont(font);
-        pnGiaNhap.add(lblGiaNhap);
-        pnGiaNhap.add(txtgiaNhap);
-        pnTextField.add(pnGiaNhap);
-
-        JPanel pnPhanTram = new JPanel();
-        lblPhanTram.setFont(font);
-        txtphanTram.setFont(font);
-        pnPhanTram.add(lblPhanTram);
-        pnPhanTram.add(txtphanTram);
-        pnTextField.add(pnPhanTram);
-
         JPanel pnDonGia = new JPanel();
         lblDonGia.setFont(font);
         txtdonGia.setFont(font);
@@ -177,8 +157,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
         lblLoai.setPreferredSize(lblSize);
         lblSoLuong.setPreferredSize(lblSize);
         lblDonViTinh.setPreferredSize(lblSize);
-        lblGiaNhap.setPreferredSize(lblSize);
-        lblPhanTram.setPreferredSize(lblSize);
         lblDonGia.setPreferredSize(lblSize);
 
         pnThongTin.add(pnTextField);
@@ -318,8 +296,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
                 loadDataCmbLoai();
                 txtMa.setText("");
                 txtTen.setText("");
-                txtgiaNhap.setText("");
-                txtphanTram.setText("");
                 txtdonGia.setText("");
                 txtdonViTinh.setText("");
                 txtsoLuong.setText("");
@@ -634,24 +610,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
         if (fileAnhSP != null) {
             anh = fileAnhSP.getName();
         }
-        // CTPhieuNhapBUS listBUS = new CTPhieuNhapBUS();
-        // ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
-        // listCTPN = listBUS.getlistPhieuNhaps();
-        // for (int i = 0; i < listCTPN.size(); i++) {
-        //     if (listCTPN.get(i).getMaSP() == Integer.parseInt(txtMa.getText())) {
-        //         int dongia = listCTPN.get(i).getDonGia() + listCTPN.get(i).getDonGia()*Integer.parseInt(txtphanTram.getText());
-        //         txtdonGia.setText(String.valueOf(dongia));
-                
-        //     }
-        // }
-        double dongia;
-        int dg;
         
-        if (!txtphanTram.getText().equals("")){
-            dongia = Integer.parseInt(txtgiaNhap.getText())*(Double.parseDouble(txtphanTram.getText())/100) + Integer.parseInt(txtgiaNhap.getText());
-            dg = (int) dongia;
-            txtdonGia.setText(String.valueOf(dg));
-        }
         SPBUS.capNhatThongTinSanPham(txtMa.getText(),
                 txtTen.getText(),
                 cmbLoai.getSelectedItem() + "",

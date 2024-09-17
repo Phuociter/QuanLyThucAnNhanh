@@ -30,6 +30,8 @@ public class PnNhapHang extends javax.swing.JPanel {
     private NonEditableTableModel dtmNhapHang, dtmChoNhap;
     private NhanVienBUS nhanVienBUS = new NhanVienBUS();
     private NhanVien currentNhanVien = nhanVienBUS.getById(DangNhapBUS.taiKhoanLogin.getMaNhanVien());
+    private ArrayList<Integer> loinhuan = new ArrayList<>();
+    private int countLoiNhuan = 0;
 
     public PnNhapHang() {
         initComponents();
@@ -154,6 +156,7 @@ public class PnNhapHang extends javax.swing.JPanel {
                 }
                 if(!hasMSP)
                         txtDonGia.setText("");
+
                 
                 // Hiển thị đơn giá nhập sản phẩm
                 // CTPhieuNhap ctPhieuNhap = ctPhieuNhapBUS.getCTPhieuNhapByMaSP(maSP);
@@ -451,11 +454,30 @@ public class PnNhapHang extends javax.swing.JPanel {
         btnXacNhan.setMaximumSize(new java.awt.Dimension(73, 29));
         btnXacNhan.setMinimumSize(new java.awt.Dimension(73, 29));
         btnXacNhan.setPreferredSize(new java.awt.Dimension(141, 41));
+        // Biến instance trong lớp
+        
+
         btnXacNhan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnXacNhanActionPerformed(evt);
+                
+                if (txtphanTram.getText().trim().equals("")) {
+                    new dialog("Vui lòng nhập phần trăm lợi nhuận", dialog.ERROR_DIALOG);
+                    return;
+                } else {
+                    try {
+                        int phanTramLoiNhuan = Integer.parseInt(txtphanTram.getText().trim());
+                        loinhuan.add(countLoiNhuan, phanTramLoiNhuan);
+                        System.err.println(phanTramLoiNhuan);
+                        countLoiNhuan++;  // Tăng giá trị biến instance
+
+                    } catch (NumberFormatException ex) {
+                        new dialog("Phần trăm lợi nhuận phải là một số nguyên hợp lệ", dialog.ERROR_DIALOG);
+                    }
+                }
             }
         });
+
         jPanel23.add(btnXacNhan);
 
         pnThongTin1.add(jPanel23);
@@ -466,7 +488,7 @@ public class PnNhapHang extends javax.swing.JPanel {
         pnAnhSP.setPreferredSize(new java.awt.Dimension(100, 150));
         pnAnhSP.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
-        lbAnh.setIcon(new javax.swing.ImageIcon("C:\\Users\\nguye\\OneDrive\\Documents\\NetBeansProjects\\DoAn_QuanLyBanDoAnNuocUong\\image\\products\\white.png")); // NOI18N
+        lbAnh.setIcon(new javax.swing.ImageIcon("image\\products\\white.png")); // NOI18N
         pnAnhSP.add(lbAnh);
 
         jPanel3.add(pnAnhSP);
@@ -577,7 +599,7 @@ public class PnNhapHang extends javax.swing.JPanel {
 
         btnResetChoNhap.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         btnResetChoNhap.setForeground(new java.awt.Color(0, 160, 80));
-        btnResetChoNhap.setText("Reset");
+        btnResetChoNhap.setText("Reset CN");
         btnResetChoNhap.setPreferredSize(new java.awt.Dimension(141, 41));
         btnResetChoNhap.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -640,6 +662,9 @@ public class PnNhapHang extends javax.swing.JPanel {
     private void btnResetTTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetTTActionPerformed
         txtSoLuong.setText("");
         txtDonGia.setText("");
+        txtphanTram.setText("");
+        
+
     }//GEN-LAST:event_btnResetTTActionPerformed
 
     private void btnXoaChoNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaChoNhapActionPerformed
@@ -655,9 +680,13 @@ public class PnNhapHang extends javax.swing.JPanel {
     private void btnResetChoNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetChoNhapActionPerformed
         dtmChoNhap.setRowCount(0);
     }//GEN-LAST:event_btnResetChoNhapActionPerformed
-
+    
     private void XuLyNhap() {
         int tongTien = 0;
+        ArrayList<Integer> masanpam = new ArrayList<>();
+        ArrayList<Integer> dgnhap = new ArrayList<>();
+
+        System.out.println("nút nhập");
         ArrayList<CTPhieuNhap> cTPhieuNhaps = new ArrayList<>();
         for (int i = 0; i < dtmChoNhap.getRowCount(); i++) {
             int thanhTien = Integer.parseInt(tblChoNhap.getValueAt(i, 4) + "");
@@ -666,8 +695,11 @@ public class PnNhapHang extends javax.swing.JPanel {
                 return;
             }
             int maSP = Integer.parseInt(tblChoNhap.getValueAt(i, 0) + "");
+            System.err.println(maSP);
+            masanpam.add(i,maSP);
             int soLuong = Integer.parseInt(tblChoNhap.getValueAt(i, 2) + "");
             int donGia = Integer.parseInt(tblChoNhap.getValueAt(i, 3) + "");
+            dgnhap.add(i,donGia);
             cTPhieuNhaps.add(new CTPhieuNhap(0, maSP, soLuong, donGia, thanhTien));
             tongTien += thanhTien;
         }
@@ -676,6 +708,14 @@ public class PnNhapHang extends javax.swing.JPanel {
             return;
         }
         dtmChoNhap.setRowCount(0);
+        SanPhamBUS spbustmp = new SanPhamBUS();
+        if(dtmChoNhap.getRowCount() == 0)
+            for(int k = 0; k < loinhuan.size();k++){
+                double loinhuanRatio = (double) loinhuan.get(k) / 100;
+                double tong = dgnhap.get(k)*loinhuanRatio + dgnhap.get(k);
+                int tong2 = (int) tong;
+                spbustmp.capNhatGiaSP(String.valueOf(masanpam.get(k)),tong2);
+            }
         loadData();
     }
 

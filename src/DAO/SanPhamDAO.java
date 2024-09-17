@@ -39,6 +39,22 @@ public class SanPhamDAO {
         return null;
     }
 
+    public boolean CapNhatGiaSanPHam(int maSP,int gia){
+        boolean ketqua = false;
+        try {
+            Connection connection = JDBCUtil.getConnection();
+
+            String slq = "update sanpham set donGia=? where maSP=?";
+            PreparedStatement pre = connection.prepareStatement(slq);
+            pre.setInt(1, gia);
+            pre.setInt(2, maSP);
+            ketqua = pre.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ketqua;
+    }
+
     public SanPham getSanPhamTheoMa(int maSP) {
         SanPham sanpham = null;
         try {
