@@ -28,6 +28,7 @@ public class NhanVienDAO {
                 nv.setDienThoai(rs.getString(5));
                 nv.setTrangThai(rs.getInt(6));
                 nv.setChucVu(rs.getString(7));
+                nv.setLuong(rs.getInt(8));
                 listNV.add(nv);
             }
             return listNV;
@@ -43,7 +44,7 @@ public class NhanVienDAO {
         try {
             Connection connection = JDBCUtil.getConnection();
 
-            String sql = "update nhanvien set ho=?, ten=?, gioiTinh=?, dienThoai=?, chucVu=? where maNV=?";
+            String sql = "update nhanvien set ho=?, ten=?, gioiTinh=?, dienThoai=?, chucVu=?, luong=? where maNV=?";
             PreparedStatement pre = connection.prepareStatement(sql);
 
             pre.setString(1, nv.getHo());
@@ -51,7 +52,8 @@ public class NhanVienDAO {
             pre.setString(3, nv.getGioiTinh());
             pre.setString(4, nv.getDienThoai());
             pre.setString(5, nv.getChucVu());
-            pre.setInt(6, nv.getMaNV());
+            pre.setInt(6, nv.getLuong());
+            pre.setInt(7, nv.getMaNV());
             ketqua = pre.executeUpdate() > 1;
 
         } catch (SQLException e) {
@@ -123,7 +125,7 @@ public class NhanVienDAO {
         try {
             Connection connection = JDBCUtil.getConnection();
 
-            String sql = "insert into nhanvien(maNV, ho, ten, gioiTinh, dienThoai, trangThai, chucVu)  values(?, ?, ?, ?, ?, ?,?)";
+            String sql = "insert into nhanvien(maNV, ho, ten, gioiTinh, dienThoai, trangThai, chucVu,luong)  values(?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pre = connection.prepareStatement(sql);
             int maNV = layMaNhanVienCuoiCung() + 1;
             pre.setInt(1, maNV);
@@ -132,6 +134,7 @@ public class NhanVienDAO {
             pre.setString(4, nv.getGioiTinh());
             pre.setString(5, nv.getDienThoai());
             pre.setInt(6, nv.getTrangThai());
+            pre.setInt(8, nv.getLuong());
             pre.setString(7, nv.getChucVu());
             ketqua = pre.executeUpdate() > 1;
 
@@ -158,6 +161,7 @@ public class NhanVienDAO {
                 nv.setDienThoai(rs.getString(5));
                 nv.setTrangThai(rs.getInt(6));
                 nv.setChucVu(rs.getString(7));
+                nv.setLuong(rs.getInt(8));
             }
 
             return nv;
@@ -185,6 +189,8 @@ public class NhanVienDAO {
                 nv.setDienThoai(rs.getString(5));
                 nv.setTrangThai(rs.getInt(6));
                 nv.setChucVu(rs.getString(7));
+                nv.setLuong(rs.getInt(8));
+
             }
 
             return nv;
@@ -242,7 +248,7 @@ public class NhanVienDAO {
     public boolean importNhanVienFromExcel(NhanVien nv) {
         try {
             Connection connection = JDBCUtil.getConnection();
-            String sql = "INSERT INTO nhanvien(maNV, ho, ten, gioiTinh, dienThoai, trangThai,chucVu) VALUES (?, ?, ?, ?, ?, ?,?);";
+            String sql = "INSERT INTO nhanvien(maNV, ho, ten, gioiTinh, dienThoai, trangThai,chucVu,luong) VALUES (?, ?, ?, ?, ?, ?,?,?);";
 
             PreparedStatement pre = connection.prepareStatement(sql);
             pre.setInt(1, nv.getMaNV());
@@ -252,6 +258,8 @@ public class NhanVienDAO {
             pre.setString(5, nv.getDienThoai());
             pre.setInt(6, nv.getTrangThai());
             pre.setString(7, nv.getChucVu());
+            pre.setInt(8, nv.getLuong());
+
             pre.executeUpdate();
 
             return true;

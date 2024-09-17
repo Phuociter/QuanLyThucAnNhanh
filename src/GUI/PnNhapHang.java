@@ -32,6 +32,9 @@ public class PnNhapHang extends javax.swing.JPanel {
     private NhanVien currentNhanVien = nhanVienBUS.getById(DangNhapBUS.taiKhoanLogin.getMaNhanVien());
     private ArrayList<Integer> loinhuan = new ArrayList<>();
     private int countLoiNhuan = 0;
+    private long starTime;//thời gian bắt đầu nhập dữ liệu
+    private long currentTime;//thời gian hiện tại
+    private static final long ALLOWED_TIME_MILLIS = 24 * 60 * 60 * 1000;//24h
 
     public PnNhapHang() {
         initComponents();
@@ -47,10 +50,20 @@ public class PnNhapHang extends javax.swing.JPanel {
         dtmNhapHang.addColumn("Tồn kho");
 
         tblKhoHang.setModel(dtmNhapHang);
-
+/////////////////////////////////////////////////////////////////////////////////lộc
         tblKhoHang.getColumnModel().getColumn(1).setPreferredWidth(200);
 
-        dtmChoNhap = new NonEditableTableModel();
+        dtmChoNhap = new NonEditableTableModel(){
+            public boolean isCellEditable(int row, int column){
+                currentTime= System.currentTimeMillis(); //lấy thời gian hiện tại
+                if(currentTime-starTime > ALLOWED_TIME_MILLIS){
+                    new dialog("Thời gian chỉnh sửa đã hết", dialog.ERROR_DIALOG);
+                    return false; // hông cho phép chỉnh sửa nếu thời gian đã hết
+                }else{
+                    return column==2||column==3;
+                }
+            }
+        };
         dtmChoNhap.addColumn("Mã SP");
         dtmChoNhap.addColumn("Tên SP");
         dtmChoNhap.addColumn("Số lượng");
@@ -58,10 +71,28 @@ public class PnNhapHang extends javax.swing.JPanel {
         dtmChoNhap.addColumn("Thành tiền");
 
         tblChoNhap.setModel(dtmChoNhap);
-
+        
         tblChoNhap.getColumnModel().getColumn(1).setPreferredWidth(200);
-    }
+        dtmChoNhap.addTableModelListener(e->{
 
+            int row = e.getFirstRow();
+            int column = e.getColumn();
+             if (column == 2 || column == 3) {
+                try {
+                    // Lấy giá trị của "Số lượng" và "Đơn giá"
+                    int soLuong = Integer.parseInt(dtmChoNhap.getValueAt(row, 2).toString());
+                    int donGia = Integer.parseInt(dtmChoNhap.getValueAt(row, 3).toString());
+
+                    int thanhTien = soLuong*donGia;
+                    dtmChoNhap.setValueAt(thanhTien, row, 4);
+                }catch(NumberFormatException ex){
+                    new dialog("giá trị không hợp lệ", dialog.ERROR_DIALOG);
+                };
+                System.out.println(currentTime);
+            }});
+    }
+    
+//////////////////////////////////////////////////////////////////////lộc
     private void loadData() {
         dtmNhapHang.setRowCount(0);
         ArrayList<SanPham> sanPhams = sanPhamBUS.getList();
@@ -117,54 +148,51 @@ public class PnNhapHang extends javax.swing.JPanel {
                 if (row < 0) {
                     return;
                 }
-                int maSP = Integer.parseInt(tblKhoHang.getValueAt(row, 0) + "");
-                currentSanPham = sanPhamBUS.getById(maSP);
-                
-                // Hiển thị ảnh sản phẩm
-                ImageIcon imageIcon = ScaleImage.scaleImage("image/products/" + currentSanPham.getHinhAnh(), 200, 200);
-                lbAnh.setIcon(imageIcon);
 
-                CTPhieuNhapBUS listBUS = new CTPhieuNhapBUS();
+                int maSP = Integer.parseInt(tblKhoHang.getValueAt(row, 0) + "");
+                ///////////////////////////////lộc
+                int SlTonkho= Integer.parseInt(tblKhoHang.getValueAt(row, 2).toString());
+                if(SlTonkho==0){
+                    currentSanPham = sanPhamBUS.getById(maSP);
+                    
+                    // Hiển thị ảnh sản phẩm
+                    ImageIcon imageIcon = ScaleImage.scaleImage("image/products/" + currentSanPham.getHinhAnh(), 200, 200);
+                    lbAnh.setIcon(imageIcon);
+                    
+                    }else{
+                        new dialog("số lượng trong kho đang lớn hơn 0",dialog.ERROR_DIALOG);
+                        return;
+                    }
+///////////////////////////////////////////////////lộc
+                CTPhieuNhapBUS listCTPNBUS = new CTPhieuNhapBUS();
                 ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
                 ArrayList<CTPhieuNhap> listCTPN2 = new ArrayList<>();
                 ArrayList<Integer> listtmp = new ArrayList<>();
                 int o=0;
 
-                listCTPN = listBUS.getlistPhieuNhaps();
+                listCTPN = listCTPNBUS.getlistPhieuNhaps();
                 for (int j = 0; j < listCTPN.size(); j++) {
                     if (listCTPN.get(j).getMaSP() == maSP) {
-                        listtmp.add(listCTPN.get(j).getMaSP());
+                        listtmp.add(listCTPN.get(j).getMaPN());
                         listCTPN2.add(listCTPN.get(j));
-                        
-                        System.out.println(listCTPN2.get(o).getMaSP());
                         o++;
                     }
                 }
 
                 boolean hasMSP = false;
 
-                for(int k = 0; k < listtmp.size(); k++){
-
-                    if(listtmp.get(k)>=0 && listCTPN2.get(k).getMaSP() == maSP){
+                // for(int k = 0; k < listtmp.size(); k++){
+                //     if(listtmp.get(k)>=0 && listCTPN2.get(k).getMaSP() == maSP){
                         System.out.println(findMax(listtmp));
-                        CTPhieuNhap ctpntemp = listBUS.getCTPhieuNhapByMaSP(findMax(listtmp));
+                        CTPhieuNhap ctpntemp = listCTPNBUS.getCTPhieuNhapByMaSP(findMax(listtmp));
                         int dongia = ctpntemp.getDonGia();
                         txtDonGia.setText(String.valueOf(dongia));
                         hasMSP = true;
-                    }
-                    
-                }
+                        // break;
+                    // }
+                // }
                 if(!hasMSP)
                         txtDonGia.setText("");
-
-                
-                // Hiển thị đơn giá nhập sản phẩm
-                // CTPhieuNhap ctPhieuNhap = ctPhieuNhapBUS.getCTPhieuNhapByMaSP(maSP);
-                // if (ctPhieuNhap != null) {
-                //     txtDonGia.setText(String.valueOf(ctPhieuNhap.getDonGia())); // Hiển thị đơn giá nhập sản phẩm
-                // } else {
-                //     txtDonGia.setText(""); // Xóa nội dung nếu không tìm thấy thông tin
-                // }
             }
         });
 
@@ -186,11 +214,6 @@ public class PnNhapHang extends javax.swing.JPanel {
     }
 
     public static int findMax(ArrayList<Integer> list) {
-        // Kiểm tra nếu danh sách rỗng
-        if (list == null || list.isEmpty()) {
-            throw new IllegalArgumentException("Danh sách không được rỗng");
-        }
-
         int max = list.get(0); // Giả sử phần tử đầu tiên là lớn nhất
 
         // Duyệt qua các phần tử còn lại trong danh sách
@@ -460,7 +483,9 @@ public class PnNhapHang extends javax.swing.JPanel {
         btnXacNhan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnXacNhanActionPerformed(evt);
-                
+                ////////////////////////////////////////
+                starTime=System.currentTimeMillis();//lấy thời điểm bắt đầu tính thời gian khi nhấn xác nhận
+                ///////////////////////////////////////
                 if (txtphanTram.getText().trim().equals("")) {
                     new dialog("Vui lòng nhập phần trăm lợi nhuận", dialog.ERROR_DIALOG);
                     return;
@@ -686,7 +711,6 @@ public class PnNhapHang extends javax.swing.JPanel {
         ArrayList<Integer> masanpam = new ArrayList<>();
         ArrayList<Integer> dgnhap = new ArrayList<>();
 
-        System.out.println("nút nhập");
         ArrayList<CTPhieuNhap> cTPhieuNhaps = new ArrayList<>();
         for (int i = 0; i < dtmChoNhap.getRowCount(); i++) {
             int thanhTien = Integer.parseInt(tblChoNhap.getValueAt(i, 4) + "");

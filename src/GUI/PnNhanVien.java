@@ -35,7 +35,7 @@ public class PnNhanVien extends JPanel {
     final Color ClMain = new Color(0, 160, 80);
 
     DefaultTableModel dtmNhanVien;
-    JTextField txtMaNV, txtHodem, txtTen, txtDienThoai, txtTimKiem;
+    JTextField txtMaNV, txtHodem, txtTen, txtDienThoai,txtLuong, txtTimKiem;
     JComboBox<String> cmbGioiTinh;
     Mytable tblNhanVien;
     JButton btnThemNV, btnLuuNV, btnTimNV, btnCapTaiKhoan, btnResetMatKhauNV, btnKhoaTaiKhoanNV, btnResetNV, btnXuatExcel, btnNhapExcel;
@@ -67,13 +67,14 @@ public class PnNhanVien extends JPanel {
         JPanel pnTextField = new JPanel();
         pnTextField.setLayout(new BoxLayout(pnTextField, BoxLayout.Y_AXIS));
 
-        JLabel lblMaNV, lblHoDem, lblTen, lblGioiTinh, lblDienThoai, lblTimKiem;
+        JLabel lblMaNV, lblHoDem, lblTen, lblGioiTinh, lblDienThoai,lblLuong, lblTimKiem;
 
         lblMaNV = new JLabel("Mã NV");
         lblHoDem = new JLabel("Họ đệm");
         lblTen = new JLabel("Tên");
         lblGioiTinh = new JLabel("Giới tính");
         lblDienThoai = new JLabel("Điện thoại");
+        lblLuong = new JLabel("Lương");
         lblTimKiem = new JLabel("Từ khóa tìm");
         txtMaNV = new JTextField(25);
         txtMaNV.setEditable(false);
@@ -81,6 +82,7 @@ public class PnNhanVien extends JPanel {
         txtTen = new JTextField(25);
         cmbGioiTinh = new JComboBox<String>();
         txtDienThoai = new JTextField(25);
+        txtLuong = new JTextField(25);
         txtTimKiem = new JTextField(25);
 
         JPanel pnMaNV = new JPanel();
@@ -120,6 +122,14 @@ public class PnNhanVien extends JPanel {
         pnChucVu.add(txtDienThoai);
         pnTextField.add(pnChucVu);
 
+        JPanel pnLuong = new JPanel();
+        lblLuong.setFont(font);
+        txtLuong.setFont(font);
+        pnLuong.add(lblLuong);
+        pnLuong.add(txtLuong);
+        pnTextField.add(pnLuong);
+
+
         JPanel TimKiem = new JPanel();
         lblTimKiem.setFont(font);
         txtTimKiem.setFont(font);
@@ -133,6 +143,7 @@ public class PnNhanVien extends JPanel {
         lblGioiTinh.setPreferredSize(lblSize);
         lblTen.setPreferredSize(lblSize);
         lblDienThoai.setPreferredSize(lblSize);
+        lblLuong.setPreferredSize(lblSize);
         lblTimKiem.setPreferredSize(lblSize);
 
         pnThongTin.add(pnTextField);
@@ -211,6 +222,7 @@ public class PnNhanVien extends JPanel {
         dtmNhanVien.addColumn("Tên");
         dtmNhanVien.addColumn("Giới tính");
         dtmNhanVien.addColumn("Điện thoại");
+        dtmNhanVien.addColumn("Lương");
         dtmNhanVien.addColumn("Chức vụ");
         dtmNhanVien.addColumn("Tài khoản");
         tblNhanVien = new Mytable(dtmNhanVien) {
@@ -219,13 +231,14 @@ public class PnNhanVien extends JPanel {
             }
         };;
 
-        TableColumnModel columnModelBanHang = tblNhanVien.getColumnModel();
-        columnModelBanHang.getColumn(0).setPreferredWidth(20);
-        columnModelBanHang.getColumn(1).setPreferredWidth(20);
-        columnModelBanHang.getColumn(2).setPreferredWidth(20);
-        columnModelBanHang.getColumn(3).setPreferredWidth(20);
-        columnModelBanHang.getColumn(4).setPreferredWidth(20);
-        columnModelBanHang.getColumn(5).setPreferredWidth(20);
+        TableColumnModel columnModelNhanVien = tblNhanVien.getColumnModel();
+        columnModelNhanVien.getColumn(0).setPreferredWidth(20);
+        columnModelNhanVien.getColumn(1).setPreferredWidth(20);
+        columnModelNhanVien.getColumn(2).setPreferredWidth(20);
+        columnModelNhanVien.getColumn(3).setPreferredWidth(20);
+        columnModelNhanVien.getColumn(4).setPreferredWidth(20);
+        columnModelNhanVien.getColumn(5).setPreferredWidth(20);
+        columnModelNhanVien.getColumn(6).setPreferredWidth(20);
 
         JScrollPane scrTblNhanVien = new JScrollPane(tblNhanVien);
         pnTable.add(scrTblNhanVien, BorderLayout.CENTER);
@@ -253,6 +266,7 @@ public class PnNhanVien extends JPanel {
                 txtHodem.setText("");
                 txtTen.setText("");
                 txtDienThoai.setText("");
+                txtLuong.setText("");
                 txtTimKiem.setText("");
                 cmbGioiTinh.setSelectedIndex(0);
             }
@@ -395,8 +409,9 @@ public class PnNhanVien extends JPanel {
             String ten = tblNhanVien.getValueAt(i, 2) + "";
             String gioiTinh = tblNhanVien.getValueAt(i, 3) + "";
             String dienthoai = tblNhanVien.getValueAt(i, 4) + "";
+            String luong = tblNhanVien.getValueAt(i, 6) + "";
 
-            NVBUS.nhapExcel(manv, ho, ten, gioiTinh, dienthoai, 1);
+            NVBUS.nhapExcel(manv, ho, ten, gioiTinh, dienthoai,luong, 1);
         }
         NVBUS.updateFKHoadon_PhieuNhap_NV();
     }
@@ -414,7 +429,7 @@ public class PnNhanVien extends JPanel {
         }
         String ma = txtMaNV.getText();
         //? check Admin không được sửa thông tin
-        if(NVBUS.getById(Integer.parseInt(ma)).getChucVu().equals("Quản Trị")) {
+        if(NVBUS.getById(Integer.parseInt(ma)).getChucVu().equals("Quản trị")) {
             new dialog("Bạn là Quản Trị Viên", dialog.ERROR_DIALOG);
             return;
         }
@@ -422,7 +437,8 @@ public class PnNhanVien extends JPanel {
         String ten = txtTen.getText();
         String gioiTinh = cmbGioiTinh.getSelectedItem() + "";
         String dienthoai = txtDienThoai.getText();
-        if (NVBUS.updateNhanVien(ma, ho, ten, gioiTinh, dienthoai)) {
+        int luong = Integer.parseInt(txtLuong.getText());
+        if (NVBUS.updateNhanVien(ma, ho, ten, gioiTinh, dienthoai,luong)) {
             NVBUS.docDanhSach();
             loadDataTblNhanVien();
         }
@@ -437,7 +453,8 @@ public class PnNhanVien extends JPanel {
         String ten = txtTen.getText();
         String gioiTinh = cmbGioiTinh.getSelectedItem() + "";
         String dienthoai = txtDienThoai.getText();
-        if (NVBUS.themNhanVien(ho, ten, gioiTinh, dienthoai, 1)) {
+        int luong = Integer.parseInt(txtHodem.getText());
+        if (NVBUS.themNhanVien(ho, ten, gioiTinh, dienthoai,luong, 1)) {
             NVBUS.docDanhSach();
             loadDataTblNhanVien();
         }
@@ -453,6 +470,7 @@ public class PnNhanVien extends JPanel {
             vec.add(nv.getTen());
             vec.add(nv.getGioiTinh());
             vec.add(nv.getDienThoai());
+            vec.add(nv.getLuong());
             vec.add(nv.getChucVu());
             int trangThai = taiKhoanBUS.getTrangThai(nv.getMaNV() + "");
             if (trangThai == 1) {
@@ -474,6 +492,7 @@ public class PnNhanVien extends JPanel {
             txtHodem.setText(tblNhanVien.getValueAt(row, 1) + "");
             txtTen.setText(tblNhanVien.getValueAt(row, 2) + "");
             txtDienThoai.setText(tblNhanVien.getValueAt(row, 4) + "");
+            txtLuong.setText(tblNhanVien.getValueAt(row, 5) + "");
 
             if ((tblNhanVien.getValueAt(row, 3) + "").equals("Nam")) {
                 cmbGioiTinh.setSelectedIndex(2);
@@ -495,6 +514,7 @@ public class PnNhanVien extends JPanel {
             vec.add(nv.getTen());
             vec.add(nv.getGioiTinh());
             vec.add(nv.getDienThoai());
+            vec.add(nv.getLuong());
             vec.add(nv.getChucVu());
             int trangThai = taiKhoanBUS.getTrangThai(nv.getMaNV() + "");
             if (trangThai == 1) {

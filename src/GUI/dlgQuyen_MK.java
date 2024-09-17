@@ -247,7 +247,7 @@ public class dlgQuyen_MK extends javax.swing.JDialog {
 
     private void btnLuuQuyenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLuuQuyenActionPerformed
         taiKhoanBUS.datLaiQuyen(maNV, cmbQuyen.getSelectedItem() + "");
-        nhanVienBUS.CapNhatChucVu(new NhanVien(Integer.parseInt(maNV), null, null, null, null, cmbQuyen.getSelectedItem() + "", 1));
+        nhanVienBUS.CapNhatChucVu(new NhanVien(Integer.parseInt(maNV), null, null, null, null, cmbQuyen.getSelectedItem() + "",0, 1));
     }//GEN-LAST:event_btnLuuQuyenActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
