@@ -199,6 +199,17 @@ public class SanPhamBUS {
         return false;
     }
 
+    public void capNhatGiaSP(String masp, int gia){
+
+        SanPhamDAO sp = new SanPhamDAO();
+            if (masp.trim().equals("")) {
+                new dialog("Chưa chọn sản phẩm để cập nhật thông tin!", dialog.ERROR_DIALOG);
+            }
+            int maSP = Integer.parseInt(masp);
+            sp.CapNhatGiaSanPHam(maSP,gia);
+
+    }
+
     public boolean capNhatThongTinSanPham(String maSP,
             String ten,
             String loai,

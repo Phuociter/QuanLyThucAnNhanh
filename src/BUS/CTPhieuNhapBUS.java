@@ -27,8 +27,8 @@ public class CTPhieuNhapBUS {
         return true;
     }
     //Đình Thái thêm phần này
-    public CTPhieuNhap getCTPhieuNhapByMaSP(int maSP) {
-        return cTPhieuNhapDAO.getCTPhieuNhapByMaSP(maSP);
+    public CTPhieuNhap getCTPhieuNhapByMaSP(int maPN) {
+        return cTPhieuNhapDAO.timkiemCTPhieuNhap2(maPN);
     }
 
     public String getTenSPByMaSP(int maSP) {

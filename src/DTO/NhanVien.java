@@ -9,18 +9,28 @@ public class NhanVien {
     private String dienThoai;
     private String chucVu;
     private int trangThai;
+    private int luong;
 
     public NhanVien() {
     }
 
-    public NhanVien(int maNV, String ho, String ten, String gioiTinh, String dienThoai, String chucVu, int trangThai) {
+    public NhanVien(int maNV, String ho, String ten, String gioiTinh, String dienThoai, String chucVu,int luong, int trangThai) {
         this.maNV = maNV;
         this.ho = ho;
         this.ten = ten;
         this.gioiTinh = gioiTinh;
         this.dienThoai = dienThoai;
         this.chucVu = chucVu;
+        this.luong = luong;
         this.trangThai = trangThai;
+    }
+
+    public int getLuong(){
+        return luong;
+    }
+
+    public void setLuong(int luong){
+        this.luong = luong;
     }
 
     public String getChucVu() {

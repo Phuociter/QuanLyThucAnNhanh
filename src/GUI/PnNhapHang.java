@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.Dimension;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -30,14 +32,18 @@ public class PnNhapHang extends javax.swing.JPanel {
     private NonEditableTableModel dtmNhapHang, dtmChoNhap;
     private NhanVienBUS nhanVienBUS = new NhanVienBUS();
     private NhanVien currentNhanVien = nhanVienBUS.getById(DangNhapBUS.taiKhoanLogin.getMaNhanVien());
-
+    private ArrayList<Integer> loinhuan = new ArrayList<>();
+    private int countLoiNhuan = 0;
+    private long starTime;//thời gian bắt đầu nhập dữ liệu
+    private long currentTime;//thời gian hiện tại
+    private static final long ALLOWED_TIME_MILLIS = 24 * 60 * 60 * 1000;//24h
     public PnNhapHang() {
         initComponents();
         custom();
         loadData();
         addEvents();
     }
-
+    
     private void custom() {
         dtmNhapHang = new NonEditableTableModel();
         dtmNhapHang.addColumn("Mã SP");
@@ -45,10 +51,20 @@ public class PnNhapHang extends javax.swing.JPanel {
         dtmNhapHang.addColumn("Tồn kho");
 
         tblKhoHang.setModel(dtmNhapHang);
-
+/////////////////////////////////////////////////////////////////////////////////lộc
         tblKhoHang.getColumnModel().getColumn(1).setPreferredWidth(200);
 
-        dtmChoNhap = new NonEditableTableModel();
+        dtmChoNhap = new NonEditableTableModel(){
+            public boolean isCellEditable(int row, int column){
+                currentTime= System.currentTimeMillis(); //lấy thời gian hiện tại
+                if(currentTime-starTime > ALLOWED_TIME_MILLIS){
+                    new dialog("Thời gian chỉnh sửa đã hết", dialog.ERROR_DIALOG);
+                    return false; // hông cho phép chỉnh sửa nếu thời gian đã hết
+                }else{
+                    return column==2||column==3;
+                }
+            }
+        };
         dtmChoNhap.addColumn("Mã SP");
         dtmChoNhap.addColumn("Tên SP");
         dtmChoNhap.addColumn("Số lượng");
@@ -56,10 +72,28 @@ public class PnNhapHang extends javax.swing.JPanel {
         dtmChoNhap.addColumn("Thành tiền");
 
         tblChoNhap.setModel(dtmChoNhap);
-
+        
         tblChoNhap.getColumnModel().getColumn(1).setPreferredWidth(200);
-    }
+        dtmChoNhap.addTableModelListener(e->{
 
+            int row = e.getFirstRow();
+            int column = e.getColumn();
+             if (column == 2 || column == 3) {
+                try {
+                    // Lấy giá trị của "Số lượng" và "Đơn giá"
+                    int soLuong = Integer.parseInt(dtmChoNhap.getValueAt(row, 2).toString());
+                    int donGia = Integer.parseInt(dtmChoNhap.getValueAt(row, 3).toString());
+
+                    int thanhTien = soLuong*donGia;
+                    dtmChoNhap.setValueAt(thanhTien, row, 4);
+                }catch(NumberFormatException ex){
+                    new dialog("giá trị không hợp lệ", dialog.ERROR_DIALOG);
+                };
+                System.out.println(currentTime);
+            }});
+    }
+    
+//////////////////////////////////////////////////////////////////////lộc
     private void loadData() {
         dtmNhapHang.setRowCount(0);
         ArrayList<SanPham> sanPhams = sanPhamBUS.getList();
@@ -115,53 +149,51 @@ public class PnNhapHang extends javax.swing.JPanel {
                 if (row < 0) {
                     return;
                 }
-                int maSP = Integer.parseInt(tblKhoHang.getValueAt(row, 0) + "");
-                currentSanPham = sanPhamBUS.getById(maSP);
-                
-                // Hiển thị ảnh sản phẩm
-                ImageIcon imageIcon = ScaleImage.scaleImage("image/products/" + currentSanPham.getHinhAnh(), 200, 200);
-                lbAnh.setIcon(imageIcon);
 
-                CTPhieuNhapBUS listBUS = new CTPhieuNhapBUS();
+                int maSP = Integer.parseInt(tblKhoHang.getValueAt(row, 0) + "");
+                ///////////////////////////////lộc
+                int SlTonkho= Integer.parseInt(tblKhoHang.getValueAt(row, 2).toString());
+                if(SlTonkho==0){
+                    currentSanPham = sanPhamBUS.getById(maSP);
+                    
+                    // Hiển thị ảnh sản phẩm
+                    ImageIcon imageIcon = ScaleImage.scaleImage("image/products/" + currentSanPham.getHinhAnh(), 200, 200);
+                    lbAnh.setIcon(imageIcon);
+                    
+                    }else{
+                        new dialog("số lượng trong kho đang lớn hơn 0",dialog.ERROR_DIALOG);
+                        return;
+                    }
+///////////////////////////////////////////////////lộc
+                CTPhieuNhapBUS listCTPNBUS = new CTPhieuNhapBUS();
                 ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
                 ArrayList<CTPhieuNhap> listCTPN2 = new ArrayList<>();
                 ArrayList<Integer> listtmp = new ArrayList<>();
                 int o=0;
 
-                listCTPN = listBUS.getlistPhieuNhaps();
+                listCTPN = listCTPNBUS.getlistPhieuNhaps();
                 for (int j = 0; j < listCTPN.size(); j++) {
                     if (listCTPN.get(j).getMaSP() == maSP) {
-                        listtmp.add(listCTPN.get(j).getMaSP());
+                        listtmp.add(listCTPN.get(j).getMaPN());
                         listCTPN2.add(listCTPN.get(j));
-                        
-                        System.out.println(listCTPN2.get(o).getMaSP());
                         o++;
                     }
                 }
 
                 boolean hasMSP = false;
 
-                for(int k = 0; k < listtmp.size(); k++){
-
-                    if(listtmp.get(k)>=0 && listCTPN2.get(k).getMaSP() == maSP){
+                // for(int k = 0; k < listtmp.size(); k++){
+                //     if(listtmp.get(k)>=0 && listCTPN2.get(k).getMaSP() == maSP){
                         System.out.println(findMax(listtmp));
-                        CTPhieuNhap ctpntemp = listBUS.getCTPhieuNhapByMaSP(findMax(listtmp));
+                        CTPhieuNhap ctpntemp = listCTPNBUS.getCTPhieuNhapByMaSP(findMax(listtmp));
                         int dongia = ctpntemp.getDonGia();
                         txtDonGia.setText(String.valueOf(dongia));
                         hasMSP = true;
-                    }
-                    
-                }
+                        // break;
+                    // }
+                // }
                 if(!hasMSP)
                         txtDonGia.setText("");
-                
-                // Hiển thị đơn giá nhập sản phẩm
-                // CTPhieuNhap ctPhieuNhap = ctPhieuNhapBUS.getCTPhieuNhapByMaSP(maSP);
-                // if (ctPhieuNhap != null) {
-                //     txtDonGia.setText(String.valueOf(ctPhieuNhap.getDonGia())); // Hiển thị đơn giá nhập sản phẩm
-                // } else {
-                //     txtDonGia.setText(""); // Xóa nội dung nếu không tìm thấy thông tin
-                // }
             }
         });
 
@@ -183,11 +215,6 @@ public class PnNhapHang extends javax.swing.JPanel {
     }
 
     public static int findMax(ArrayList<Integer> list) {
-        // Kiểm tra nếu danh sách rỗng
-        if (list == null || list.isEmpty()) {
-            throw new IllegalArgumentException("Danh sách không được rỗng");
-        }
-
         int max = list.get(0); // Giả sử phần tử đầu tiên là lớn nhất
 
         // Duyệt qua các phần tử còn lại trong danh sách
@@ -295,15 +322,17 @@ public class PnNhapHang extends javax.swing.JPanel {
 
         pnTable1.setPreferredSize(new java.awt.Dimension(1033, 844));
         pnTable1.setLayout(new javax.swing.BoxLayout(pnTable1, javax.swing.BoxLayout.Y_AXIS));
+        
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(0, 160, 80));
         jLabel11.setText("Kho hàng");
         jPanel12.add(jLabel11);
-
-        btnResetKho.setIcon(new javax.swing.ImageIcon("DoAn_QuanLyBanDoAnNuocUong\\image\\btn\\refresh.png")); // NOI18N
+        btnResetKho.setIcon(new javax.swing.ImageIcon("image/btn/refresh.png")); // NOI18N
         btnResetKho.setBorder(null);
         btnResetKho.setFocusable(false);
+        btnResetKho.setVisible(true);
+        
         btnResetKho.setPreferredSize(new java.awt.Dimension(40, 40));
         btnResetKho.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -451,11 +480,32 @@ public class PnNhapHang extends javax.swing.JPanel {
         btnXacNhan.setMaximumSize(new java.awt.Dimension(73, 29));
         btnXacNhan.setMinimumSize(new java.awt.Dimension(73, 29));
         btnXacNhan.setPreferredSize(new java.awt.Dimension(141, 41));
+        // Biến instance trong lớp
+        
+
         btnXacNhan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnXacNhanActionPerformed(evt);
+                ////////////////////////////////////////
+                starTime=System.currentTimeMillis();//lấy thời điểm bắt đầu tính thời gian khi nhấn xác nhận
+                ///////////////////////////////////////
+                if (txtphanTram.getText().trim().equals("")) {
+                    new dialog("Vui lòng nhập phần trăm lợi nhuận", dialog.ERROR_DIALOG);
+                    return;
+                } else {
+                    try {
+                        int phanTramLoiNhuan = Integer.parseInt(txtphanTram.getText().trim());
+                        loinhuan.add(countLoiNhuan, phanTramLoiNhuan);
+                        System.err.println(phanTramLoiNhuan);
+                        countLoiNhuan++;  // Tăng giá trị biến instance
+
+                    } catch (NumberFormatException ex) {
+                        new dialog("Phần trăm lợi nhuận phải là một số nguyên hợp lệ", dialog.ERROR_DIALOG);
+                    }
+                }
             }
         });
+
         jPanel23.add(btnXacNhan);
 
         pnThongTin1.add(jPanel23);
@@ -466,7 +516,7 @@ public class PnNhapHang extends javax.swing.JPanel {
         pnAnhSP.setPreferredSize(new java.awt.Dimension(100, 150));
         pnAnhSP.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
-        lbAnh.setIcon(new javax.swing.ImageIcon("C:\\Users\\nguye\\OneDrive\\Documents\\NetBeansProjects\\DoAn_QuanLyBanDoAnNuocUong\\image\\products\\white.png")); // NOI18N
+        lbAnh.setIcon(new javax.swing.ImageIcon("image\\products\\white.png")); // NOI18N
         pnAnhSP.add(lbAnh);
 
         jPanel3.add(pnAnhSP);
@@ -577,7 +627,7 @@ public class PnNhapHang extends javax.swing.JPanel {
 
         btnResetChoNhap.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         btnResetChoNhap.setForeground(new java.awt.Color(0, 160, 80));
-        btnResetChoNhap.setText("Reset");
+        btnResetChoNhap.setText("Reset CN");
         btnResetChoNhap.setPreferredSize(new java.awt.Dimension(141, 41));
         btnResetChoNhap.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -640,6 +690,9 @@ public class PnNhapHang extends javax.swing.JPanel {
     private void btnResetTTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetTTActionPerformed
         txtSoLuong.setText("");
         txtDonGia.setText("");
+        txtphanTram.setText("");
+        
+
     }//GEN-LAST:event_btnResetTTActionPerformed
 
     private void btnXoaChoNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaChoNhapActionPerformed
@@ -655,9 +708,12 @@ public class PnNhapHang extends javax.swing.JPanel {
     private void btnResetChoNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetChoNhapActionPerformed
         dtmChoNhap.setRowCount(0);
     }//GEN-LAST:event_btnResetChoNhapActionPerformed
-
+    
     private void XuLyNhap() {
         int tongTien = 0;
+        ArrayList<Integer> masanpam = new ArrayList<>();
+        ArrayList<Integer> dgnhap = new ArrayList<>();
+
         ArrayList<CTPhieuNhap> cTPhieuNhaps = new ArrayList<>();
         for (int i = 0; i < dtmChoNhap.getRowCount(); i++) {
             int thanhTien = Integer.parseInt(tblChoNhap.getValueAt(i, 4) + "");
@@ -666,8 +722,11 @@ public class PnNhapHang extends javax.swing.JPanel {
                 return;
             }
             int maSP = Integer.parseInt(tblChoNhap.getValueAt(i, 0) + "");
+            System.err.println(maSP);
+            masanpam.add(i,maSP);
             int soLuong = Integer.parseInt(tblChoNhap.getValueAt(i, 2) + "");
             int donGia = Integer.parseInt(tblChoNhap.getValueAt(i, 3) + "");
+            dgnhap.add(i,donGia);
             cTPhieuNhaps.add(new CTPhieuNhap(0, maSP, soLuong, donGia, thanhTien));
             tongTien += thanhTien;
         }
@@ -676,6 +735,14 @@ public class PnNhapHang extends javax.swing.JPanel {
             return;
         }
         dtmChoNhap.setRowCount(0);
+        SanPhamBUS spbustmp = new SanPhamBUS();
+        if(dtmChoNhap.getRowCount() == 0)
+            for(int k = 0; k < loinhuan.size();k++){
+                double loinhuanRatio = (double) loinhuan.get(k) / 100;
+                double tong = dgnhap.get(k)*loinhuanRatio + dgnhap.get(k);
+                int tong2 = (int) tong;
+                spbustmp.capNhatGiaSP(String.valueOf(masanpam.get(k)),tong2);
+            }
         loadData();
     }
 

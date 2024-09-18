@@ -30,7 +30,7 @@ public class NhanVienBUS {
         return nvDAO.getNhanVien(maNV);
     }
 
-    public boolean themNhanVien(String ho, String ten, String gioiTinh, String dienThoai, int trangThai) {
+    public boolean themNhanVien(String ho, String ten, String gioiTinh, String dienThoai,int luong, int trangThai) {
         ho = ho.trim();
         ten = ten.trim();
         dienThoai = dienThoai.trim();
@@ -56,6 +56,7 @@ public class NhanVienBUS {
         nv.setTen(ten);
         nv.setGioiTinh(gioiTinh);
         nv.setDienThoai(dienThoai);
+        nv.setLuong(luong);
         nv.setTrangThai(tThai);
         boolean flag = nvDAO.themNhanVien(nv);
         if (flag) {
@@ -66,11 +67,12 @@ public class NhanVienBUS {
         return flag;
     }
 
-    public boolean updateNhanVien(String ma, String ho, String ten, String gioiTinh, String dienThoai) {
+    public boolean updateNhanVien(String ma, String ho, String ten, String gioiTinh, String dienThoai, int luong) {
         int maNV = Integer.parseInt(ma);
         ho = ho.trim();
         ten = ten.trim();
         dienThoai = dienThoai.trim();
+
         if (ten.equals("")) {
             new dialog("Tên không được để trống!", dialog.ERROR_DIALOG);
             return false;
@@ -85,6 +87,7 @@ public class NhanVienBUS {
         nv.setTen(ten);
         nv.setGioiTinh(gioiTinh);
         nv.setDienThoai(dienThoai);
+        nv.setLuong(luong);
         boolean flag = nvDAO.updateInfoNhanVien(nv);
         if (flag) {
             new dialog("Cập nhập thất bại!", dialog.ERROR_DIALOG);
@@ -144,15 +147,17 @@ public class NhanVienBUS {
         return ketqua;
     }
 
-    public boolean nhapExcel(String manv, String ho, String ten, String gioiTinh, String dienThoai, int trangThai) {
+    public boolean nhapExcel(String manv, String ho, String ten, String gioiTinh, String dienThoai,String luong, int trangThai) {
         int tThai = trangThai;
         int maNV = Integer.parseInt(manv);
+        int Luong = Integer.parseInt(luong);
         NhanVien nv = new NhanVien();
         nv.setMaNV(maNV);
         nv.setHo(ho);
         nv.setTen(ten);
         nv.setGioiTinh(gioiTinh);
         nv.setDienThoai(dienThoai);
+        nv.setLuong(Luong);
         nv.setTrangThai(tThai);
         boolean flag = nvDAO.importNhanVienFromExcel(nv);
         return flag;
