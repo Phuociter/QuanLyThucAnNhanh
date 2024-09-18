@@ -661,21 +661,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
         if (fileAnhSP != null) {
             anh = fileAnhSP.getName();
         }
-
-        SPBUS.capNhatThongTinSanPham(txtMa.getText(),
-
-        double dongia;
-        if (!txtphanTram.getText().trim().isEmpty()) {
-            double phanTram = Double.parseDouble(txtphanTram.getText());
-            double giaNhap = Double.parseDouble(txtgiaNhap.getText());
-            dongia = giaNhap * (phanTram / 100) + giaNhap;
-        } else {
-            dongia = Double.parseDouble(txtgiaNhap.getText());
-        }
-
-        int dg = (int) dongia;
-        txtdonGia.setText(String.valueOf(dg));
-
         SPBUS.capNhatThongTinSanPham(
                 maSPText,
                 txtTen.getText(),
@@ -686,7 +671,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
                 txtdonGia.getText(),
                 "1"
         );
-
         SPBUS.readListSanPham();
         loadDataLenBangSanPham();
         luuFileAnh();
