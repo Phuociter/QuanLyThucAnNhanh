@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.Dimension;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -41,7 +43,7 @@ public class PnNhapHang extends javax.swing.JPanel {
         loadData();
         addEvents();
     }
-
+    
     private void custom() {
         dtmNhapHang = new NonEditableTableModel();
         dtmNhapHang.addColumn("Mã SP");
@@ -320,15 +322,17 @@ public class PnNhapHang extends javax.swing.JPanel {
 
         pnTable1.setPreferredSize(new java.awt.Dimension(1033, 844));
         pnTable1.setLayout(new javax.swing.BoxLayout(pnTable1, javax.swing.BoxLayout.Y_AXIS));
+        
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(0, 160, 80));
         jLabel11.setText("Kho hàng");
         jPanel12.add(jLabel11);
-
-        btnResetKho.setIcon(new javax.swing.ImageIcon("DoAn_QuanLyBanDoAnNuocUong\\image\\btn\\refresh.png")); // NOI18N
+        btnResetKho.setIcon(new javax.swing.ImageIcon("image/btn/refresh.png")); // NOI18N
         btnResetKho.setBorder(null);
         btnResetKho.setFocusable(false);
+        btnResetKho.setVisible(true);
+        
         btnResetKho.setPreferredSize(new java.awt.Dimension(40, 40));
         btnResetKho.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
