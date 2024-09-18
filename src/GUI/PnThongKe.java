@@ -10,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -20,10 +21,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.border.EmptyBorder;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -32,6 +38,8 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class PnThongKe extends JPanel {
 
@@ -43,8 +51,8 @@ public class PnThongKe extends JPanel {
 
     JPanel pnThongKe, pnbtnSwitch;
 
-    JLabel lbtltTongDoanhThuNam, lbbtnSwitch, lbbtnRefresh;
-
+    JLabel lbtltTongDoanhThuNam,lbtltTongLoiNhuanNam, lbbtnSwitch, lbbtnRefresh;
+    JButton btnLoiNhuan = new JButton();
     CardLayout cardLayout;
 
     Font FtTitleText = new Font("Montserrat", Font.BOLD, 20);
@@ -53,7 +61,7 @@ public class PnThongKe extends JPanel {
     ImageIcon imgBtnBack = new ImageIcon("image/btn/icons8_undo_40px.png");
 
     ThongKeBUS thongKeBUS = new ThongKeBUS();
-    ChartPanel chartBarPanel, chartPiePanel;
+    ChartPanel chartBarPanel, chartPiePanel, chartBarPanelLoiNhuan, chartPiePanelLoiNhuan;
     NonEditableTableModel dtmSanPham, dtmKhachHang;
     Mytable tbSanPham, tbKhachHang;
 
@@ -67,15 +75,22 @@ public class PnThongKe extends JPanel {
     private void addControls() {
         JPanel pnMain = new JPanel(new BorderLayout());
         //btn
-        pnbtnSwitch = new JPanel(new BorderLayout());
+        pnbtnSwitch = new JPanel(new FlowLayout(FlowLayout.LEFT));
         lbbtnSwitch = new JLabel(imgBtnSwitch);
         lbbtnRefresh = new JLabel(new ImageIcon("image/btn/refresh.png"));
         pnbtnSwitch.add(lbbtnSwitch, BorderLayout.WEST);
         pnbtnSwitch.add(lbbtnRefresh, BorderLayout.EAST);
         pnMain.add(pnbtnSwitch, BorderLayout.NORTH);
+
+        btnLoiNhuan = new JButton("Thống kê lợi nhuận");
+        btnLoiNhuan.setSize(new Dimension(100,100));
+        btnLoiNhuan.setFont(new Font("Arial",Font.PLAIN,20));
+        
+        pnbtnSwitch.add(btnLoiNhuan);
         //------------------------Thống kê doanh thu----------------------------
         JPanel pnThongkeDoanhThu = new JPanel();
         pnThongkeDoanhThu.setLayout(new BoxLayout(pnThongkeDoanhThu, BoxLayout.Y_AXIS));
+        
         // cmb year
         int year = Calendar.getInstance().get(Calendar.YEAR);
         cmbYear = new JComboBox<>();
@@ -158,20 +173,67 @@ public class PnThongKe extends JPanel {
         pnThongKeSPvsKH.add(pnThongKeSanPham);
         pnThongKeSPvsKH.add(pnThongKeChiTieuKhachHang);
 
+        //LoiNhuan
+        JPanel pnThongKeLoiNhuan = new JPanel();
+        pnThongKeLoiNhuan.setLayout(new BoxLayout(pnThongKeLoiNhuan, BoxLayout.Y_AXIS));
+        // biểu đồ cột
+        chartBarPanelLoiNhuan = new ChartPanel(null);
+        JPanel pnBarChartLoiNhuan = new JPanel(new BorderLayout());
+        pnBarChartLoiNhuan.add(pnCmbYear, BorderLayout.NORTH);
+        pnBarChartLoiNhuan.add(chartBarPanelLoiNhuan, BorderLayout.CENTER);
+        pnThongKeLoiNhuan.add(pnBarChartLoiNhuan);
+        // biểu đồ tròn
+        chartPiePanelLoiNhuan = new ChartPanel(null);
+        chartPiePanelLoiNhuan.setPreferredSize(new Dimension(500, 300));
+        JPanel pnPieChartLoiNhuan = new JPanel(new BorderLayout());
+        // pn Tổng doanh thu
+        lbtltTongLoiNhuanNam = new JLabel();
+        lbtltTongLoiNhuanNam.setFont(FtTitleText);
+        lbtltTongLoiNhuanNam.setForeground(Color.white);
+        lbtltTongLoiNhuanNam.setHorizontalAlignment(JLabel.CENTER);
+        lbtltTongLoiNhuanNam.setVerticalAlignment(JLabel.CENTER);
+        JLabel lbbgTongLoiNhuanNam = new JLabel(new ImageIcon("image/Menu/thongkeDoanhThu.png"));
+        lbbgTongLoiNhuanNam.setLayout(new BorderLayout());
+        lbbgTongLoiNhuanNam.add(lbtltTongLoiNhuanNam, BorderLayout.CENTER);
+        JPanel panelLoiNhuan = new JPanel();
+        panelLoiNhuan.setPreferredSize(new Dimension(100, 50));
+        lbbgTongLoiNhuanNam.add(panelLoiNhuan, BorderLayout.SOUTH);
+        JPanel pnlbTongLoiNhuanNam = new JPanel(new BorderLayout());
+        pnlbTongLoiNhuanNam.add(lbbgTongLoiNhuanNam, BorderLayout.CENTER);
+
+        pnPieChartLoiNhuan.add(chartPiePanelLoiNhuan, BorderLayout.CENTER);
+        pnPieChartLoiNhuan.add(pnlbTongLoiNhuanNam, BorderLayout.EAST);
+        pnThongKeLoiNhuan.add(pnPieChartLoiNhuan);
+
         cardLayout = new CardLayout();
         pnThongKe = new JPanel(cardLayout);
         pnThongKe.add(pnThongkeDoanhThu, "1");
         pnThongKe.add(pnThongKeSPvsKH, "2");
+        pnThongKe.add(pnThongKeLoiNhuan, "3");
         pnMain.add(pnThongKe, BorderLayout.CENTER);
         this.add(pnMain);
+
+
     }
+    
 
     private void loadData() {
+        // doanh thu
         ThongKe thongKe = thongKeBUS.thongKe((int) cmbYear.getSelectedItem());
         chartBarPanel.setChart(createBarChart(thongKe.getDoanhThuCacThang()));
         chartPiePanel.setChart(createPieChart(thongKe.getPhanTramDoanhThuTheoQuy()));
-        lbtltTongDoanhThuNam.setText(thongKe.getTongDoanhThu() + "");
+        NumberFormat numberFormat = NumberFormat.getInstance(Locale.of("vi", "VN"));
+        String formattedDoanhThu = numberFormat.format(thongKe.getTongDoanhThu());
+        lbtltTongDoanhThuNam.setText(formattedDoanhThu + "");
         loadDataTbl(thongKe.getsPDaBans(), thongKe.getListTopKhachHang());
+
+        //lợi nhuận
+        chartBarPanelLoiNhuan.setChart(createBarChartLoiNhuan(thongKe.getLoiNhuanCacThang()));
+        chartPiePanelLoiNhuan.setChart(createPieChartLoiNhuan(thongKe.getPhanTramLoiNhuanTheoQuy()));
+        NumberFormat numberFormat2 = NumberFormat.getInstance(Locale.of("vi", "VN"));
+        String formattedLoiNhuan = numberFormat2.format(thongKe.getTongLoiNhuan());
+        lbtltTongLoiNhuanNam.setText(formattedLoiNhuan + "");
+
     }
 
     private void loadDataTbl(ArrayList<SPDaBan> sPDaBans, ArrayList<KhachHang> khachHangs) {
@@ -214,6 +276,20 @@ public class PnThongKe extends JPanel {
             public void mouseExited(MouseEvent e) {
             }
         });
+
+        btnLoiNhuan.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (btnLoiNhuan.getText().equals("Thống kê lợi nhuận")) {
+                    btnLoiNhuan.setText("Quay lại");
+                    cardLayout.show(pnThongKe, "3");
+                } else {
+                    btnLoiNhuan.setText("Thống kê lợi nhuận");
+                    cardLayout.show(pnThongKe, "1");
+                }
+            }
+        });
+        
         cmbYear.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -221,6 +297,15 @@ public class PnThongKe extends JPanel {
             }
         });
         lbbtnRefresh.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                loadData();
+            }
+            
+        });
+
+        btnLoiNhuan.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -249,10 +334,29 @@ public class PnThongKe extends JPanel {
         return freeChart;
     }
 
+    ////
+    private JFreeChart createBarChartLoiNhuan(ArrayList<Integer> DoanhThuCacThang) {
+        JFreeChart freeChart = ChartFactory.createBarChart("Lợi nhuận năm " + cmbYear.getSelectedItem(), "Tháng", "Lợi Nhuận", createBarDatasetLoiNhuan(DoanhThuCacThang), PlotOrientation.VERTICAL, false, false, false);
+        return freeChart;
+    }
+
+    private CategoryDataset createBarDatasetLoiNhuan(ArrayList<Integer> DoanhThuCacThang) {
+        DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+
+        for (int i = 0; i < 12; i++) {
+            dataSet.addValue(DoanhThuCacThang.get(i), "Lợi Nhuận", (i + 1) + "");
+        }
+        return dataSet;
+    }
+
+    private JFreeChart createPieChartLoiNhuan(ArrayList<Double> PhanTramTheoQuy) {
+        JFreeChart freeChart = ChartFactory.createPieChart("Lợi nhuận theo quý (%)", createPieDataset(PhanTramTheoQuy), true, true, false);
+        return freeChart;
+    }
     private PieDataset createPieDataset(ArrayList<Double> PhanTramTheoQuy) {
         DefaultPieDataset dataSet = new DefaultPieDataset();
         for (int i = 0; i < 4; i++) {
-            dataSet.setValue("Quý) " + (i + 1), PhanTramTheoQuy.get(i));
+            dataSet.setValue("Quý " + (i + 1), PhanTramTheoQuy.get(i));
         }
         return dataSet;
     }

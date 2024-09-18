@@ -95,7 +95,7 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         txtDT = new javax.swing.JTextField();
         jPanel10 = new javax.swing.JPanel();
-        btnAdd = new javax.swing.JButton();
+        // btnAdd = new javax.swing.JButton();
         edit = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jPanel11 = new javax.swing.JPanel();
@@ -255,16 +255,16 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
         jPanel10.setPreferredSize(new java.awt.Dimension(220, 320));
         jPanel10.setLayout(new java.awt.GridLayout(4, 1));
 
-        btnAdd.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
-        btnAdd.setForeground(new java.awt.Color(0, 160, 80));
-        btnAdd.setText("ADD");
-        btnAdd.setMargin(new java.awt.Insets(2, 14, 10, 14));
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
-            }
-        });
-        jPanel10.add(btnAdd);
+        // btnAdd.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
+        // btnAdd.setForeground(new java.awt.Color(0, 160, 80));
+        // btnAdd.setText("ADD");
+        // btnAdd.setMargin(new java.awt.Insets(2, 14, 10, 14));
+        // btnAdd.addActionListener(new java.awt.event.ActionListener() {
+        //     public void actionPerformed(java.awt.event.ActionEvent evt) {
+        //         btnAddActionPerformed(evt);
+        //     }
+        // });
+        // jPanel10.add(btnAdd);
 
 
         edit.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
@@ -604,7 +604,7 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAdd;
+    // private javax.swing.JButton btnAdd;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JButton edit;
