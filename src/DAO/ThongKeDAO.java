@@ -85,4 +85,44 @@ public class ThongKeDAO {
         }
     }
 
+    public int getLuongNhanVienTheoThang(){
+        int TongLuongNV = 0;
+        try {
+            Connection c = JDBCUtil.getConnection();
+            String sql = "SELECT SUM(luong) AS tongLuong " + 
+                                "FROM nhanvien " +
+                                "WHERE chucVu != 'Quản trị' ";
+            PreparedStatement preparedStatement = c.prepareStatement(sql);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                TongLuongNV += rs.getInt(1);
+            }
+            JDBCUtil.closeConnection(c);
+            return TongLuongNV;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public int getTienVonThangTrongNam(int month, int year){
+        int TienVon = 0;
+        try {
+            Connection c = JDBCUtil.getConnection();
+            String sql = "select tongTien from phieunhap where YEAR(ngayLap) = ? and MONTH(ngayLap) = ?";
+            PreparedStatement preparedStatement = c.prepareStatement(sql);
+            preparedStatement.setInt(1, year);
+            preparedStatement.setInt(2, month);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                TienVon += rs.getInt(1);
+            }
+            JDBCUtil.closeConnection(c);
+            return TienVon;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
 }

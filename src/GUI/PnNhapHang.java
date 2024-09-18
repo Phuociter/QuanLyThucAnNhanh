@@ -208,6 +208,7 @@ public class PnNhapHang extends javax.swing.JPanel {
 
             @Override
             public void changedUpdate(DocumentEvent e) {
+                
             }
         });
     }
