@@ -35,7 +35,6 @@ public class PnNhapHang extends javax.swing.JPanel {
     private long starTime;//thời gian bắt đầu nhập dữ liệu
     private long currentTime;//thời gian hiện tại
     private static final long ALLOWED_TIME_MILLIS = 24 * 60 * 60 * 1000;//24h
-/////////////////////////////////////////////////////////////////////////////////////////////////////
     public PnNhapHang() {
         initComponents();
         custom();
