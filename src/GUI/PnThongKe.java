@@ -98,7 +98,11 @@ public class PnThongKe extends JPanel {
         cmbYear.setCursor(null);
         JPanel pnCmbYear = new JPanel();
         pnCmbYear.add(cmbYear);
-        for (int i = year; i >= year - 10; i--) {
+        int OldestYeat;
+        OldestYeat = thongKeBUS.getOldestCreationYear();
+        int difference = year - OldestYeat;
+        System.out.println(OldestYeat);
+        for (int i = year; i >= year - difference; i--) {
             cmbYear.addItem(i);
         }
         // biểu đồ cột
@@ -186,13 +190,13 @@ public class PnThongKe extends JPanel {
         chartPiePanelLoiNhuan = new ChartPanel(null);
         chartPiePanelLoiNhuan.setPreferredSize(new Dimension(500, 300));
         JPanel pnPieChartLoiNhuan = new JPanel(new BorderLayout());
-        // pn Tổng doanh thu
+        // pn lợi nhuận
         lbtltTongLoiNhuanNam = new JLabel();
         lbtltTongLoiNhuanNam.setFont(FtTitleText);
         lbtltTongLoiNhuanNam.setForeground(Color.white);
         lbtltTongLoiNhuanNam.setHorizontalAlignment(JLabel.CENTER);
         lbtltTongLoiNhuanNam.setVerticalAlignment(JLabel.CENTER);
-        JLabel lbbgTongLoiNhuanNam = new JLabel(new ImageIcon("image/Menu/thongkeDoanhThu.png"));
+        JLabel lbbgTongLoiNhuanNam = new JLabel(new ImageIcon("image/Menu/thongkeloinhuan.png"));
         lbbgTongLoiNhuanNam.setLayout(new BorderLayout());
         lbbgTongLoiNhuanNam.add(lbtltTongLoiNhuanNam, BorderLayout.CENTER);
         JPanel panelLoiNhuan = new JPanel();
