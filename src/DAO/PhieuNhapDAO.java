@@ -279,4 +279,33 @@ public class PhieuNhapDAO {
             return null;
         }
     }
+
+    public Date getngayNhapbyID(int maPN){
+        Date ngayNhap = null;
+        Connection c = null;
+        try {
+            c = JDBCUtil.getConnection();
+            String sql = "select ngayLap from phieunhap where maPN = ?";
+            PreparedStatement psm = c.prepareStatement(sql);
+            psm.setInt(1,maPN);
+            ResultSet rs = psm.executeQuery();
+            if (rs.next()){
+                ngayNhap = rs.getDate("ngayLap");
+                System.out.println(ngayNhap);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            if(c != null){
+                JDBCUtil.closeConnection(c);
+            }
+        }
+
+        if (ngayNhap!=null){
+            return ngayNhap;
+        }
+        else return null;
+    }
 }

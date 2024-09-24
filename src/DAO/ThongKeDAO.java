@@ -74,11 +74,74 @@ public class ThongKeDAO {
             preparedStatement.setInt(1, year);
             preparedStatement.setInt(2, month);
             ResultSet rs = preparedStatement.executeQuery();
+            
             while (rs.next()) {
                 doanhThu += rs.getInt(1);
             }
             JDBCUtil.closeConnection(c);
             return doanhThu;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public int getLuongNhanVienTheoThang(){
+        int TongLuongNV = 0;
+        try {
+            Connection c = JDBCUtil.getConnection();
+            String sql = "SELECT SUM(luong) AS tongLuong " + 
+                                "FROM nhanvien " +
+                                "WHERE chucVu != 'Quản trị' ";
+            PreparedStatement preparedStatement = c.prepareStatement(sql);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                TongLuongNV += rs.getInt(1);
+            }
+            JDBCUtil.closeConnection(c);
+            return TongLuongNV;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public int getTienVonThangTrongNam(int month, int year){
+        int TienVon = 0;
+        try {
+            Connection c = JDBCUtil.getConnection();
+            String sql = "select tongTien from phieunhap where YEAR(ngayLap) = ? and MONTH(ngayLap) = ?";
+            PreparedStatement preparedStatement = c.prepareStatement(sql);
+            preparedStatement.setInt(1, year);
+            preparedStatement.setInt(2, month);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                TienVon += rs.getInt(1);
+            }
+            JDBCUtil.closeConnection(c);
+            return TienVon;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public int getInvoiceWithTheOldestCreationYear(){
+        try {
+            Connection c = JDBCUtil.getConnection();
+            String sql = "SELECT TOP 1 YEAR(ngayLap) AS nam " +
+                            "FROM hoadon " +
+                            "WHERE tongTien IS NOT NULL " +
+                            "GROUP BY YEAR(ngayLap) " +
+                            "ORDER BY nam ASC; ";
+            PreparedStatement preparedStatement = c.prepareStatement(sql);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {  // Kiểm tra xem có hàng nào không
+                return rs.getInt("nam");  // Lấy giá trị từ cột 'nam'
+            } else {
+                System.out.println("Không có kết quả nào được trả về.");
+                return -1;  // Hoặc một giá trị khác để chỉ ra không có kết quả
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return -1;
