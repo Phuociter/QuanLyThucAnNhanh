@@ -279,6 +279,7 @@ public class PhieuNhapDAO {
             return null;
         }
     }
+
     public Date getngayNhapbyID(int maPN){
         Date ngayNhap = null;
         Connection c = null;

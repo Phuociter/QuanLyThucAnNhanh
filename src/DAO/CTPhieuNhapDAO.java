@@ -159,6 +159,7 @@ public class CTPhieuNhapDAO {
         }
         return ctpn;
     }
+
     public int getmaPnBymaSP(int masp){
         int mapn = -1;
         Connection c = null;

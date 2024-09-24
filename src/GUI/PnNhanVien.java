@@ -453,7 +453,7 @@ public class PnNhanVien extends JPanel {
         String ten = txtTen.getText();
         String gioiTinh = cmbGioiTinh.getSelectedItem() + "";
         String dienthoai = txtDienThoai.getText();
-        int luong = Integer.parseInt(txtHodem.getText());
+        int luong = Integer.parseInt(txtLuong.getText());
         if (NVBUS.themNhanVien(ho, ten, gioiTinh, dienthoai,luong, 1)) {
             NVBUS.docDanhSach();
             loadDataTblNhanVien();

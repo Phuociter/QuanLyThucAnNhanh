@@ -12,6 +12,9 @@ import static Main.Main.changLNF;
 
 import Custom.XuLyFileExcel;
 import Custom.dialog;
+import DAO.CTPhieuNhapDAO;
+import DAO.PhieuNhapDAO;
+import DAO.SanPhamDAO;
 import Custom.MyFileChooser;
 import Custom.Mytable;
 import DTO.LoaiSP;
@@ -38,6 +41,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 public class PnQuanLySanPhamGUI extends JPanel {
 
@@ -289,7 +295,6 @@ public class PnQuanLySanPhamGUI extends JPanel {
         btnReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cmbLoai.setEnabled(true);
                 loadAnh("");
                 loadDataLenBangSanPham();
                 loadDataCmbLoai();
@@ -299,6 +304,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
                 txtdonViTinh.setText("");
                 txtsoLuong.setText("");
                 cmbLoai.setSelectedIndex(0);
+                cmbLoai.setEnabled(true);
             }
         });
 
@@ -605,7 +611,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
 
     File fileAnhSP;
 
-    private void xuLySuaSanPham() {
+private void xuLySuaSanPham() {
         SanPhamDAO sanPhamDAO = new SanPhamDAO();
         PhieuNhapDAO phieuNhapDAO = new PhieuNhapDAO();
         CTPhieuNhapDAO ctPhieuNhapDAO = new CTPhieuNhapDAO();

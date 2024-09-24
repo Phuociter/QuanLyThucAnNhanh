@@ -32,7 +32,7 @@ public class MainQuanLyGUI extends JFrame {
 
     public MainQuanLyGUI() {
         this.setTitle("Quản lý bán đồ ăn thức uống");
-        this.setSize(1535, 790);
+        this.setSize(1535, 900);
         Image icon = new ImageIcon("image/logo/logo32x32.png").getImage();
         this.setIconImage(icon);
         this.setUndecorated(true);

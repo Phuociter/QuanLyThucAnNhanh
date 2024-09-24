@@ -9,6 +9,33 @@ public class ThongKe {
     private ArrayList<KhachHang> listTopKhachHang;
     private ArrayList<SPDaBan> sPDaBans;
     private ArrayList<Double> PhanTramDoanhThuTheoQuy;
+    private int tongLoiNhuan;
+    private ArrayList<Integer> LoiNhuanCacThang;
+    private ArrayList<Double> PhanTramLoiNhuanTheoQuy;
+
+    public int getTongLoiNhuan() {
+        return tongLoiNhuan;
+    }
+
+    public void setTongLoiNhuan(int tongLoiNhuan) {
+        this.tongLoiNhuan = tongLoiNhuan;
+    }
+
+    public ArrayList<Integer> getLoiNhuanCacThang() {
+        return LoiNhuanCacThang;
+    }
+
+    public void setLoiNhuanCacThang(ArrayList<Integer> loiNhuanCacThang) {
+        LoiNhuanCacThang = loiNhuanCacThang;
+    }
+
+    public ArrayList<Double> getPhanTramLoiNhuanTheoQuy() {
+        return PhanTramLoiNhuanTheoQuy;
+    }
+
+    public void setPhanTramLoiNhuanTheoQuy(ArrayList<Double> phanTramLoiNhuanTheoQuy) {
+        PhanTramLoiNhuanTheoQuy = phanTramLoiNhuanTheoQuy;
+    }
 
     public ThongKe() {
     }
@@ -37,12 +64,18 @@ public class ThongKe {
         this.sPDaBans = sPDaBans;
     }
 
-    public ThongKe(ArrayList<Integer> DoanhThuCacThang, int tongDoanhThu, ArrayList<KhachHang> listTopKhachHang, ArrayList<SPDaBan> sPDaBans, ArrayList<Double> PhanTramDoanhThuTheoQuy) {
+    public ThongKe(ArrayList<Integer> DoanhThuCacThang,ArrayList<Integer> LoiNhuanCacThang,
+     int tongDoanhThu, int tongLoiNhuan, ArrayList<KhachHang> listTopKhachHang, ArrayList<SPDaBan> sPDaBans,
+     ArrayList<Double> PhanTramDoanhThuTheoQuy, ArrayList<Double> PhanTramLoiNhuanTheoQuy) {
+
         this.DoanhThuCacThang = DoanhThuCacThang;
+        this.LoiNhuanCacThang = LoiNhuanCacThang;
         this.tongDoanhThu = tongDoanhThu;
+        this.tongLoiNhuan = tongLoiNhuan;
         this.listTopKhachHang = listTopKhachHang;
         this.sPDaBans = sPDaBans;
         this.PhanTramDoanhThuTheoQuy = PhanTramDoanhThuTheoQuy;
+        this.PhanTramLoiNhuanTheoQuy = PhanTramLoiNhuanTheoQuy;
     }
 
     public int getTongDoanhThu() {
