@@ -9,6 +9,9 @@ import static Main.Main.changLNF;
 
 import Custom.XuLyFileExcel;
 import Custom.dialog;
+import DAO.CTPhieuNhapDAO;
+import DAO.PhieuNhapDAO;
+import DAO.SanPhamDAO;
 import Custom.MyFileChooser;
 import Custom.Mytable;
 import DTO.LoaiSP;
@@ -41,6 +44,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 public class PnQuanLySanPhamGUI extends JPanel {
 
@@ -300,6 +306,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
                 txtdonViTinh.setText("");
                 txtsoLuong.setText("");
                 cmbLoai.setSelectedIndex(0);
+                cmbLoai.setEnabled(true);
             }
         });
 
@@ -517,6 +524,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
             }
             cmbLoai.setSelectedIndex(flag);
             loadAnh("image/products/" + anh);
+            cmbLoai.setEnabled(false);
         }
     }
 
@@ -601,28 +609,77 @@ public class PnQuanLySanPhamGUI extends JPanel {
 
     File fileAnhSP;
 
-    private void xuLySuaSanPham() {
+private void xuLySuaSanPham() {
+        SanPhamDAO sanPhamDAO = new SanPhamDAO();
+        PhieuNhapDAO phieuNhapDAO = new PhieuNhapDAO();
+        CTPhieuNhapDAO ctPhieuNhapDAO = new CTPhieuNhapDAO();
+
+        String maSPText = txtMa.getText().trim();
+        if (maSPText.isEmpty()) {
+            new dialog("Vui lòng chọn đối tượng cần sửa", 3);
+            return;
+        }
+
+        int maSP;
+        int maPN;
+        Date sqlDate;
+
+        try {
+            maSP = Integer.parseInt(maSPText);
+            maPN = ctPhieuNhapDAO.getmaPnBymaSP(maSP);
+            sqlDate = phieuNhapDAO.getngayNhapbyID(maPN);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            new dialog("Lỗi khi xử lý mã sản phẩm", 3);
+            return;
+        } catch (Exception e) {
+            e.printStackTrace();
+            new dialog("Lỗi hệ thống", 3);
+            return;
+        }
+
+        if (sqlDate == null) {
+            new dialog("Đã quá thời gian cho phép sửa", 1);
+            return;
+        }
+
+        long ngayNhapMillis = sqlDate.getTime();
+        long nowMillis = System.currentTimeMillis();
+        long daysSinceNhap = TimeUnit.DAYS.convert(nowMillis - ngayNhapMillis, TimeUnit.MILLISECONDS);
+
+        // Kiểm tra thời gian cho phép sửa
+        if (daysSinceNhap > 1) {
+            new dialog("Đã quá thời gian cho phép sửa", 1);
+            return;
+        }
+
         int row = tblSanPham.getSelectedRow();
         String anh = "default.png";
         if (row > -1) {
-            anh = tblSanPham.getValueAt(row, 6) + ""; // lấy ảnh từ dòng được chọn nếu có
+            Object value = tblSanPham.getValueAt(row, 6);
+            if (value != null) {
+                anh = value.toString();
+            }
         }
+
         if (fileAnhSP != null) {
             anh = fileAnhSP.getName();
         }
-        
-        SPBUS.capNhatThongTinSanPham(txtMa.getText(),
+        SPBUS.capNhatThongTinSanPham(
+                maSPText,
                 txtTen.getText(),
                 cmbLoai.getSelectedItem() + "",
                 txtsoLuong.getText(),
                 txtdonViTinh.getText(),
                 anh,
                 txtdonGia.getText(),
-                "1");
+                "1"
+        );
         SPBUS.readListSanPham();
         loadDataLenBangSanPham();
         luuFileAnh();
     }
+
 
     private void luuFileAnh() {
         if (fileAnhSP == null) { // nếu người dùng không chọn ảnh thì tương đương fileAnhSP = null thì return không làm gì cả

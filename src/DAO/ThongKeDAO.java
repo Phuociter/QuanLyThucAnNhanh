@@ -74,6 +74,7 @@ public class ThongKeDAO {
             preparedStatement.setInt(1, year);
             preparedStatement.setInt(2, month);
             ResultSet rs = preparedStatement.executeQuery();
+            
             while (rs.next()) {
                 doanhThu += rs.getInt(1);
             }
@@ -119,6 +120,28 @@ public class ThongKeDAO {
             }
             JDBCUtil.closeConnection(c);
             return TienVon;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public int getInvoiceWithTheOldestCreationYear(){
+        try {
+            Connection c = JDBCUtil.getConnection();
+            String sql = "SELECT TOP 1 YEAR(ngayLap) AS nam " +
+                            "FROM hoadon " +
+                            "WHERE tongTien IS NOT NULL " +
+                            "GROUP BY YEAR(ngayLap) " +
+                            "ORDER BY nam ASC; ";
+            PreparedStatement preparedStatement = c.prepareStatement(sql);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {  // Kiểm tra xem có hàng nào không
+                return rs.getInt("nam");  // Lấy giá trị từ cột 'nam'
+            } else {
+                System.out.println("Không có kết quả nào được trả về.");
+                return -1;  // Hoặc một giá trị khác để chỉ ra không có kết quả
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return -1;

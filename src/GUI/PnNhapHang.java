@@ -327,7 +327,7 @@ public class PnNhapHang extends javax.swing.JPanel {
         jLabel11.setText("Kho hàng");
         jPanel12.add(jLabel11);
 
-        btnResetKho.setIcon(new javax.swing.ImageIcon("DoAn_QuanLyBanDoAnNuocUong\\image\\btn\\refresh.png")); // NOI18N
+        btnResetKho.setIcon(new javax.swing.ImageIcon("image\\btn\\refresh.png")); // NOI18N
         btnResetKho.setBorder(null);
         btnResetKho.setFocusable(false);
         btnResetKho.setPreferredSize(new java.awt.Dimension(40, 40));

@@ -24,7 +24,6 @@ public class ThongKeBUS {
         if (DoanhThuCacThang == null) {
             return null;
         }
-
         ArrayList<Integer> LoiNhuancacThang = getLoiNhuanCacThangTheoNam(year);
         if (LoiNhuancacThang == null) {
             return null;
@@ -91,15 +90,19 @@ public class ThongKeBUS {
     private ArrayList<Integer> getLoiNhuanCacThangTheoNam(int year) {
         ArrayList<Integer> arrayList = new ArrayList<>();
         for (int i = 0; i < 12; i++) {
-            // int tongTien = thongKeDAO.getLoiNhuanThangTrongNam(i + 1, year) ;
-            
-            int tongTien = thongKeDAO.getDoanhThuThangTrongNam(i + 1, year) - ( thongKeDAO.getLuongNhanVienTheoThang() + thongKeDAO.getTienVonThangTrongNam(i + 1, year) );
-            if (tongTien == -1) {
-                new dialog("Lỗi thống kê doanh thu tháng " + (i + 1), dialog.ERROR_DIALOG);
-                return null;
-            }
-            arrayList.add(tongTien);
+            if(thongKeDAO.getDoanhThuThangTrongNam(i + 1, year) > 0){
+                // System.out.println(i);
+                int tongTien = thongKeDAO.getDoanhThuThangTrongNam(i + 1, year) - ( thongKeDAO.getLuongNhanVienTheoThang() + thongKeDAO.getTienVonThangTrongNam(i + 1, year) );
+                System.out.println(tongTien);
 
+                if (tongTien == -1) {
+                    new dialog("Lỗi thống kê doanh thu tháng " + (i + 1), dialog.ERROR_DIALOG);
+                    return null;
+                }
+                arrayList.add(tongTien);
+            }
+            else 
+                arrayList.add(0);
         }
         return arrayList;
     }
@@ -117,11 +120,16 @@ public class ThongKeBUS {
         for (int i = 0; i < 4; i++) {
             int LoiNhuanQuy = 0;
             for (int j = 0; j < 3; j++) {
-                LoiNhuanQuy += LoiNhuanCacThang.get(i * 3 + j);
+                    LoiNhuanQuy += LoiNhuanCacThang.get( i * 3 + j);
             }
             double phanTram = (double) LoiNhuanQuy / tongLoiNhuan * 100.0;
             arrayList.add(phanTram);
         }
         return arrayList;
+    }
+
+    public int getOldestCreationYear(){
+        int TmOldestYear = thongKeDAO.getInvoiceWithTheOldestCreationYear();
+        return TmOldestYear;
     }
 }
