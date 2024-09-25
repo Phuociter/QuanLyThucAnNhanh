@@ -97,6 +97,11 @@ public class dlgDoiMatKhau extends javax.swing.JDialog {
         btnHuy.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btnHuy.setText("Hủy");
         btnHuy.setPreferredSize(new java.awt.Dimension(102, 32));
+        btnHuy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dispose();
+            }
+        });
         jPanel7.add(btnHuy);
 
         jPanel1.add(jPanel7, java.awt.BorderLayout.SOUTH);
