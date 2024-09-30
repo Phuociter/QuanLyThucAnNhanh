@@ -118,7 +118,7 @@ public class SanPhamBUS {
             int soLuongSP = 0;
             int donGiaSP = 0;
             int tThai = Integer.parseInt(TrangThai);
-            if (maLoai == 0) {
+            if (maLoai < 0) {
                 new dialog("Vui lòng chọn loại sản phẩm!", dialog.ERROR_DIALOG);
                 return false;
             }

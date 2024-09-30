@@ -93,11 +93,13 @@ public class PnThongKe extends JPanel {
         
         // cmb year
         int year = Calendar.getInstance().get(Calendar.YEAR);
-        cmbYear = new JComboBox<>();
+        cmbYear = new JComboBox<>();// tạo thêm 1 cmbYear nữa cho lợi nhuận
         cmbYear.setFont(FtTitleText);
         cmbYear.setCursor(null);
         JPanel pnCmbYear = new JPanel();
         pnCmbYear.add(cmbYear);
+        JPanel pnCmbYearLN = new JPanel();
+        pnCmbYearLN.add(cmbYear);
         int OldestYeat;
         OldestYeat = thongKeBUS.getOldestCreationYear();
         int difference = year - OldestYeat;
@@ -108,7 +110,7 @@ public class PnThongKe extends JPanel {
         // biểu đồ cột
         chartBarPanel = new ChartPanel(null);
         JPanel pnBarChart = new JPanel(new BorderLayout());
-        pnBarChart.add(pnCmbYear, BorderLayout.NORTH);
+        pnBarChart.add(pnCmbYear, BorderLayout.SOUTH);
         pnBarChart.add(chartBarPanel, BorderLayout.CENTER);
         pnThongkeDoanhThu.add(pnBarChart);
         // biểu đồ tròn
@@ -183,7 +185,7 @@ public class PnThongKe extends JPanel {
         // biểu đồ cột
         chartBarPanelLoiNhuan = new ChartPanel(null);
         JPanel pnBarChartLoiNhuan = new JPanel(new BorderLayout());
-        pnBarChartLoiNhuan.add(pnCmbYear, BorderLayout.NORTH);
+        pnBarChartLoiNhuan.add(pnCmbYearLN, BorderLayout.NORTH);
         pnBarChartLoiNhuan.add(chartBarPanelLoiNhuan, BorderLayout.CENTER);
         pnThongKeLoiNhuan.add(pnBarChartLoiNhuan);
         // biểu đồ tròn

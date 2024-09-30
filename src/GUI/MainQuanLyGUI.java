@@ -13,7 +13,7 @@ public class MainQuanLyGUI extends JFrame {
 
     CardLayout cardListMenu;
 
-    JLabel btnDoiMatKhau, btnClose, btnMinimize, lbBanhang, lbKhuyenmai, lbNhaphang, lbSanpham, lbNhanvien, lbKhachhang, lbThongke, lbDangXuat;
+    JLabel btnDoiMatKhau, btnClose, btnMinimize,btnMaxize, lbBanhang, lbKhuyenmai, lbNhaphang, lbSanpham, lbNhanvien, lbKhachhang, lbThongke, lbDangXuat;
 
     Font FtTitleText = new Font("Montserrat", Font.BOLD, 20);
 
@@ -78,11 +78,17 @@ public class MainQuanLyGUI extends JFrame {
 
         btnMinimize = new JLabel(new ImageIcon("image/btn/minimize.png"));
         btnMinimize.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
         pnBtn.add(btnMinimize);
         pnBtn.add(btnClose);
         pnTitle.add(pnBtn, BorderLayout.EAST);
         pnMain.add(pnTitle, BorderLayout.NORTH);
+
+        // btnMaxize = new JLabel(new ImageIcon("image/btn/maxSizeFrame.png"));
+        // btnMaxize.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        // pnBtn.add(btnMaxize);
+        // pnBtn.add(btnClose);
+        // pnTitle.add(pnBtn, BorderLayout.EAST);
+        // pnMain.add(pnTitle, BorderLayout.NORTH);
         //menuleft
         JPanel pnMenuLeft = new JPanel();
         pnMenuLeft.setPreferredSize(new Dimension(250, height - pnTitle.getHeight()));
@@ -353,6 +359,29 @@ public class MainQuanLyGUI extends JFrame {
             }
         });
 
+        // btnMaxize.addMouseListener(new MouseListener() {
+        //     @Override
+        //     public void mouseClicked(MouseEvent e) {
+        //         maxmizeFrame();
+        //     }
+
+        //     @Override
+        //     public void mousePressed(MouseEvent e) {
+        //     }
+
+        //     @Override
+        //     public void mouseReleased(MouseEvent e) {
+        //     }
+
+        //     @Override
+        //     public void mouseEntered(MouseEvent e) {
+        //     }
+
+        //     @Override
+        //     public void mouseExited(MouseEvent e) {
+        //     }
+        // });
+
         for (JLabel opt : listMenuLeft) {
             opt.addMouseListener(new MouseListener() {
                 @Override
@@ -428,6 +457,10 @@ public class MainQuanLyGUI extends JFrame {
 
     private void minimizeFrame() {
         this.setState(Frame.ICONIFIED);
+    }
+
+    private void maxmizeFrame(){
+        this.setState(Frame.MAXIMIZED_BOTH);
     }
 
     private void moveFrame(int x, int y) {
