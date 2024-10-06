@@ -10,6 +10,7 @@ public class TaiKhoanBUS {
 
     private TaiKhoanDAO taiKhoanDAO = new TaiKhoanDAO();
     private PhanQuyenDAO phanQuyenDAO = new PhanQuyenDAO();
+    private NhanVienBUS nhanVienBUS = new NhanVienBUS();
 
     public String getTenDangNhapTheoMa(String ma) {
         int maNV = Integer.parseInt(ma);
@@ -33,8 +34,17 @@ public class TaiKhoanBUS {
     public void datLaiQuyen(String ma, String quyen) {
         int maNV = Integer.parseInt(ma);
         int maQuyen = phanQuyenDAO.getIdByName(quyen.strip());
+        if (nhanVienBUS.getById(maNV).getChucVu().equals("Quản trị")){
+            new dialog("Không được thay đổi quyền của quản trị viên!", dialog.ERROR_DIALOG);
+            return;
+
+        }
+        if (quyen.strip().equals("Quản trị")){
+            new dialog("Chỉ tồn tại duy nhất 1 quản trị viên!", dialog.ERROR_DIALOG);
+            return;
+        }
         if (maQuyen < 0) {
-            new dialog("Không tìm thấy quyền", dialog.ERROR_DIALOG);
+            new dialog("Không tìm thấy quyền!", dialog.ERROR_DIALOG);
             return;
         }
         boolean flag = taiKhoanDAO.datLaiQuyen(maNV, maQuyen);
@@ -105,6 +115,18 @@ public class TaiKhoanBUS {
 
     public void khoaTaiKhoan(String ma) {
         int maNV = Integer.parseInt(ma);
+        if (taiKhoanDAO.getTrangThai(maNV) == -1){
+            new dialog("Nhân viên chưa có tài khoản!",dialog.ERROR_DIALOG);
+            return;
+        }
+        if (taiKhoanDAO.getTrangThai(maNV) == 0){
+            new dialog("Tài khoản đã bị khóa!", dialog.INFO_DIALOG);
+            return;
+        }
+        if (nhanVienBUS.getById(maNV).getChucVu().equals("Quản trị")){
+            new dialog("Tài khoản của quản trị viên không thể bị khóa!",dialog.ERROR_DIALOG);
+            return;
+        }
         boolean flag = taiKhoanDAO.khoaTaiKhoan(maNV);
         if (flag) {
             new dialog("Khoá tài khoản thành công!", dialog.SUCCESS_DIALOG);

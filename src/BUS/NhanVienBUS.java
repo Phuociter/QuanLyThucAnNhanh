@@ -1,9 +1,14 @@
 package BUS;
 
 import Custom.InputValidator;
+import Custom.JDBCUtil;
 import DAO.NhanVienDAO;
 import DTO.NhanVien;
 import Custom.dialog;
+
+import javax.swing.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 
 public class NhanVienBUS {
@@ -25,6 +30,26 @@ public class NhanVienBUS {
         }
         return listNV;
     }
+    private boolean duplicatePhoneNumber(String phoneNumber){
+        ArrayList <NhanVien> nhanViens = new ArrayList<>();
+        nhanViens = getlistNV();
+        for (NhanVien nv : nhanViens){
+            if (nv.getDienThoai().trim().equals(phoneNumber.trim())){
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean duplicatePhoneNumber2(String phoneNumber, int maNV){
+        ArrayList <NhanVien> nhanViens = new ArrayList<>();
+        nhanViens = getlistNV();
+        for (NhanVien nv : nhanViens){
+            if (nv.getDienThoai().trim().equals(phoneNumber.trim()) && nv.getMaNV() != maNV){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public NhanVien getById(int maNV) {
         return nvDAO.getNhanVien(maNV);
@@ -35,12 +60,28 @@ public class NhanVienBUS {
         ten = ten.trim();
         dienThoai = dienThoai.trim();
         int tThai = trangThai;
+        if (InputValidator.IsEmpty(ho)){
+            new dialog("Họ không được để trống!", dialog.ERROR_DIALOG);
+            return false;
+        }
         if (ten.equals("")) {
             new dialog("Tên không được để trống!", dialog.ERROR_DIALOG);
             return false;
         }
-        if (!InputValidator.isValidName(ho) || !InputValidator.isValidName(ten)) {
-            new dialog("Họ hoặc tên không hợp lệ", dialog.ERROR_DIALOG);
+        if (!InputValidator.IsValidNamelength(ho)){
+            new dialog("Họ không được vượt quá 50 ký tự!", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if (!InputValidator.IsValidNamelength(ten)){
+            new dialog("Tên không được vượt quá 50 ký tự!", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if (!InputValidator.isValidName(ho)){
+            new dialog("Họ không hợp lệ!",dialog.ERROR_DIALOG);
+            return false;
+        }
+        if (!InputValidator.isValidName(ten)){
+            new dialog("Tên không hợp lệ!",dialog.ERROR_DIALOG);
             return false;
         }
         if (dienThoai.equals("")) {
@@ -49,6 +90,15 @@ public class NhanVienBUS {
         }
         if (!InputValidator.isValidPhoneNumber(dienThoai)) {
             new dialog("Số điện thoại không hợp lệ", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if (duplicatePhoneNumber(dienThoai)){
+            new dialog("Số điện thoại đã tồn tại", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if(InputValidator.OverflowChecker(dienThoai))
+        if (!InputValidator.isPositiveNumber(String.valueOf(luong))){
+            new dialog("Lương không được để âm", dialog.ERROR_DIALOG);
             return false;
         }
         NhanVien nv = new NhanVien();
@@ -72,21 +122,54 @@ public class NhanVienBUS {
         ho = ho.trim();
         ten = ten.trim();
         dienThoai = dienThoai.trim();
-
+        if (InputValidator.IsEmpty(ho)){
+            new dialog("Họ không được để trống!", dialog.ERROR_DIALOG);
+            return false;
+        }
         if (ten.equals("")) {
             new dialog("Tên không được để trống!", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if (!InputValidator.IsValidNamelength(ho)){
+            new dialog("Họ không được vượt quá 50 ký tự!", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if (!InputValidator.IsValidNamelength(ten)){
+            new dialog("Tên không được vượt quá 50 ký tự!", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if (!InputValidator.isValidName(ho)){
+            new dialog("Họ không hợp lệ!",dialog.ERROR_DIALOG);
+            return false;
+        }
+        if (!InputValidator.isValidName(ten)){
+            new dialog("Tên không hợp lệ!",dialog.ERROR_DIALOG);
             return false;
         }
         if (dienThoai.equals("")) {
             new dialog("Điện thoại không được để trống!", dialog.ERROR_DIALOG);
             return false;
         }
+        if (!InputValidator.isValidPhoneNumber(dienThoai)) {
+            new dialog("Số điện thoại không hợp lệ", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if (duplicatePhoneNumber2(dienThoai,maNV)){
+            new dialog("Số điện thoại đã tồn tại", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if (!InputValidator.isPositiveNumber(String.valueOf(luong))){
+            new dialog("Lương không được để âm", dialog.ERROR_DIALOG);
+            return false;
+        }
         NhanVien nv = new NhanVien();
+        NhanVienBUS nvbus = new NhanVienBUS();
         nv.setMaNV(maNV);
         nv.setHo(ho);
         nv.setTen(ten);
         nv.setGioiTinh(gioiTinh);
         nv.setDienThoai(dienThoai);
+        nv.setChucVu(nvbus.getById(maNV).getChucVu());
         nv.setLuong(luong);
         boolean flag = nvDAO.updateInfoNhanVien(nv);
         if (flag) {
@@ -97,16 +180,39 @@ public class NhanVienBUS {
         return flag;
     }
 
-    public ArrayList<NhanVien> timNhanVien(String tuKhoa) {
+    public ArrayList<NhanVien> timNhanVien(String tuKhoa, JComboBox<String> selection) {
+        NhanVienBUS nhanVienBUS = new NhanVienBUS();
         tuKhoa = tuKhoa.toLowerCase();
+        String selectedItem = (String) selection.getSelectedItem();
         ArrayList<NhanVien> dsnv = new ArrayList<>();
-        for (NhanVien nv : listNV) {
-            if (nv.getHo().toLowerCase().contains(tuKhoa) || nv.getTen().toLowerCase().contains(tuKhoa)
-                    || nv.getGioiTinh().toLowerCase().contains(tuKhoa) || nv.getDienThoai().contains(tuKhoa)) {
-                dsnv.add(nv);
+        if (selectedItem.trim().equals("Theo mã")){
+            if(nhanVienBUS.getById(Integer.parseInt(tuKhoa)) != null ){
+                new dialog("Tìm thấy 1 nhân viên!",dialog.INFO_DIALOG);
+                dsnv.add(nhanVienBUS.getById(Integer.parseInt(tuKhoa)));
+                return dsnv;
+            }
+            else {
+                new dialog("Không tìm thấy nhân viên nhân viên!",dialog.INFO_DIALOG);
+                return null;
             }
         }
-        return dsnv;
+        else {
+            for (NhanVien nv : listNV) {
+                if(nv.getTen().toLowerCase().contains(tuKhoa.toLowerCase())){
+                        System.out.println(nv.getTen().toLowerCase().contains(tuKhoa.toLowerCase()));
+                        dsnv.add(nv);
+                    }
+                }
+            if (dsnv.size() > 0) {
+                new dialog("Tìm thấy " + dsnv.size() + " nhân viên!", dialog.INFO_DIALOG);
+                return dsnv;
+            }
+            else {
+                new dialog("Không tìm thấy nhân viên!",dialog.INFO_DIALOG);
+                return null;
+            }
+        }
+
     }
 
     public boolean xoaNhanVien(String ma) {
@@ -164,6 +270,9 @@ public class NhanVienBUS {
     }
 
     public void CapNhatChucVu(NhanVien nv) {
+        if (nv.getChucVu().equals("Quản trị")){
+            return;
+        }
         if (!nvDAO.capNhatChucVu(nv)) {
             new dialog("Cập nhật chức vụ thất bại", dialog.ERROR_DIALOG);
         }

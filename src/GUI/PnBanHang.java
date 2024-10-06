@@ -198,7 +198,7 @@ public class PnBanHang extends JPanel {
         });
     }
 
-    private void loadData() {
+    public void loadData() {
         ArrayList<SanPham> sanPhams = list.getListSPConHang();
         if (sanPhams == null) {
             return;

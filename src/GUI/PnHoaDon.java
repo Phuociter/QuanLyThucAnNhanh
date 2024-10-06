@@ -17,6 +17,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -29,9 +30,16 @@ public class PnHoaDon extends JPanel {
 
     Font FtTitleText = new Font("Montserrat", Font.BOLD, 20);
     Font font = new Font("", Font.PLAIN, 20);
+    DefaultTableModel dtmHoaDon;
+    JButton btnReset;
 
     public PnHoaDon() {
         addControls();
+        reload();
+    }
+    public void reload(){
+        dtmHoaDon.setRowCount(0);
+        addrowTable(dtmHoaDon);
     }
 
     private void addControls() {
@@ -39,8 +47,13 @@ public class PnHoaDon extends JPanel {
 
         JPanel pnTltHoaDon = new JPanel();
         JLabel lbTltHoaDon = new JLabel("<html><h1>Thông tin hóa đơn</h1></html>");
+        btnReset = new JButton(new ImageIcon("image/btn/refresh.png"));
+        btnReset.setPreferredSize(new Dimension(40, 40));
+        btnReset.setFocusable(false);
+        btnReset.setBorder(null);
         lbTltHoaDon.setForeground(ClMain);
         pnTltHoaDon.add(lbTltHoaDon);
+        pnTltHoaDon.add(btnReset);
         this.add(pnTltHoaDon);
 
         JPanel pnSearchHoaDon = new JPanel(); // tạo panel tìm kiếm
@@ -138,7 +151,7 @@ public class PnHoaDon extends JPanel {
 
         JPanel pnTbHoaDon = new JPanel(new BorderLayout());//tạo khung chứa giỏ hàng
         String[] coltbHoaDon = {"Mã HD", "Mã KH", "Mã NV", "Mã giảm giá", "Ngày tạo", "Tổng tiền"};
-        DefaultTableModel dtmHoaDon = new DefaultTableModel(coltbHoaDon, 0);
+        dtmHoaDon = new DefaultTableModel(coltbHoaDon, 0);
         Mytable mtbHoaDon = new Mytable(dtmHoaDon) {
             public boolean isCellEditable(int row, int column) { // không cho phép sửa nội dung trong table
                 return false;
@@ -169,6 +182,7 @@ public class PnHoaDon extends JPanel {
         TimKiemtheoMHD(btnSearchMaHD, dtmHoaDon, txtSearchMaHD);
         setEventTable(mtbHoaDon);
         TimKiemTheoGiaTienVaDate(btnSearchDate, dtcStartDate, dtcEndDate, txtStartPrice, txtEndPrice, dtmHoaDon);
+        refresh(btnReset,dtmHoaDon,dtcStartDate,dtcEndDate,txtStartPrice,txtEndPrice,txtSearchMaHD);
     }
 
     public void addrowTable(DefaultTableModel tble) {
@@ -200,6 +214,27 @@ public class PnHoaDon extends JPanel {
 
         });
     }
+    private void refresh(JButton btnRefresh,DefaultTableModel tble, JDateChooser dateMin, JDateChooser dateMax, JTextField priceMin, JTextField priceMax,JTextField id){
+        HoaDonBUS hoaDonBUS = new HoaDonBUS();
+        btnRefresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ArrayList<HoaDon> dshd = new ArrayList<>();
+                dshd = hoaDonBUS.getlistHD();
+                tble.setRowCount(0);
+                for(HoaDon HD : dshd){
+                    Object[] data = {HD.getMaHD(), HD.getMaKH(), HD.getMaNV(), HD.getMaGiam(), HD.getNgayLap(), HD.getTongTien()};
+                    tble.addRow(data);
+                }
+                dateMax.setDate(new Date());
+                dateMin.setDate(new Date());
+                priceMax.setText("");
+                priceMin.setText("");
+                id.setText("");
+
+            }
+        });
+    }
 
     public void TimKiemtheoMHD(JButton btnTimKiem, DefaultTableModel tble, JTextField txt) {
         HoaDonBUS HD = new HoaDonBUS();
@@ -207,6 +242,10 @@ public class PnHoaDon extends JPanel {
         btnTimKiem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (InputValidator.IsEmpty(txt.getText().trim())){
+                    new dialog("Vui lòng nhập mã hóa đơn!",dialog.ERROR_DIALOG);
+                    return;
+                }
                 if (InputValidator.isPositiveNumber(txt.getText()) || txt.getText().trim().isEmpty()){
                     if (InputValidator.IsEmpty(txt.getText())) {
                         tble.setRowCount(0);
@@ -215,10 +254,12 @@ public class PnHoaDon extends JPanel {
                         String MHD = txt.getText();
                         if (HD.getlisttheoMHD(MHD) == null) {
                             tble.setRowCount(0);
+                            new dialog("Không tìm thấy hóa đơn!",dialog.INFO_DIALOG);
                         } else {
                             tble.setRowCount(0);
                             Object[] data = {HD.getlisttheoMHD(MHD).getMaHD(), HD.getlisttheoMHD(MHD).getMaKH(), HD.getlisttheoMHD(MHD).getMaNV(), HD.getlisttheoMHD(MHD).getMaGiam(), HD.getlisttheoMHD(MHD).getNgayLap(), HD.getlisttheoMHD(MHD).getTongTien()};
                             tble.addRow(data);
+                            new dialog("Đã tìm thấy 1 hóa đơn",dialog.INFO_DIALOG);
                         }
                     }
                 }
@@ -236,6 +277,18 @@ public class PnHoaDon extends JPanel {
         btnTimKiem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!InputValidator.IsEmpty(priceMin.getText())){
+                    if(!InputValidator.isPositiveNumber(priceMin.getText())) {
+                        new dialog("Vui lòng nhập đúng định dạng!", dialog.ERROR_DIALOG);
+                        return;
+                    }
+                }
+                if (!InputValidator.IsEmpty(priceMax.getText())) {
+                    if (!InputValidator.isPositiveNumber(priceMax.getText())) {
+                        new dialog("Vui lòng nhập đúng định dạng!", dialog.ERROR_DIALOG);
+                        return;
+                    }
+                }
                 tble.setRowCount(0);
                 ArrayList<HoaDon> listHD = null;
                 try {
@@ -243,13 +296,19 @@ public class PnHoaDon extends JPanel {
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
-                if (listHD != null) {
+                if (listHD != null && listHD.size() > 0 ) {
                     for (int i = 0; i < listHD.size(); i++) {
                         Object[] newRowData = {listHD.get(i).getMaHD(), listHD.get(i).getMaKH(), listHD.get(i).getMaNV(), listHD.get(i).getMaGiam(), listHD.get(i).getNgayLap(), listHD.get(i).getTongTien()};
                         tble.addRow(newRowData);
                     }
+                    new dialog("Đã tìm thấy " + listHD.size() + "hóa đơn!",dialog.INFO_DIALOG);
                 }
+                else if (listHD.size() == 0){
+                    new dialog("Không tìm thấy hóa đơn!",dialog.INFO_DIALOG);
+                }
+//
             }
         });
     }
+
 }

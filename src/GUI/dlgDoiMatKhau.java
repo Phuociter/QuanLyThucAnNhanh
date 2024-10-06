@@ -4,6 +4,9 @@ import BUS.TaiKhoanBUS;
 import Custom.InputValidator;
 import Custom.dialog;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 public class dlgDoiMatKhau extends javax.swing.JDialog {
     TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
     
@@ -19,6 +22,9 @@ public class dlgDoiMatKhau extends javax.swing.JDialog {
         this.setModal(true);
         this.setVisible(true);
         txtPassCu.requestFocus();
+    }
+    private void btnHuy(ActionEvent e){
+        dispose();
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -97,14 +103,15 @@ public class dlgDoiMatKhau extends javax.swing.JDialog {
         btnHuy.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btnHuy.setText("Hủy");
         btnHuy.setPreferredSize(new java.awt.Dimension(102, 32));
-        btnHuy.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dispose();
-            }
-        });
         jPanel7.add(btnHuy);
 
         jPanel1.add(jPanel7, java.awt.BorderLayout.SOUTH);
+        btnHuy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnHuy(e);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

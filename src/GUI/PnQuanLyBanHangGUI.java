@@ -22,7 +22,8 @@ public class PnQuanLyBanHangGUI extends JPanel {
     final Color ClMain = new Color(0, 160, 80);
     final Color ClHover = new Color(0, 192, 96);
     final Color ClSelect = new Color(76, 204, 76);
-
+    PnBanHang pnBanHang;
+    PnHoaDon pnHoaDon;
     Font FtTitleText = new Font("Montserrat", Font.BOLD, 20);
     Font font = new Font("", Font.PLAIN, 20);
 
@@ -68,14 +69,13 @@ public class PnQuanLyBanHangGUI extends JPanel {
 
         this.add(pnTop, BorderLayout.NORTH);
         
-        PnBanHang pnBanHang = new PnBanHang();
-        PnHoaDon pnHoaDon = new PnHoaDon();
+        pnBanHang = new PnBanHang();
+        pnHoaDon = new PnHoaDon();
 
         cardQLBanHang = new CardLayout();
         pnCardQLBanHang = new JPanel(cardQLBanHang);
         pnCardQLBanHang.add(pnBanHang, "1");
         pnCardQLBanHang.add(pnHoaDon, "2");
-
         this.add(pnCardQLBanHang, BorderLayout.CENTER);
     }
 
@@ -88,7 +88,7 @@ public class PnQuanLyBanHangGUI extends JPanel {
                 lbHoaDon.setBackground(Color.WHITE);
                 lbHoaDon.setForeground(ClMain);
                 lbHoaDon.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, ClMain));
-
+                pnBanHang.loadData();
                 cardQLBanHang.show(pnCardQLBanHang, "1");
             }
 
@@ -116,8 +116,9 @@ public class PnQuanLyBanHangGUI extends JPanel {
                 lbBanHang.setBackground(Color.WHITE);
                 lbBanHang.setForeground(ClMain);
                 lbBanHang.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, ClMain));
-
+                pnHoaDon.reload();
                 cardQLBanHang.show(pnCardQLBanHang, "2");
+
             }
 
             @Override

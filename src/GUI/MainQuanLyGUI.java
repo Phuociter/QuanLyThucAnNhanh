@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 public class MainQuanLyGUI extends JFrame {
+    PnQuanLySanPhamGUI pnQuanLySanPhamGUI;
+    PnQuanLyKhachHangGUI pnQuanLyKhachHangGUI;
 
     JPanel pnTitle, pnCardListMenu, pnMain;
 
@@ -168,7 +170,7 @@ public class MainQuanLyGUI extends JFrame {
                 lbNhanvien.setVisible(true);
             }
             if (PhanQuyenBUS.currentQuyen.getQlSanPham() == 1) {
-                PnQuanLySanPhamGUI pnQuanLySanPhamGUI = new PnQuanLySanPhamGUI();
+                pnQuanLySanPhamGUI = new PnQuanLySanPhamGUI();
                 pnSanPham.setLayout(new BorderLayout());
                 pnSanPham.add(pnQuanLySanPhamGUI, BorderLayout.CENTER);
                 lbSanpham.setVisible(true);
@@ -180,7 +182,7 @@ public class MainQuanLyGUI extends JFrame {
                 lbNhaphang.setVisible(true);
             }
             if (PhanQuyenBUS.currentQuyen.getQlKhachHang() == 1) {
-                PnQuanLyKhachHangGUI pnQuanLyKhachHangGUI = new PnQuanLyKhachHangGUI();
+                pnQuanLyKhachHangGUI = new PnQuanLyKhachHangGUI();
                 pnKhachHang.setLayout(new BorderLayout());
                 pnKhachHang.add(pnQuanLyKhachHangGUI, BorderLayout.CENTER);
                 lbKhachhang.setVisible(true);
@@ -369,10 +371,12 @@ public class MainQuanLyGUI extends JFrame {
                     } else if (opt == lbKhuyenmai) {
                         cardName = "2";
                     } else if (opt == lbSanpham) {
+                        pnQuanLySanPhamGUI.loadDataLenBangSanPham();
                         cardName = "3";
                     } else if (opt == lbNhanvien) {
                         cardName = "4";
                     } else if (opt == lbKhachhang) {
+                        pnQuanLyKhachHangGUI.reloadData();
                         cardName = "5";
                     } else if (opt == lbNhaphang) {
                         cardName = "6";

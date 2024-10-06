@@ -165,6 +165,7 @@ public class dlgCapTaiKhoan extends javax.swing.JDialog {
         nv.setMaNV(manv);
         nv.setChucVu((String) cmbQuyen.getSelectedItem());
         nhanVienBUS.CapNhatChucVu(nv);
+        dispose();
     }//GEN-LAST:event_btnTaoTaiKhoanActionPerformed
 
     private void txtTenDangNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTenDangNhapActionPerformed

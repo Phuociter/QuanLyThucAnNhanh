@@ -8,6 +8,7 @@ import Custom.dialog;
 import DTO.GiamGia;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -15,6 +16,7 @@ public class PnQuanLyKhuyenMaiGUI extends javax.swing.JPanel {
 
     NonEditableTableModel dtmGiamGia;
     GiamGiaBUS giamGiaBUS = new GiamGiaBUS();
+
 
     public PnQuanLyKhuyenMaiGUI() {
         initComponents();

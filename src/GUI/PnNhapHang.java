@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.Dimension;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -38,8 +40,8 @@ public class PnNhapHang extends javax.swing.JPanel {
     public PnNhapHang() {
         initComponents();
         custom();
-        loadData();
         addEvents();
+        loadData();
     }
 
     private void custom() {
@@ -92,7 +94,7 @@ public class PnNhapHang extends javax.swing.JPanel {
     }
     
 //////////////////////////////////////////////////////////////////////lộc
-    private void loadData() {
+    public void loadData() {
         dtmNhapHang.setRowCount(0);
         ArrayList<SanPham> sanPhams = sanPhamBUS.getList();
         if (sanPhams == null) {
@@ -150,24 +152,24 @@ public class PnNhapHang extends javax.swing.JPanel {
 
                 int maSP = Integer.parseInt(tblKhoHang.getValueAt(row, 0) + "");
                 ///////////////////////////////lộc
-                int SlTonkho= Integer.parseInt(tblKhoHang.getValueAt(row, 2).toString());
-                if(SlTonkho==0){
+                int SlTonkho = Integer.parseInt(tblKhoHang.getValueAt(row, 2).toString());
+                if (SlTonkho == 0) {
                     currentSanPham = sanPhamBUS.getById(maSP);
-                    
+
                     // Hiển thị ảnh sản phẩm
                     ImageIcon imageIcon = ScaleImage.scaleImage("image/products/" + currentSanPham.getHinhAnh(), 200, 200);
                     lbAnh.setIcon(imageIcon);
-                    
-                    }else{
-                        new dialog("số lượng trong kho đang lớn hơn 0",dialog.ERROR_DIALOG);
-                        return;
-                    }
+
+                } else {
+                    new dialog("số lượng trong kho đang lớn hơn 0", dialog.ERROR_DIALOG);
+                    return;
+                }
 ///////////////////////////////////////////////////lộc
                 CTPhieuNhapBUS listCTPNBUS = new CTPhieuNhapBUS();
                 ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
                 ArrayList<CTPhieuNhap> listCTPN2 = new ArrayList<>();
                 ArrayList<Integer> listtmp = new ArrayList<>();
-                int o=0;
+                int o = 0;
 
                 listCTPN = listCTPNBUS.getlistPhieuNhaps();
                 for (int j = 0; j < listCTPN.size(); j++) {
@@ -182,17 +184,19 @@ public class PnNhapHang extends javax.swing.JPanel {
 
                 // for(int k = 0; k < listtmp.size(); k++){
                 //     if(listtmp.get(k)>=0 && listCTPN2.get(k).getMaSP() == maSP){
-                        System.out.println(findMax(listtmp));
-                        CTPhieuNhap ctpntemp = listCTPNBUS.getCTPhieuNhapByMaSP(findMax(listtmp));
-                        int dongia = ctpntemp.getDonGia();
-                        txtDonGia.setText(String.valueOf(dongia));
-                        hasMSP = true;
-                        // break;
+                if (!listtmp.isEmpty()) {
+                    System.out.println(findMax(listtmp));
+                    CTPhieuNhap ctpntemp = listCTPNBUS.getCTPhieuNhapByMaSP(findMax(listtmp));
+                    int dongia = ctpntemp.getDonGia();
+                    txtDonGia.setText(String.valueOf(dongia));
+                    hasMSP = true;}
+                    // break;
                     // }
-                // }
-                if(!hasMSP)
+                    // }
+                    if (!hasMSP)
                         txtDonGia.setText("");
             }
+
         });
 
         txtTimKiem.getDocument().addDocumentListener(new DocumentListener() {
@@ -208,13 +212,14 @@ public class PnNhapHang extends javax.swing.JPanel {
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                
+
             }
         });
     }
 
     public static int findMax(ArrayList<Integer> list) {
         int max = list.get(0); // Giả sử phần tử đầu tiên là lớn nhất
+
 
         // Duyệt qua các phần tử còn lại trong danh sách
         for (int i = 1; i < list.size(); i++) {
@@ -240,8 +245,43 @@ public class PnNhapHang extends javax.swing.JPanel {
             new dialog("Vui lòng chọn sản phẩm", dialog.ERROR_DIALOG);
             return;
         }
-        if (InputValidator.IsEmpty(txtSoLuong.getText()) || InputValidator.IsEmpty(txtDonGia.getText()) || !InputValidator.isPositiveNumber(txtSoLuong.getText()) || !InputValidator.isPositiveNumber(txtDonGia.getText())) {
-            new dialog("Vui lòng nhập số", dialog.ERROR_DIALOG);
+        if (InputValidator.IsEmpty(txtDonGia.getText())){
+            new dialog("Vui lòng nhập đơn giá", dialog.ERROR_DIALOG);
+            return;
+        }
+        if (txtphanTram.getText().trim().equals("")) {
+            new dialog("Vui lòng nhập phần trăm lợi nhuận", dialog.ERROR_DIALOG);
+            return;
+        } else {
+            if (InputValidator.IsEmpty(txtSoLuong.getText())) {
+                new dialog("Vui lòng nhập số lượng", dialog.ERROR_DIALOG);
+                return;
+            }
+            if (!InputValidator.isPositiveNumber(txtDonGia.getText())){
+                new dialog("Nhập sai định dạng đơn giá", dialog.ERROR_DIALOG);
+                return;
+            }
+            try {
+                int phanTramLoiNhuan = Integer.parseInt(txtphanTram.getText().trim());
+                loinhuan.add(countLoiNhuan, phanTramLoiNhuan);
+                System.err.println(phanTramLoiNhuan);
+                countLoiNhuan++;  // Tăng giá trị biến instance
+
+            } catch (NumberFormatException ex) {
+                new dialog("Phần trăm lợi nhuận phải là một số nguyên hợp lệ", dialog.ERROR_DIALOG);
+                return;
+            }
+        }
+        if (InputValidator.IsEmpty(txtSoLuong.getText())) {
+            new dialog("Vui lòng nhập số lượng", dialog.ERROR_DIALOG);
+            return;
+        }
+        if (!InputValidator.isPositiveNumber(txtDonGia.getText())){
+            new dialog("Nhập sai định dạng đơn giá", dialog.ERROR_DIALOG);
+            return;
+        }
+        if (!InputValidator.isPositiveNumber(txtSoLuong.getText())){
+            new dialog("Nhập sai định dạng số lượng", dialog.ERROR_DIALOG);
             return;
         }
         if (InputValidator.OverflowChecker(txtSoLuong.getText()) || InputValidator.OverflowChecker(txtDonGia.getText())) {
@@ -322,14 +362,18 @@ public class PnNhapHang extends javax.swing.JPanel {
         pnTable1.setPreferredSize(new java.awt.Dimension(1033, 844));
         pnTable1.setLayout(new javax.swing.BoxLayout(pnTable1, javax.swing.BoxLayout.Y_AXIS));
 
+
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(0, 160, 80));
         jLabel11.setText("Kho hàng");
         jPanel12.add(jLabel11);
 
         btnResetKho.setIcon(new javax.swing.ImageIcon("image\\btn\\refresh.png")); // NOI18N
+        btnResetKho.setIcon(new javax.swing.ImageIcon("image/btn/refresh.png")); // NOI18N
         btnResetKho.setBorder(null);
         btnResetKho.setFocusable(false);
+        btnResetKho.setVisible(true);
+
         btnResetKho.setPreferredSize(new java.awt.Dimension(40, 40));
         btnResetKho.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -486,20 +530,20 @@ public class PnNhapHang extends javax.swing.JPanel {
                 ////////////////////////////////////////
                 starTime=System.currentTimeMillis();//lấy thời điểm bắt đầu tính thời gian khi nhấn xác nhận
                 ///////////////////////////////////////
-                if (txtphanTram.getText().trim().equals("")) {
-                    new dialog("Vui lòng nhập phần trăm lợi nhuận", dialog.ERROR_DIALOG);
-                    return;
-                } else {
-                    try {
-                        int phanTramLoiNhuan = Integer.parseInt(txtphanTram.getText().trim());
-                        loinhuan.add(countLoiNhuan, phanTramLoiNhuan);
-                        System.err.println(phanTramLoiNhuan);
-                        countLoiNhuan++;  // Tăng giá trị biến instance
-
-                    } catch (NumberFormatException ex) {
-                        new dialog("Phần trăm lợi nhuận phải là một số nguyên hợp lệ", dialog.ERROR_DIALOG);
-                    }
-                }
+//                if (txtphanTram.getText().trim().equals("")) {
+//                    new dialog("Vui lòng nhập phần trăm lợi nhuận", dialog.ERROR_DIALOG);
+//                    return;
+//                } else {
+//                    try {
+//                        int phanTramLoiNhuan = Integer.parseInt(txtphanTram.getText().trim());
+//                        loinhuan.add(countLoiNhuan, phanTramLoiNhuan);
+//                        System.err.println(phanTramLoiNhuan);
+//                        countLoiNhuan++;  // Tăng giá trị biến instance
+//
+//                    } catch (NumberFormatException ex) {
+//                        new dialog("Phần trăm lợi nhuận phải là một số nguyên hợp lệ", dialog.ERROR_DIALOG);
+//                    }
+//                }
             }
         });
 
@@ -733,6 +777,9 @@ public class PnNhapHang extends javax.swing.JPanel {
         }
         dtmChoNhap.setRowCount(0);
         SanPhamBUS spbustmp = new SanPhamBUS();
+        System.out.println(loinhuan);
+        System.out.println(dgnhap);
+        System.out.println(masanpam);
         if(dtmChoNhap.getRowCount() == 0)
             for(int k = 0; k < loinhuan.size();k++){
                 double loinhuanRatio = (double) loinhuan.get(k) / 100;
@@ -741,11 +788,13 @@ public class PnNhapHang extends javax.swing.JPanel {
                 spbustmp.capNhatGiaSP(String.valueOf(masanpam.get(k)),tong2);
             }
         loadData();
+        countLoiNhuan = 0;
+        loinhuan.clear();
     }
 
     private void btnNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapActionPerformed
         if (dtmChoNhap.getRowCount() == 0) {
-            new dialog("Chưa chọn sản phẩm để nhập", dialog.ERROR_DIALOG);
+            new dialog("Vui lòng xác nhận sản phẩm cần nhập", dialog.ERROR_DIALOG);
             return;
         }
         if (currentNCC == null) {
@@ -755,8 +804,6 @@ public class PnNhapHang extends javax.swing.JPanel {
         XuLyNhap();
 
     }//GEN-LAST:event_btnNhapActionPerformed
-
-  
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -38,6 +38,10 @@ public class PhanQuyenBUS {
     }
 
     public boolean Update(PhanQuyen t) {
+        if (phanQuyenDAO.getIdByName("Quản trị") == t.getMaQuyen()){
+            new dialog("Không được sửa quyền quản trị!", dialog.ERROR_DIALOG);
+            return false;
+        }
         if (phanQuyenDAO.update(t) == 0) {
             new dialog("Không thể sửa quyền", dialog.ERROR_DIALOG);
             return false;
@@ -47,11 +51,15 @@ public class PhanQuyenBUS {
     }
 
     public boolean Delete(int ma) {
-        if (phanQuyenDAO.delete(ma) == 0) {
-            new dialog("Không thể xóa", dialog.ERROR_DIALOG);
+        if (phanQuyenDAO.getIdByName("Quản trị") == ma){
+            new dialog("Không được xóa quyền quản trị!", dialog.ERROR_DIALOG);
             return false;
         }
-        new dialog("Xóa thành công", dialog.SUCCESS_DIALOG);
+        if (phanQuyenDAO.delete(ma) == 0) {
+            new dialog("Không thể xóa!", dialog.ERROR_DIALOG);
+            return false;
+        }
+        new dialog("Xóa thành công!", dialog.SUCCESS_DIALOG);
         return true;
     }
 

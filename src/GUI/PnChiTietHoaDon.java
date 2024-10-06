@@ -6,6 +6,7 @@ import BUS.HoaDonBUS;
 import BUS.SanPhamBUS;
 import Custom.Mytable;
 import DAO.GiamGiaDAO;
+import DAO.KhachHangDAO;
 import DTO.GiamGia;
 import DAO.HoaDonDAO;
 import DTO.CTHoaDon;
@@ -31,13 +32,18 @@ public class PnChiTietHoaDon extends JPanel {
     private void addGUI(int MHD) {
         this.setPreferredSize(new Dimension(W, H));
         this.setLayout(new BorderLayout());
-
+        KhachHangDAO khachHangDAO = new KhachHangDAO();
+        HoaDonDAO hoaDonDAO = new HoaDonDAO();
         // title
-        JLabel TitleCTHD = new JLabel("---------- Chi Tiết Hóa Đơn ----------");
+        JLabel TitleCTHD = new JLabel("---------- Chi Tiết Hóa Đơn ----------",JLabel.CENTER);
         TitleCTHD.setFont(FtTitleText);
-        Panel pntltCTHD = new Panel();
-        pntltCTHD.add(TitleCTHD);
+        JLabel TenKH = new JLabel("Tên Khách hàng: "+ khachHangDAO.getKhachHang(hoaDonDAO.getHoaDonTheoMHD(MHD).getMaKH()).getTen(),JLabel.CENTER);
+        TenKH.setFont(FtTitleText);
+        Panel pntltCTHD = new Panel(new BorderLayout());
+        pntltCTHD.add(TitleCTHD,BorderLayout.NORTH);
+        pntltCTHD.add(TenKH,BorderLayout.SOUTH);
         this.add(pntltCTHD, BorderLayout.NORTH);
+
 
         // table
         String NameColume[] = {"Mã SP", "Tên SP", "Đơn Giá", "Số Lượng", "Thành Tiền"};

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import DTO.KhachHang;
 import Custom.InputValidator;
 import Custom.dialog;
+import DTO.NhanVien;
 
 public class KhachHangBUS {
 
@@ -18,9 +19,17 @@ public class KhachHangBUS {
     }
 
     //KT có trống không
-    private boolean CheckEmpty(KhachHang khachHang, String content) {
-        if (InputValidator.IsEmpty(khachHang.getTen())|| InputValidator.IsEmpty(khachHang.getDienThoai()) || InputValidator.IsEmpty(khachHang.getGioiTinh()) || khachHang.getTrangThai() == -1) {
-            new dialog(content, dialog.ERROR_DIALOG);
+    private boolean CheckEmpty(KhachHang khachHang) {
+        if (InputValidator.IsEmpty(khachHang.getTen())){
+            new dialog("Tên khách hàng không được bỏ trống!",dialog.ERROR_DIALOG);
+            return true;
+        }
+        if (InputValidator.IsEmpty(khachHang.getDienThoai())){
+            new dialog("Số điện thoại khách hàng không được bỏ trống!",dialog.ERROR_DIALOG);
+            return true;
+        }
+        if (InputValidator.IsEmpty(khachHang.getGioiTinh())){
+            new dialog("Vui lòng chọn giới tính của khách hàng!",dialog.ERROR_DIALOG);
             return true;
         }
         return false;
@@ -52,25 +61,100 @@ public class KhachHangBUS {
         }
         return true;
     }
-
-    private boolean checkInfors(KhachHang khachHang) {
-        if (CheckEmpty(khachHang, "Không được để trống thông tin")) {
-            return false;
-        }
-        if (!CheckPhoneNumber(khachHang.getDienThoai(), "Số điện thoại không hợp lệ")) {
-            return false;
-        }
-        // if (!CheckEmail(khachHang.getEmail(), "Email không hợp lệ")) {
-        //     return false;
-        // }
-        if (!CheckName(khachHang.getTen(), "Tên khách hàng không hợp lệ")) {
+    private boolean ChechAddress(String address, String content){
+        if(!InputValidator.isValidAddress(address)){
+            new dialog(content, dialog.ERROR_DIALOG);
             return false;
         }
         return true;
     }
 
+    private boolean checkInfors(KhachHang khachHang) {
+        if (CheckEmpty(khachHang)) {
+            return false;
+        }
+        if (!InputValidator.IsValidNamelength(khachHang.getTen())){
+            new dialog("Họ không được vượt quá 50 ký tự!", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if (!CheckName(khachHang.getTen(), "Tên khách hàng không hợp lệ!")) {
+            return false;
+        }
+        if (!CheckPhoneNumber(khachHang.getDienThoai(), "Số điện thoại không hợp lệ!")) {
+            return false;
+        }
+        if(!InputValidator.IsEmpty(khachHang.getEmail())) {
+            if (!CheckEmail(khachHang.getEmail(), "Email không hợp lệ!")) {
+                return false;
+            }
+        }
+        if(!InputValidator.IsEmpty(khachHang.getEmail())) {
+            if (!ChechAddress(khachHang.getDiaChi(), "Địa chỉ không hợp lệ!")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Dùng cho nút thêm
+    private boolean checkduplicatePhoneNumber(String PhoneNumber){
+        ArrayList <KhachHang> khachHangs = new ArrayList<>();
+        khachHangs = getListKhachHang();
+        for (KhachHang kh : khachHangs){
+            if (kh.getDienThoai().trim().equals(PhoneNumber.trim())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Dùng cho nút edit
+    private boolean checkduplicatePhoneNumber2(String PhoneNumber, int maKH){
+        ArrayList <KhachHang> khachHangs = new ArrayList<>();
+        khachHangs = getListKhachHang();
+        for (KhachHang kh : khachHangs){
+            if (kh.getDienThoai().trim().equals(PhoneNumber.trim()) && kh.getMaKH() != maKH){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Dùng cho nút thêm
+    private boolean checkduplicateEmail(String Email){
+        ArrayList <KhachHang> khachHangs = new ArrayList<>();
+        khachHangs = getListKhachHang();
+        for (KhachHang kh : khachHangs){
+            if (kh.getEmail().trim().equals(Email.trim())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Dùng cho nút edit
+    private boolean checkduplicateEmail2(String Email, int maKH){
+        ArrayList <KhachHang> khachHangs = new ArrayList<>();
+        khachHangs = getListKhachHang();
+        for (KhachHang kh : khachHangs){
+            if (kh.getEmail().trim().equals(Email.trim()) && kh.getMaKH() != maKH){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public boolean Update(KhachHang khachHang) {
         if (!checkInfors(khachHang)) {
+            return false;
+        }
+        if(checkduplicatePhoneNumber2(khachHang.getDienThoai(),khachHang.getMaKH())){
+            new dialog("Số điện thoại đã tồn tại!",dialog.ERROR_DIALOG);
+            return false;
+        }
+        if(checkduplicateEmail2(khachHang.getEmail(),khachHang.getMaKH())){
+            new dialog("Email đã tồn tại!",dialog.ERROR_DIALOG);
             return false;
         }
         boolean rs = khachhangDao.updateKhachHang(khachHang);
@@ -85,6 +169,14 @@ public class KhachHangBUS {
     public boolean Insert(KhachHang khachHang) {
         khachHang.setMaKH(getNextMaKH());
         if (!checkInfors(khachHang)) { //kiểm tra dữ liệu đầu vào 
+            return false;
+        }
+        if(checkduplicatePhoneNumber(khachHang.getDienThoai())){
+            new dialog("Số điện thoại đã tồn tại!",dialog.ERROR_DIALOG);
+            return false;
+        }
+        if(checkduplicateEmail(khachHang.getEmail())){
+            new dialog("Email đã tồn tại!",dialog.ERROR_DIALOG);
             return false;
         }
         boolean result = khachhangDao.addKhachHang(khachHang);
@@ -107,7 +199,7 @@ public class KhachHangBUS {
     }
 
     public int getNextMaKH() {
-        return khachhangDao.getNewMa() + 1;
+        return Math.max(khachhangDao.getNewMa() + 1,1);
     }
 
     public ArrayList<KhachHang> searchKhachHang(String keyword) {

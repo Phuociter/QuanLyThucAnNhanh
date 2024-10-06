@@ -22,6 +22,8 @@ public class PnQuanLyNhapHangGUI extends JPanel {
 
     Font FtTitleText = new Font("Montserrat", Font.BOLD, 20);
     Font font = new Font("", Font.PLAIN, 20);
+    PnNhapHang nhapHang ;
+    PnPhieuNhap phieuNhap ;
 
     JLabel lbNhapHang, lbPhieuNhap;
 
@@ -65,8 +67,8 @@ public class PnQuanLyNhapHangGUI extends JPanel {
 
         this.add(pnTop, BorderLayout.NORTH);
 
-        PnNhapHang nhapHang = new PnNhapHang();
-        PnPhieuNhap phieuNhap = new PnPhieuNhap();
+        nhapHang = new PnNhapHang();
+        phieuNhap = new PnPhieuNhap();
 
         cardQLNhapHang = new CardLayout();
         pnCardQLNhapHang = new JPanel(cardQLNhapHang);
@@ -84,7 +86,7 @@ public class PnQuanLyNhapHangGUI extends JPanel {
                 lbPhieuNhap.setBackground(Color.WHITE);
                 lbPhieuNhap.setForeground(ClMain);
                 lbPhieuNhap.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, ClMain));
-
+                nhapHang.loadData();
                 cardQLNhapHang.show(pnCardQLNhapHang, "1");
             }
 
@@ -112,8 +114,9 @@ public class PnQuanLyNhapHangGUI extends JPanel {
                 lbNhapHang.setBackground(Color.WHITE);
                 lbNhapHang.setForeground(ClMain);
                 lbNhapHang.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, ClMain));
-
+                phieuNhap.loaddata();
                 cardQLNhapHang.show(pnCardQLNhapHang, "2");
+
             }
 
             @Override

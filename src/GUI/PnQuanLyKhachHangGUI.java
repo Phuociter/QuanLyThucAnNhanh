@@ -1,14 +1,17 @@
 package GUI;
 
 import BUS.KhachHangBUS;
+import Custom.InputValidator;
 import Custom.Mytable;
 import Custom.NonEditableTableModel;
 import DTO.KhachHang;
-import java.awt.Color;
+
+import java.awt.*;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import Custom.dialog;
-import javax.swing.RowFilter;
+
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableRowSorter;
@@ -18,6 +21,8 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
     NonEditableTableModel dtmKhachHang; // dtm này không cho người dùng sửa bảng
     KhachHangBUS khachHangBus = new KhachHangBUS();
     private KhachHang selectedKhachHang = null;
+    String[] searchOption = {"Theo mã", "Theo tên"};
+    JComboBox<String> searchSelection = new JComboBox<>(searchOption);
 
     public KhachHang getselectedKhachHag() {
         return selectedKhachHang;
@@ -365,19 +370,21 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
         jLabel13.setText("Tìm kiếm");
         jLabel13.setPreferredSize(new java.awt.Dimension(100, 16));
         jPanel22.add(jLabel13, java.awt.BorderLayout.LINE_START);
-
-        search.setFont(new java.awt.Font("Segoe UI Black", 1, 14)); // NOI18N
+        search.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
         search.setForeground(new java.awt.Color(0, 160, 80));
         search.setText("Search");
-        search.setPreferredSize(new java.awt.Dimension(100, 23));
+        search.setPreferredSize(new java.awt.Dimension(100, 32));
+        searchSelection.setFont(new java.awt.Font("Segoe UI Black", 1, 14)); // NOI18N
+        searchSelection.setForeground(new java.awt.Color(0, 160, 80));
+        searchSelection.setPreferredSize(new Dimension(100,32));
         search.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchActionPerformed(evt);
             }
         });
-        jPanel22.add(search, java.awt.BorderLayout.LINE_END);
-        jPanel22.add(jTextField1, java.awt.BorderLayout.CENTER);
-
+        jPanel10.add(search);
+        jPanel22.add(jTextField1,BorderLayout.CENTER);
+        jPanel22.add(searchSelection, BorderLayout.LINE_END);
         jPanel23.add(jPanel22, java.awt.BorderLayout.PAGE_START);
 
         tbKhachHang.setModel(new javax.swing.table.DefaultTableModel(
@@ -461,25 +468,32 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
     }//GEN-LAST:event_deleteActionPerformed
 
     private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
+        reloadData();
         txtMaKH.setText("");
         txtTen.setText("");
         txtDT.setText("");
         txtEmail.setText("");
         txtDiaChi.setText("");
         txtTongChiTieu.setText("0");
+        jTextField1.setText("");
         buttonGroup1.clearSelection();
         buttonGroup2.clearSelection();
+
     }//GEN-LAST:event_resetActionPerformed
 
     private void editActionPerformed1(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editActionPerformed1
         KhachHang khachHang = new KhachHang();
         String gioiTinh = "";
-        int trangthai = -1;
+        int trangthai = 1;
         if (rdbNam.isSelected()) {
             gioiTinh = rdbNam.getText();
         }
         if (rdbNu.isSelected()) {
             gioiTinh = rdbNu.getText();
+        }
+        if (InputValidator.IsEmpty(txtMaKH.getText().trim())) {
+            new dialog("Vui lòng chọn khách hàng", dialog.ERROR_DIALOG);
+            return;
         }
         khachHang.setGioiTinh(gioiTinh);
         khachHang.setTrangThai(trangthai);
@@ -546,28 +560,78 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
             sorter.setRowFilter(null);
         }
     }
+    private void searchByID(int MaKH){
+        DefaultTableModel model = (DefaultTableModel) tbKhachHang.getModel();
+        TableRowSorter sorter = new TableRowSorter(model);
+        tbKhachHang.setRowSorter(sorter);
+        RowFilter rowFilter = RowFilter.regexFilter("(?i)" + MaKH,0);
+        sorter.setRowFilter(rowFilter);
+        if (tbKhachHang.getRowCount() == 0) {
+            // Nếu không có dòng nào được tìm thấy, hiển thị thông báo lỗi
+            new dialog("Không tìm thấy khách hàng", dialog.ERROR_DIALOG);
+            // Khôi phục bộ lọc để giữ nguyên dữ liệu ban đầu trong bảng
+            sorter.setRowFilter(null);
+        }
+    }
 
     private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
         // Lấy từ khóa tìm kiếm từ trường văn bản
         String searchKeyword = jTextField1.getText().trim();
-
+        String Option = (String) searchSelection.getSelectedItem();
+        if (Option.equals("Theo mã")){
+            if (searchKeyword.isEmpty()) {
+                // Nếu rỗng, hiển thị thông báo lỗi
+                new dialog("Vui lòng nhập mã khách hàng cần cần tìm", dialog.ERROR_DIALOG);
+                return;
+            }
+            if (!InputValidator.isPositiveNumber(searchKeyword)){
+                new dialog("Vui lòng nhập đúng định dạng mã khách hàng cần cần tìm", dialog.ERROR_DIALOG);
+                return;
+            }
+            searchByID(Integer.parseInt(searchKeyword));
+        }else{
         // Kiểm tra xem từ khóa tìm kiếm có rỗng không
-        if (searchKeyword.isEmpty()) {
-            // Nếu rỗng, hiển thị thông báo lỗi
-            new dialog("Vui lòng nhập tên khách hàng cần tìm", dialog.ERROR_DIALOG);
-            reloadData();
+            if (searchKeyword.isEmpty()) {
+                // Nếu rỗng, hiển thị thông báo lỗi
+                new dialog("Vui lòng nhập tên khách hàng cần cần tìm", dialog.ERROR_DIALOG);
+                return;
+            }
+            if(!InputValidator.isValidName(searchKeyword)){
+                new dialog("Vui lòng nhập đúng định dạng tên khách hàng cần cần tìm", dialog.ERROR_DIALOG);
+                return;
+            }
+            searchByName(searchKeyword);
         }
 
         // Gọi phương thức để tìm kiếm và hiển thị kết quả
-        searchByName(searchKeyword);
 
 
     }//GEN-LAST:event_searchActionPerformed
-    private void reloadData() {
+    public void reloadData() {
+        txtMaKH.setText("");
+        txtTen.setText("");
+        txtDT.setText("");
+        txtEmail.setText("");
+        txtDiaChi.setText("");
+        txtTongChiTieu.setText("0");
+        jTextField1.setText("");
+        buttonGroup1.clearSelection();
+        buttonGroup2.clearSelection();
         DefaultTableModel model = (DefaultTableModel) tbKhachHang.getModel();
-        model.setRowCount(0); // Clear existing rows
-        loadData(); // Load initial data
+        TableRowSorter sorter = new TableRowSorter(model);
+        tbKhachHang.setRowSorter(sorter);
+        RowFilter rowFilter = RowFilter.regexFilter("(?i)" + "",0);
+        sorter.setRowFilter(rowFilter);
+        if (tbKhachHang.getRowCount() == 0) {
+            // Nếu không có dòng nào được tìm thấy, hiển thị thông báo lỗi
+            new dialog("Không tìm thấy khách hàng", dialog.ERROR_DIALOG);
+            // Khôi phục bộ lọc để giữ nguyên dữ liệu ban đầu trong bảng
+            sorter.setRowFilter(null);
+        }
+
+
     }
+
 
     //KT hàng trong bảng
     private int CheckSelectRow() {

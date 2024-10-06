@@ -1,5 +1,6 @@
 package GUI;
 
+import Custom.InputValidator;
 import Custom.Mytable;
 import Custom.dialog;
 import Custom.XuLyFileExcel;
@@ -25,7 +26,6 @@ public class PnNhanVien extends JPanel {
         changLNF("Windows");
         addControls();
         addEventsNhanVienGUI();
-
     }
     private NhanVienBUS NVBUS = new NhanVienBUS();
     private TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
@@ -37,9 +37,11 @@ public class PnNhanVien extends JPanel {
     DefaultTableModel dtmNhanVien;
     JTextField txtMaNV, txtHodem, txtTen, txtDienThoai,txtLuong, txtTimKiem;
     JComboBox<String> cmbGioiTinh;
+    String[] searchOption = {"Theo mã", "Theo tên"};
+    JComboBox<String> searchSelection = new JComboBox<>(searchOption);
     Mytable tblNhanVien;
     JButton btnThemNV, btnLuuNV, btnTimNV, btnCapTaiKhoan, btnResetMatKhauNV, btnKhoaTaiKhoanNV, btnResetNV, btnXuatExcel, btnNhapExcel;
-
+    Font fontButton = new Font("Tahoma", Font.PLAIN, 16);
     private void addControls() {
         Font font = new Font("", Font.PLAIN, 20);
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -135,6 +137,9 @@ public class PnNhanVien extends JPanel {
         txtTimKiem.setFont(font);
         TimKiem.add(lblTimKiem);
         TimKiem.add(txtTimKiem);
+        searchSelection.setPreferredSize(new Dimension(100,32));
+        searchSelection.setFont(fontButton);
+        TimKiem.add(searchSelection);
         pnTextField.add(TimKiem);
 
         Dimension lblSize = lblTimKiem.getPreferredSize();// nên lấy kích thước của label có độ rộng lớn nhất
@@ -160,7 +165,7 @@ public class PnNhanVien extends JPanel {
         btnXuatExcel = new JButton("Xuất");
         btnNhapExcel = new JButton("Nhập");
 
-        Font fontButton = new Font("Tahoma", Font.PLAIN, 16);
+
         btnThemNV.setFont(fontButton);
         btnLuuNV.setFont(fontButton);
         btnTimNV.setFont(fontButton);
@@ -317,6 +322,7 @@ public class PnNhanVien extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 xuLyThemNhanVien();
+                loadDataTblNhanVien();
             }
         });
 
@@ -324,6 +330,7 @@ public class PnNhanVien extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 xuLySuaNhanVien();
+                loadDataTblNhanVien();
             }
         });
 
@@ -345,6 +352,7 @@ public class PnNhanVien extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 xuLyCapTaiKhoan();
+                loadDataTblNhanVien();
             }
         });
 
@@ -352,6 +360,7 @@ public class PnNhanVien extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 xuLyResetMatKhau();
+                loadDataTblNhanVien();
             }
         });
 
@@ -359,6 +368,7 @@ public class PnNhanVien extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 xuLyKhoaTaiKhoan();
+                loadDataTblNhanVien();
             }
         });
     }
@@ -423,21 +433,37 @@ public class PnNhanVien extends JPanel {
 
 
     private void xuLySuaNhanVien() {
+        if (InputValidator.IsEmpty(txtMaNV.getText().trim())){
+            new dialog("Bạn chưa chọn nhân viên cần sửa!",dialog.ERROR_DIALOG);
+            return;
+        }
         if (cmbGioiTinh.getSelectedIndex() == 0) {
             new dialog("Bạn chưa chọn giới tính!", dialog.ERROR_DIALOG);
             return;
         }
         String ma = txtMaNV.getText();
+        System.out.println(ma);
         //? check Admin không được sửa thông tin
-        if(NVBUS.getById(Integer.parseInt(ma)).getChucVu().equals("Quản trị")) {
-            new dialog("Bạn là Quản Trị Viên", dialog.ERROR_DIALOG);
-            return;
+        if (NVBUS.getById(Integer.parseInt(ma)).getChucVu() != null) {
+            if (NVBUS.getById(Integer.parseInt(ma)).getChucVu().equals("Quản trị")) {
+                new dialog("Không thể thay đổi thông tin của quản trị viên!", dialog.ERROR_DIALOG);
+                return;
+            }
         }
+
         String ho = txtHodem.getText();
         String ten = txtTen.getText();
         String gioiTinh = cmbGioiTinh.getSelectedItem() + "";
         String dienthoai = txtDienThoai.getText();
-        int luong = Integer.parseInt(txtLuong.getText());
+        int luong;
+        try{
+            luong = Integer.parseInt(txtLuong.getText());
+        }
+        catch (NumberFormatException e){
+            new dialog("Lương chỉ được phép nhập số!",dialog.ERROR_DIALOG);
+            return;
+        }
+
         if (NVBUS.updateNhanVien(ma, ho, ten, gioiTinh, dienthoai,luong)) {
             NVBUS.docDanhSach();
             loadDataTblNhanVien();
@@ -453,15 +479,47 @@ public class PnNhanVien extends JPanel {
         String ten = txtTen.getText();
         String gioiTinh = cmbGioiTinh.getSelectedItem() + "";
         String dienthoai = txtDienThoai.getText();
-        int luong = Integer.parseInt(txtLuong.getText());
+        int luong;
+        try{
+            if (!InputValidator.IsEmpty(txtLuong.getText())){
+                luong = Integer.parseInt(txtLuong.getText());
+            }
+            else{
+                luong = 0;
+            }
+        }
+        catch (NumberFormatException e){
+            new dialog("Lương chỉ được phép nhập số!",dialog.ERROR_DIALOG);
+            return;
+        }
         if (NVBUS.themNhanVien(ho, ten, gioiTinh, dienthoai,luong, 1)) {
-            NVBUS.docDanhSach();
+            NVBUS.themNhanVien(ho, ten, gioiTinh, dienthoai,luong, 1);
             loadDataTblNhanVien();
         }
     }
 
     private void xuLyTimKiemNhanVien() {
-        ArrayList<NhanVien> dsnv = NVBUS.timNhanVien(txtTimKiem.getText());
+        if (InputValidator.IsEmpty(txtTimKiem.getText())){
+            new dialog("Vui lòng nhập từ khóa để tìm kiếm!", dialog.ERROR_DIALOG);
+            return;
+        }
+        if (searchSelection.getSelectedItem().equals("Theo mã")) {
+            if (!InputValidator.IsEmpty(txtTimKiem.getText())) {
+                if (!InputValidator.isPositiveNumber(txtTimKiem.getText())) {
+                    new dialog("Nhập sai định dạng khi kiếm theo mã!", dialog.ERROR_DIALOG);
+                    return;
+                }
+            }
+        }
+        else {
+            if(!InputValidator.IsEmpty(txtTimKiem.getText())) {
+                if (!InputValidator.isValidName(txtTimKiem.getText())) {
+                    new dialog("Nhập sai định dạng khi kiếm theo tên!",dialog.ERROR_DIALOG);
+                    return;
+                }
+            }
+        }
+        ArrayList<NhanVien> dsnv = NVBUS.timNhanVien(txtTimKiem.getText(),searchSelection);
         dtmNhanVien.setRowCount(0);
         for (NhanVien nv : dsnv) {
             Vector<Object> vec = new Vector<>();

@@ -1,5 +1,7 @@
 package DTO;
 
+import java.util.Date;
+
 public class SanPham {
     private int maSP;
     private String tenSP;
@@ -9,12 +11,12 @@ public class SanPham {
     private String hinhAnh;
     private int donGia;
     private int trangThai;
+    private Date ngayTao;
 
     public SanPham() {
 
     }
-
-    public SanPham(int maSP, String tenSP, int maLoai, int soLuong, String donViTinh, String hinhAnh, int donGia,int trangThai) {
+    public SanPham(int maSP, String tenSP, int maLoai, int soLuong, String donViTinh, String hinhAnh, int donGia, int trangThai, Date ngayTao) {
         this.maSP = maSP;
         this.tenSP = tenSP;
         this.maLoai = maLoai;
@@ -23,7 +25,18 @@ public class SanPham {
         this.hinhAnh = hinhAnh;
         this.donGia = donGia;
         this.trangThai=trangThai;
+        this.ngayTao = ngayTao;
     }
+//    public SanPham(int maSP, String tenSP, int maLoai, int soLuong, String donViTinh, String hinhAnh, int donGia, int trangThai) {
+//        this.maSP = maSP;
+//        this.tenSP = tenSP;
+//        this.maLoai = maLoai;
+//        this.soLuong = soLuong;
+//        this.donViTinh = donViTinh;
+//        this.hinhAnh = hinhAnh;
+//        this.donGia = donGia;
+//        this.trangThai=trangThai;
+//    }
 
     public int getTrangThai() {
         return trangThai;
@@ -87,5 +100,11 @@ public class SanPham {
 
     public void setDonGia(int donGia) {
         this.donGia = donGia;
+    }
+    public Date getNgayTao() {
+        return ngayTao;
+    }
+    public void setNgayTao(Date ngayTao) {
+        this.ngayTao = ngayTao;
     }
 }

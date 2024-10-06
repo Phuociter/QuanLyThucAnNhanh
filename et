@@ -1,0 +1,169 @@
+[33mcommit e319f42b12e5bd3f3731cc4be6525261994fc597[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mHoangViet-New[m[33m, [m[1;31morigin/HoangViet-New[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m, [m[1;32mHoang-Viet-2[m[33m)[m
+Author: DinhThai04 <149181200+DinhThai04@users.noreply.github.com>
+Date:   Wed Sep 25 14:00:21 2024 +0700
+
+    sửa bút hủy đổi mật khẩu
+
+[1mdiff --git a/src/GUI/dlgDoiMatKhau.java b/src/GUI/dlgDoiMatKhau.java[m
+[1mindex 2c4f33b..156bf39 100644[m
+[1m--- a/src/GUI/dlgDoiMatKhau.java[m
+[1m+++ b/src/GUI/dlgDoiMatKhau.java[m
+[36m@@ -97,6 +97,11 @@[m [mpublic class dlgDoiMatKhau extends javax.swing.JDialog {[m
+         btnHuy.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N[m
+         btnHuy.setText("Hủy");[m
+         btnHuy.setPreferredSize(new java.awt.Dimension(102, 32));[m
+[32m+[m[32m        btnHuy.addActionListener(new java.awt.event.ActionListener() {[m
+[32m+[m[32m            public void actionPerformed(java.awt.event.ActionEvent evt) {[m
+[32m+[m[32m                dispose();[m
+[32m+[m[32m            }[m
+[32m+[m[32m        });[m
+         jPanel7.add(btnHuy);[m
+ [m
+         jPanel1.add(jPanel7, java.awt.BorderLayout.SOUTH);[m
+
+[33mcommit 67dca1845bc275158479bf3403f2e0fddcf477ce[m
+Author: DinhThai04 <149181200+DinhThai04@users.noreply.github.com>
+Date:   Wed Sep 25 13:53:50 2024 +0700
+
+    sửa xong cái chọn loại
+
+[1mdiff --git a/image/products/douong0.jpeg b/image/products/douong0.jpeg[m
+[1mindex 623ac38..7eda34e 100644[m
+Binary files a/image/products/douong0.jpeg and b/image/products/douong0.jpeg differ
+[1mdiff --git a/image/products/douong2.jpeg b/image/products/douong2.jpeg[m
+[1mindex 34ef600..7f9831d 100644[m
+Binary files a/image/products/douong2.jpeg and b/image/products/douong2.jpeg differ
+[1mdiff --git a/src/BUS/SanPhamBUS.java b/src/BUS/SanPhamBUS.java[m
+[1mindex 92b3213..3360307 100644[m
+[1m--- a/src/BUS/SanPhamBUS.java[m
+[1m+++ b/src/BUS/SanPhamBUS.java[m
+[36m@@ -118,7 +118,7 @@[m [mpublic class SanPhamBUS {[m
+             int soLuongSP = 0;[m
+             int donGiaSP = 0;[m
+             int tThai = Integer.parseInt(TrangThai);[m
+[31m-            if (maLoai == 0) {[m
+[32m+[m[32m            if (maLoai < 0) {[m
+                 new dialog("Vui lòng chọn loại sản phẩm!", dialog.ERROR_DIALOG);[m
+                 return false;[m
+             }[m
+[1mdiff --git a/src/GUI/PnQuanLySanPhamGUI.java b/src/GUI/PnQuanLySanPhamGUI.java[m
+[1mindex faccfcd..b7a2092 100644[m
+[1m--- a/src/GUI/PnQuanLySanPhamGUI.java[m
+[1m+++ b/src/GUI/PnQuanLySanPhamGUI.java[m
+[36m@@ -572,7 +572,7 @@[m [mpublic class PnQuanLySanPhamGUI extends JPanel {[m
+         cmbLoai.removeAllItems();[m
+         LBUS.docDanhSachLoai();[m
+         ArrayList<LoaiSP> dsl = LBUS.getDanhSachLoai();[m
+[31m-        cmbLoai.addItem("0 - Chọn loại");[m
+[32m+[m[32m        cmbLoai.addItem("Chọn loại");[m
+         for (LoaiSP loai : dsl) {[m
+             if (loai.getTrangThai() != 0) {[m
+                 cmbLoai.addItem(loai.getMaLoai() + " - " + loai.getTenLoai());[m
+
+[33mcommit 13efecdd0b16ff6e09ed655a963e35f76c634724[m
+Author: DinhThai04 <149181200+DinhThai04@users.noreply.github.com>
+Date:   Tue Sep 24 22:20:11 2024 +0700
+
+    Update MainQuanLyGUI.java
+
+[1mdiff --git a/src/GUI/MainQuanLyGUI.java b/src/GUI/MainQuanLyGUI.java[m
+[1mindex 975ee2c..5ea6d95 100644[m
+[1m--- a/src/GUI/MainQuanLyGUI.java[m
+[1m+++ b/src/GUI/MainQuanLyGUI.java[m
+[36m@@ -32,7 +32,7 @@[m [mpublic class MainQuanLyGUI extends JFrame {[m
+ [m
+     public MainQuanLyGUI() {[m
+         this.setTitle("Quản lý bán đồ ăn thức uống");[m
+[31m-        this.setSize(1535, 790);[m
+[32m+[m[32m        this.setSize(1535, 900);[m
+         Image icon = new ImageIcon("image/logo/logo32x32.png").getImage();[m
+         this.setIconImage(icon);[m
+         this.setUndecorated(true);[m
+
+[33mcommit 0e7be9231c6bc9b092f4f2b3f3cab5a0883c6451[m
+Merge: 572e81b 84ca87a
+Author: DinhThai04 <149181200+DinhThai04@users.noreply.github.com>
+Date:   Tue Sep 24 22:19:30 2024 +0700
+
+    Merge branch 'master' of https://github.com/Phuociter/QuanLyThucAnNhanh
+
+[33mcommit 84ca87a6e0748cbc115eeba34e15f5ac65e34445[m
+Merge: ce8968c 7d0a5cb
+Author: Phuociter <phuocv992@gmail.com>
+Date:   Sun Sep 22 21:22:57 2024 +0700
+
+    sửa lỗi thống kê lợi nhuận, sửa từ chỉtính từ năm bắt đầu mở cửa hàng trở đi và lỗi thống kê những tháng không có lợi nhuận hay doanh thu thì thống kê lợi nhuận bị âm
+
+[33mcommit ce8968c8d60f0f822a525c18fd3f68a1fd1ed67c[m
+Author: Phuociter <phuocv992@gmail.com>
+Date:   Sun Sep 22 21:18:21 2024 +0700
+
+    sửa lại thống kê lợi nhuận
+
+[1mdiff --git a/image/Menu/thongKeLoiNhuan.png b/image/Menu/thongKeLoiNhuan.png[m
+[1mnew file mode 100644[m
+[1mindex 0000000..9bbcb15[m
+Binary files /dev/null and b/image/Menu/thongKeLoiNhuan.png differ
+[1mdiff --git a/src/BUS/ThongKeBUS.java b/src/BUS/ThongKeBUS.java[m
+[1mindex 992b481..3463a34 100644[m
+[1m--- a/src/BUS/ThongKeBUS.java[m
+[1m+++ b/src/BUS/ThongKeBUS.java[m
+[36m@@ -24,7 +24,6 @@[m [mpublic class ThongKeBUS {[m
+         if (DoanhThuCacThang == null) {[m
+             return null;[m
+         }[m
+[31m-[m
+         ArrayList<Integer> LoiNhuancacThang = getLoiNhuanCacThangTheoNam(year);[m
+         if (LoiNhuancacThang == null) {[m
+             return null;[m
+[36m@@ -91,15 +90,19 @@[m [mpublic class ThongKeBUS {[m
+     private ArrayList<Integer> getLoiNhuanCacThangTheoNam(int year) {[m
+         ArrayList<Integer> arrayList = new ArrayList<>();[m
+         for (int i = 0; i < 12; i++) {[m
+[31m-            // int tongTien = thongKeDAO.getLoiNhuanThangTrongNam(i + 1, year) ;[m
+[31m-            [m
+[31m-            int tongTien = thongKeDAO.getDoanhThuThangTrongNam(i + 1, year) - ( thongKeDAO.getLuongNhanVienTheoThang() + thongKeDAO.getTienVonThangTrongNam(i + 1, year) );[m
+[31m-            if (tongTien == -1) {[m
+[31m-                new dialog("Lỗi thống kê doanh thu tháng " + (i + 1), dialog.ERROR_DIALOG);[m
+[31m-                return null;[m
+[32m+[m[32m            if(thongKeDAO.getDoanhThuThangTrongNam(i + 1, year) > 0){[m
+[32m+[m[32m                // System.out.println(i);[m
+[32m+[m[32m                int tongTien = thongKeDAO.getDoanhThuThangTrongNam(i + 1, year) - ( thongKeDAO.getLuongNhanVienTheoThang() + thongKeDAO.getTienVonThangTrongNam(i + 1, year) );[m
+[32m+[m[32m                System.out.println(tongTien);[m
+[32m+[m
+[32m+[m[32m                if (tongTien == -1) {[m
+[32m+[m[32m                    new dialog("Lỗi thống kê doanh thu tháng " + (i + 1), dialog.ERROR_DIALOG);[m
+[32m+[m[32m                    return null;[m
+[32m+[m[32m                }[m
+[32m+[m[32m                arrayList.add(tongTien);[m
+             }[m
+[31m-            arrayList.add(tongTien);[m
+[31m-[m
+[32m+[m[32m            else[m[41m [m
+[32m+[m[32m                arrayList.add(0);[m
+         }[m
+         return arrayList;[m
+     }[m
+[36m@@ -117,11 +120,16 @@[m [mpublic class ThongKeBUS {[m
+         for (int i = 0; i < 4; i++) {[m
+             int LoiNhuanQuy = 0;[m
+             for (int j = 0; j < 3; j++) {[m
+[31m-                LoiNhuanQuy += LoiNhuanCacThang.get(i * 3 + j);[m
+[32m+[m[32m                    LoiNhuanQuy += LoiNhuanCacThang.get( i * 3 + j);[m
+             }[m
+             double phanTram = (double) LoiNhuanQuy / tongLoiNhuan * 100.0;[m
+             arrayList.add(phanTram);[m
+         }[m
+         return arrayList;[m
+     }[m
+[32m+[m
+[32m+[m[32m    public int getOldestCreationYear(){[m
+[32m+[m[32m        int TmOldestYear = thongKeDAO.getInvoiceWithTheOldestCreationYear();[m
+[32m+[m[32m        return TmOldestYear;[m
+[32m+[m[32m    }[m
+ }[m
+[1mdiff --git a/src/DAO/ThongKeDAO.java b/src/DAO/ThongKeDAO.java[m
+[1mindex bc67bae..6aec62d 100644[m
+[1m--- a/src/DAO/ThongKeDAO.java[m
+[1m+++ b/src/DAO/ThongKeDAO.java[m
+[36m@@ -74,6 +74,7 @@[m [mpublic class ThongKe

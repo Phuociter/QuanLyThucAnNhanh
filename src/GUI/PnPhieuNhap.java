@@ -38,6 +38,7 @@ public class PnPhieuNhap extends JPanel {
     Font font = new Font("", Font.PLAIN, 20);
     DefaultTableModel dtmPhieuNhap;
     PhieuNhapBUS phieuNhapBUS = new PhieuNhapBUS();
+    ArrayList<PhieuNhap> phieuNhaps = phieuNhapBUS.getList();
     JButton btnSearchMaPN;
     JTextField txtSearchMaPN, txtStartPrice, txtEndPrice;
 
@@ -48,6 +49,7 @@ public class PnPhieuNhap extends JPanel {
     public PnPhieuNhap() {
         addControls();
         addEvents();
+        loaddata();
     }
 
     private void addControls() {
@@ -189,7 +191,7 @@ public class PnPhieuNhap extends JPanel {
 
     }
 // đình thái sửa đoạn này
-    private void loaddata() {
+    public void loaddata() {
         ArrayList<PhieuNhap> phieuNhaps = phieuNhapBUS.getList();
         // if (phieuNhaps == null) {
         //     return;
@@ -260,7 +262,7 @@ public class PnPhieuNhap extends JPanel {
         btnReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ArrayList<PhieuNhap> phieuNhaps = phieuNhapBUS.getList();
+                phieuNhaps = phieuNhapBUS.getList();
                 // Sắp xếp danh sách theo mã phiếu nhập từ cao đến thấp
                 phieuNhaps.sort((pn1, pn2) -> Integer.compare(pn2.getMaPN(), pn1.getMaPN()));
                 updateTableData(phieuNhaps);

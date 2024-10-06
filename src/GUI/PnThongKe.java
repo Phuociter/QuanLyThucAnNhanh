@@ -226,7 +226,7 @@ public class PnThongKe extends JPanel {
         ThongKe thongKe = thongKeBUS.thongKe((int) cmbYear.getSelectedItem());
         chartBarPanel.setChart(createBarChart(thongKe.getDoanhThuCacThang()));
         chartPiePanel.setChart(createPieChart(thongKe.getPhanTramDoanhThuTheoQuy()));
-        NumberFormat numberFormat = NumberFormat.getInstance(Locale.of("vi", "VN"));
+        NumberFormat numberFormat = NumberFormat.getInstance(Locale.forLanguageTag("vi-VN"));
         String formattedDoanhThu = numberFormat.format(thongKe.getTongDoanhThu());
         lbtltTongDoanhThuNam.setText(formattedDoanhThu + "");
         loadDataTbl(thongKe.getsPDaBans(), thongKe.getListTopKhachHang());
@@ -234,7 +234,7 @@ public class PnThongKe extends JPanel {
         //lợi nhuận
         chartBarPanelLoiNhuan.setChart(createBarChartLoiNhuan(thongKe.getLoiNhuanCacThang()));
         chartPiePanelLoiNhuan.setChart(createPieChartLoiNhuan(thongKe.getPhanTramLoiNhuanTheoQuy()));
-        NumberFormat numberFormat2 = NumberFormat.getInstance(Locale.of("vi", "VN"));
+        NumberFormat numberFormat2 = NumberFormat.getInstance( Locale.forLanguageTag("vi-VN"));
         String formattedLoiNhuan = numberFormat2.format(thongKe.getTongLoiNhuan());
         lbtltTongLoiNhuanNam.setText(formattedLoiNhuan + "");
 

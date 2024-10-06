@@ -3,12 +3,10 @@ package DAO;
 import DTO.SanPham;
 import Custom.JDBCUtil;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class SanPhamDAO {
 
@@ -29,6 +27,7 @@ public class SanPhamDAO {
                 sp.setDonViTinh(rs.getString(6));
                 sp.setHinhAnh(rs.getString(7));
                 sp.setTrangThai(rs.getInt(8));
+                sp.setNgayTao(rs.getDate(9));
                 listSP.add(sp);
             }
             return listSP;
@@ -216,7 +215,7 @@ public class SanPhamDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return maSP;
+        return Math.max(maSP,0);
     }
 
     public boolean themSanPham(SanPham sp) {
@@ -224,7 +223,7 @@ public class SanPhamDAO {
         try {
             Connection connection = JDBCUtil.getConnection();
 
-            String sql = "insert into sanpham(maSP, tenSP, maLoai, donGia, soLuong, donViTinh, hinhAnh, trangThai)  values(?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "insert into sanpham(maSP, tenSP, maLoai, donGia, soLuong, donViTinh, hinhAnh, trangThai, ngayTao)  values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
             PreparedStatement pre = connection.prepareStatement(sql);
 
             int maSP = layMaSanPhamCuoiCung() + 1;
@@ -308,7 +307,7 @@ public class SanPhamDAO {
         try {
             Connection connection = JDBCUtil.getConnection();
 
-            String sql = "insert into sanpham(maSP, tenSP, maLoai, donGia, soLuong, donViTinh, hinhAnh, trangThai ) values(?, ?, ?, ?, ?, ?, ?, ?) ";
+            String sql = "insert into sanpham(maSP, tenSP, maLoai, donGia, soLuong, donViTinh, hinhAnh, trangThai) values(?, ?, ?, ?, ?, ?, ?, ?) ";
             PreparedStatement pre = connection.prepareStatement(sql);
             pre.setInt(1, sp.getMaSP());
             pre.setString(2, sp.getTenSP());
@@ -413,7 +412,7 @@ public class SanPhamDAO {
         ArrayList<SanPham> sanPhams = new ArrayList<>();
         try {
             Connection c = JDBCUtil.getConnection();
-            String sql = "select * from sanpham where concat(maSP,tenSP) LIKE ? and trangThai = 1";
+            String sql = "select * from sanpham where lower(concat(maSP,tenSP)) LIKE lower(?) and trangThai = 1";
             PreparedStatement pst = c.prepareStatement(sql);
             pst.setString(1, "%" + txt + "%");
             ResultSet rs = pst.executeQuery();
@@ -426,7 +425,8 @@ public class SanPhamDAO {
                 String donViTinh = rs.getString(6);
                 String hinhAnh = rs.getString(7);
                 int trangThai = rs.getInt(8);
-                SanPham sanPham = new SanPham(maSP, tenSP, maLoai, soLuong, donViTinh, hinhAnh, donGia, trangThai);
+                Date date = rs.getDate(9);
+                SanPham sanPham = new SanPham(maSP, tenSP, maLoai, soLuong, donViTinh, hinhAnh, donGia, trangThai, date);
                 sanPhams.add(sanPham);
             }
             JDBCUtil.closeConnection(c);
@@ -452,7 +452,8 @@ public class SanPhamDAO {
                 String donViTinh = rs.getString(6);
                 String hinhAnh = rs.getString(7);
                 int trangThai = rs.getInt(8);
-                SanPham sanPham = new SanPham(maSP, tenSP, maLoai, soLuong, donViTinh, hinhAnh, donGia, trangThai);
+                Date date = rs.getDate(9);
+                SanPham sanPham = new SanPham(maSP, tenSP, maLoai, soLuong, donViTinh, hinhAnh, donGia, trangThai, date);
                 sanPhams.add(sanPham);
             }
             JDBCUtil.closeConnection(c);
@@ -480,5 +481,28 @@ public class SanPhamDAO {
         }
         return tenSP;
     }
-
+    public java.sql.Date getDatebyMaSP(int maSP){
+        java.sql.Date date = null;
+        Connection c = null;
+        try {
+            c = JDBCUtil.getConnection();
+            String sql = "select ngayTao from sanpham where maSP = ?";
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1,maSP);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()){
+                date = rs.getDate("ngayTao");
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        finally {
+            if( c != null){
+                JDBCUtil.closeConnection(c);
+            }
+        }
+        return date;
+    }
 }
+

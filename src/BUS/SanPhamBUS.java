@@ -1,8 +1,13 @@
 package BUS;
 
+import Custom.InputValidator;
 import DAO.SanPhamDAO;
 import DTO.SanPham;
 import Custom.dialog;
+
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 public class SanPhamBUS {
@@ -42,7 +47,7 @@ public class SanPhamBUS {
 
     public String getTenSP(String tenSP) {
         for (SanPham sp : listSP) {
-            if (sp.getTenSP() == tenSP) {
+            if (sp.getTenSP().toLowerCase().contains(tenSP.toLowerCase())) {
                 return sp.getTenSP();
             }
         }
@@ -100,12 +105,28 @@ public class SanPhamBUS {
             String TrangThai) {
 
         if (tenSP.trim().equals("")) {
-            new dialog("Tên Sản Phẩm không được để trống!", dialog.ERROR_DIALOG);
+            new dialog("Tên sản phẩm không được để trống!", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if (!InputValidator.IsValidNameProduct(tenSP)){
+            new dialog("Tên sản phẩm không hợp lệ!", dialog.ERROR_DIALOG);
             return false;
         }
 
+        if (checkDuplicateName(tenSP.trim())){
+            new dialog("Tên sản phẩm đã tồn tại!",dialog.ERROR_DIALOG);
+            return false;
+        }
         if (donViTinh.trim().equals("")) {
             new dialog("Vui lòng điền đơn vị tính!", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if (!InputValidator.IsValidNamelength(donViTinh)){
+            new dialog("Đơn vị tính sản phẩm không được vượt quá 50 ký tự!", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if (!InputValidator.isValidName(donViTinh)){
+            new dialog("Đơn vị tính sản phẩm không hợp lệ!", dialog.ERROR_DIALOG);
             return false;
         }
 
@@ -118,15 +139,15 @@ public class SanPhamBUS {
             int soLuongSP = 0;
             int donGiaSP = 0;
             int tThai = Integer.parseInt(TrangThai);
-            if (maLoai < 0) {
+            if (maLoai == 0) {
                 new dialog("Vui lòng chọn loại sản phẩm!", dialog.ERROR_DIALOG);
                 return false;
             }
             SanPham sp = new SanPham();
-            sp.setTenSP(tenSP);
+            sp.setTenSP(tenSP.trim());
             sp.setMaLoai(maLoai);
             sp.setSoLuong(soLuongSP);
-            sp.setDonViTinh(donViTinh);
+            sp.setDonViTinh(donViTinh.trim());
             sp.setHinhAnh(hinhAnh);
             sp.setDonGia(donGiaSP);
             sp.setTrangThai(tThai);
@@ -209,6 +230,15 @@ public class SanPhamBUS {
             sp.CapNhatGiaSanPHam(maSP,gia);
 
     }
+    private boolean checkDuplicateName(String name){
+        ArrayList<SanPham> sanPhams = spDAO.getDanhSachSanPham();
+        for (SanPham sp : sanPhams){
+            if (sp.getTenSP().equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public boolean capNhatThongTinSanPham(String maSP,
             String ten,
@@ -218,7 +248,6 @@ public class SanPhamBUS {
             String anh,
             String donGia,
             String trangThai) {
-
         try {
             if (maSP.trim().equals("")) {
                 new dialog("Chưa chọn sản phẩm để cập nhật thông tin!", dialog.ERROR_DIALOG);
@@ -231,7 +260,18 @@ public class SanPhamBUS {
             int soLuongSP = Integer.parseInt(soLuong);
             int donGiaSP = Integer.parseInt(donGia);
             int tThai = Integer.parseInt(trangThai);
-
+            if (getngayTaoByMaSP(ma) == null){
+                new dialog("Đã quá thời gian sửa sản phẩm!", dialog.ERROR_DIALOG);
+                return false;
+            }
+            Date date = Date.valueOf(String.valueOf(getngayTaoByMaSP(ma)));
+            LocalDate sqlDate = date.toLocalDate();
+            LocalDate now = LocalDate.now();
+            long daysBetween = ChronoUnit.DAYS.between(sqlDate, now);
+            if (daysBetween >= 1){
+                new dialog("Đã quá thời gian sửa sản phẩm!", dialog.ERROR_DIALOG);
+                return false;
+            }
             if (maLoai == 0) {
                 new dialog("Vui lòng chọn loại sản phẩm!", dialog.ERROR_DIALOG);
                 return false;
@@ -241,18 +281,32 @@ public class SanPhamBUS {
                 new dialog("Tên sản phẩm không được để trống!", dialog.ERROR_DIALOG);
                 return false;
             }
-
+            if (!InputValidator.IsValidNameProduct(ten.trim())){
+                new dialog("Tên sản phẩm không hợp lệ!", dialog.ERROR_DIALOG);
+                return false;
+            }
+            if (checkDuplicateName(ten.trim())){
+                new dialog("Tên sản phẩm đã tồn tại!",dialog.ERROR_DIALOG);
+                return false;
+            }
             if (donViTinh.trim().equals("")) {
                 new dialog("Vui lòng điền đơn vị tính!", dialog.ERROR_DIALOG);
                 return false;
             }
-
+            if (!InputValidator.IsValidNamelength(donViTinh.trim())){
+                new dialog("Đơn vị tính sản phẩm không được vượt quá 50 ký tự!", dialog.ERROR_DIALOG);
+                return false;
+            }
+            if (!InputValidator.isValidName(donViTinh.trim())){
+                new dialog("Đơn vị tính sản phẩm không hợp lệ!", dialog.ERROR_DIALOG);
+                return false;
+            }
             SanPham sp = new SanPham();
             sp.setMaSP(ma);
-            sp.setTenSP(ten);
+            sp.setTenSP(ten.trim());
             sp.setMaLoai(maLoai);
             sp.setSoLuong(soLuongSP);
-            sp.setDonViTinh(donViTinh);
+            sp.setDonViTinh(donViTinh.trim());
             sp.setHinhAnh(anh);
             sp.setDonGia(donGiaSP);
             sp.setTrangThai(tThai);
@@ -341,5 +395,8 @@ public class SanPhamBUS {
     
     public ArrayList<SanPham> getListSPConHang(){
         return spDAO.getListSPConHang();
+    }
+    public Date getngayTaoByMaSP (int Masp){
+        return spDAO.getDatebyMaSP(Masp);
     }
 }

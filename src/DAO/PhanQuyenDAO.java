@@ -178,7 +178,7 @@ public class PhanQuyenDAO {
         int ma = -1;
         try {
             Connection c = JDBCUtil.getConnection();
-            String sql = "select * from phanquyen where tenQuyen = ? and trangThai = 1";
+            String sql = "select maQuyen from phanquyen where tenQuyen = ? and trangThai = 1";
             PreparedStatement preparedStatement = c.prepareStatement(sql);
             preparedStatement.setString(1, name);
             ResultSet rs = preparedStatement.executeQuery();

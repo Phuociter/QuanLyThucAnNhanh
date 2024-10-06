@@ -1,5 +1,9 @@
 package GUI;
 
+import Custom.*;
+import DAO.CTPhieuNhapDAO;
+import DAO.PhieuNhapDAO;
+import DAO.SanPhamDAO;
 import DTO.SanPham;
 import BUS.SanPhamBUS;
 import BUS.CTPhieuNhapBUS;
@@ -7,13 +11,9 @@ import BUS.LoaiSPBUS;
 
 import static Main.Main.changLNF;
 
-import Custom.XuLyFileExcel;
-import Custom.dialog;
 import DAO.CTPhieuNhapDAO;
 import DAO.PhieuNhapDAO;
 import DAO.SanPhamDAO;
-import Custom.MyFileChooser;
-import Custom.Mytable;
 import DTO.LoaiSP;
 import DTO.CTPhieuNhap;
 
@@ -26,20 +26,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -52,6 +46,9 @@ public class PnQuanLySanPhamGUI extends JPanel {
 
     DefaultTableModel dtmSanPham;
     JTextField txtMa, txtTen, txtsoLuong, txtdonViTinh, txtdonGia, txtTimKiem;
+    String[] searchOption = {"Theo mã", "Theo tên"};
+    JComboBox<String> searchSelection = new JComboBox<>(searchOption);
+
     JComboBox<String> cmbLoai;
     JButton btnThemSP, btnCapNhat, btnXoa, btnTim, btnChonAnh, btnReset, btnXuatExcel, btnNhapExcel;
     JLabel lblAnhSP;
@@ -63,6 +60,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
         changLNF("Windows");
         addControlsSanPham();
         addEventsSanPham();
+        loadDataLenBangSanPham();
     }
 
     SanPhamBUS SPBUS = new SanPhamBUS();
@@ -220,10 +218,13 @@ public class PnQuanLySanPhamGUI extends JPanel {
         JPanel pnTimKiem = new JPanel();
         JLabel lblTimKiem = new JLabel("Từ khoá tìm");
         lblTimKiem.setFont(font);
+        searchSelection.setPreferredSize(new Dimension(100,32));
+        searchSelection.setFont(fontButton);
         txtTimKiem = new JTextField(20);
         txtTimKiem.setFont(font);
         pnTimKiem.add(lblTimKiem);
         pnTimKiem.add(txtTimKiem);
+        pnTimKiem.add(searchSelection);
         this.add(pnTimKiem);
 
         pnButton.add(btnThemSP);
@@ -292,6 +293,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
         loadDataLenBangSanPham();
     }
 
+
     private void addEventsSanPham() {
 
         btnReset.addActionListener(new ActionListener() {
@@ -305,8 +307,10 @@ public class PnQuanLySanPhamGUI extends JPanel {
                 txtdonGia.setText("");
                 txtdonViTinh.setText("");
                 txtsoLuong.setText("");
+                txtTimKiem.setText("");
                 cmbLoai.setSelectedIndex(0);
                 cmbLoai.setEnabled(true);
+                searchSelection.setSelectedIndex(0);
             }
         });
 
@@ -430,24 +434,56 @@ public class PnQuanLySanPhamGUI extends JPanel {
     }
 
     private void xuLyTimKiem() {
-        String ten = txtTimKiem.getText().toLowerCase();
+        String key = txtTimKiem.getText().toLowerCase();
+        String searchType = (String) searchSelection.getSelectedItem();
+        if(InputValidator.IsEmpty(key)){
+            new dialog("Vui lòng nhập từ khóa tìm kiếm!", dialog.ERROR_DIALOG);
+            return;
+        }
         dtmSanPham.setRowCount(0);
         ArrayList<SanPham> dssp = null;
-        dssp = SPBUS.getSPTheoTen(ten);
         DecimalFormat dcf = new DecimalFormat("###,###");
-        for (SanPham sp : dssp) {
-            Vector<Object> vec = new Vector<>();
-            vec.add(sp.getMaSP());
-            vec.add(sp.getTenSP());
-            String tenLoai = LBUS.getTenLoai(sp.getMaLoai());
-            vec.add(tenLoai);
-            vec.add(dcf.format(sp.getDonGia()));
-            vec.add(dcf.format(sp.getSoLuong()));
-            vec.add(sp.getDonViTinh());
-            vec.add(sp.getHinhAnh());
+        if (searchType.trim().equals("Theo mã")) {
+            SanPham sp = SPBUS.getSP(key);
+            if(sp != null) {
+                Vector<Object> vec = new Vector<>();
+                vec.add(sp.getMaSP());
+                vec.add(sp.getTenSP());
+                String tenLoai = LBUS.getTenLoai(sp.getMaLoai());
+                vec.add(tenLoai);
+                vec.add(dcf.format(sp.getDonGia()));
+                vec.add(dcf.format(sp.getSoLuong()));
+                vec.add(sp.getDonViTinh());
+                vec.add(sp.getHinhAnh());
             dtmSanPham.addRow(vec);
+            new dialog("Đã tìm thấy 1 sản phẩm!",dialog.INFO_DIALOG);
+            }
+            else {
+                new dialog("Không tìm thấy sản phẩm nào!",dialog.INFO_DIALOG);
+            }
         }
-        dialog dlg = new dialog("Số kết quả tìm được: " + dssp.size(), dialog.INFO_DIALOG);
+        else {
+            dssp = SPBUS.getSPTheoTen(key);
+            for (SanPham sp : dssp) {
+                Vector<Object> vec = new Vector<>();
+                vec.add(sp.getMaSP());
+                vec.add(sp.getTenSP());
+                String tenLoai = LBUS.getTenLoai(sp.getMaLoai());
+                vec.add(tenLoai);
+                vec.add(dcf.format(sp.getDonGia()));
+                vec.add(dcf.format(sp.getSoLuong()));
+                vec.add(sp.getDonViTinh());
+                vec.add(sp.getHinhAnh());
+                dtmSanPham.addRow(vec);
+                System.out.println(dssp.size());
+            }
+            if(dssp.size()>0){
+                new dialog("Số kết quả tìm được: " + dssp.size(), dialog.INFO_DIALOG);
+            }
+            else{
+                new dialog("Không tìm thấy sản phẩm nào!",dialog.INFO_DIALOG);
+            }
+        }
     }
 
     private void xuLyXoaSanPham() {
@@ -486,6 +522,10 @@ public class PnQuanLySanPhamGUI extends JPanel {
             txtdonViTinh.setText(donViTinh.replace(",", ""));
             int maSP = Integer.parseInt(ma);
 
+
+            CTPhieuNhapBUS ctPhieuNhapBUS = new CTPhieuNhapBUS();
+            CTPhieuNhap ctPhieuNhap = new CTPhieuNhap();
+            ctPhieuNhap = ctPhieuNhapBUS.getCTPhieuNhapByMaSP(maSP);
             // CTPhieuNhapBUS listBUS = new CTPhieuNhapBUS();
             // ArrayList<CTPhieuNhap> listCTPN = new ArrayList<>();
             // ArrayList<CTPhieuNhap> listCTPN2 = new ArrayList<>();
@@ -546,14 +586,14 @@ public class PnQuanLySanPhamGUI extends JPanel {
         return max;
     }
 
-    private void loadDataLenBangSanPham() {
+    public void loadDataLenBangSanPham() {
         SPBUS.readListSanPham();
         dtmSanPham.setRowCount(0);
 
         ArrayList<SanPham> dssp = SPBUS.getListSP();
 
         DecimalFormat dcf = new DecimalFormat("###,###");
-        
+
         for (SanPham sp : dssp) {
             Vector<Object> vec = new Vector<>();
             vec.add(sp.getMaSP());
@@ -572,7 +612,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
         cmbLoai.removeAllItems();
         LBUS.docDanhSachLoai();
         ArrayList<LoaiSP> dsl = LBUS.getDanhSachLoai();
-        cmbLoai.addItem("Chọn loại");
+        cmbLoai.addItem("0 - Chọn loại");
         for (LoaiSP loai : dsl) {
             if (loai.getTrangThai() != 0) {
                 cmbLoai.addItem(loai.getMaLoai() + " - " + loai.getTenLoai());
@@ -619,39 +659,39 @@ private void xuLySuaSanPham() {
             new dialog("Vui lòng chọn đối tượng cần sửa", 3);
             return;
         }
-
-        int maSP;
-        int maPN;
-        Date sqlDate;
-
-        try {
-            maSP = Integer.parseInt(maSPText);
-            maPN = ctPhieuNhapDAO.getmaPnBymaSP(maSP);
-            sqlDate = phieuNhapDAO.getngayNhapbyID(maPN);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            new dialog("Lỗi khi xử lý mã sản phẩm", 3);
-            return;
-        } catch (Exception e) {
-            e.printStackTrace();
-            new dialog("Lỗi hệ thống", 3);
-            return;
-        }
-
-        if (sqlDate == null) {
-            new dialog("Đã quá thời gian cho phép sửa", 1);
-            return;
-        }
-
-        long ngayNhapMillis = sqlDate.getTime();
-        long nowMillis = System.currentTimeMillis();
-        long daysSinceNhap = TimeUnit.DAYS.convert(nowMillis - ngayNhapMillis, TimeUnit.MILLISECONDS);
-
-        // Kiểm tra thời gian cho phép sửa
-        if (daysSinceNhap > 1) {
-            new dialog("Đã quá thời gian cho phép sửa", 1);
-            return;
-        }
+//
+//        int maSP;
+//        int maPN;
+//        Date sqlDate;
+//
+//        try {
+//            maSP = Integer.parseInt(maSPText);
+//            maPN = ctPhieuNhapDAO.getmaPnBymaSP(maSP);
+//            sqlDate = phieuNhapDAO.getngayNhapbyID(maPN);
+//        } catch (NumberFormatException e) {
+//            e.printStackTrace();
+//            new dialog("Lỗi khi xử lý mã sản phẩm", 3);
+//            return;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            new dialog("Lỗi hệ thống", 3);
+//            return;
+//        }
+//
+//        if (sqlDate == null) {
+//            new dialog("Đã quá thời gian cho phép sửa", 1);
+//            return;
+//        }
+//
+//        long ngayNhapMillis = sqlDate.getTime();
+//        long nowMillis = System.currentTimeMillis();
+//        long daysSinceNhap = TimeUnit.DAYS.convert(nowMillis - ngayNhapMillis, TimeUnit.MILLISECONDS);
+//
+//        // Kiểm tra thời gian cho phép sửa
+//        if (daysSinceNhap > 1) {
+//            new dialog("Đã quá thời gian cho phép sửa", 1);
+//            return;
+//        }
 
         int row = tblSanPham.getSelectedRow();
         String anh = "default.png";
