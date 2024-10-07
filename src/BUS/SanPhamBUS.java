@@ -233,7 +233,7 @@ public class SanPhamBUS {
     private boolean checkDuplicateName(String name){
         ArrayList<SanPham> sanPhams = spDAO.getDanhSachSanPham();
         for (SanPham sp : sanPhams){
-            if (sp.getTenSP().equals(name)){
+            if (sp.getTenSP().trim().toLowerCase().equals(name.trim().toLowerCase())){
                 return true;
             }
         }

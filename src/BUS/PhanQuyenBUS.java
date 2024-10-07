@@ -16,7 +16,7 @@ public class PhanQuyenBUS {
     private boolean checkDuplicateName(String tenQuyen) {
         ArrayList<PhanQuyen> phanQuyens = phanQuyenDAO.selectAll();
         for (PhanQuyen phanQuyen : phanQuyens) {
-            if (phanQuyen.getTenQuyen().equals(tenQuyen.strip())) {
+            if (phanQuyen.getTenQuyen().toLowerCase().equals(tenQuyen.strip().toLowerCase())) {
                 new dialog("Tên quyền đã tồn tại", dialog.ERROR_DIALOG);
                 return true;
             }

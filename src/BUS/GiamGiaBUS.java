@@ -64,7 +64,7 @@ public class GiamGiaBUS {
             if (giamGia.getMaGiam() == maGiamGia) {
                 continue;
             }
-            if (giamGia.getTenGiamGia().equals(tenGiamGia.strip())) {
+            if (giamGia.getTenGiamGia().toLowerCase().strip().equals(tenGiamGia.strip().toLowerCase())) {
                 new dialog("Tên giảm giá đã tồn tại", dialog.ERROR_DIALOG);
                 return true;
             }
