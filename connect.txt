@@ -1,4 +1,4 @@
-LAPTOP-24JVPMFM
-quanlythucannhanh1
+Localhost
+quanlythucannhanh
 sa
-123456789
+123456

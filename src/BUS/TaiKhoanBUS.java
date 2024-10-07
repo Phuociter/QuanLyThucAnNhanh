@@ -114,6 +114,11 @@ public class TaiKhoanBUS {
     }
 
     public void khoaTaiKhoan(String ma) {
+        if(InputValidator.IsEmpty(ma.trim())){
+            new dialog("Vui lòng chọn nhân viên cần khóa!", 1);
+            return;
+        }
+            
         int maNV = Integer.parseInt(ma);
         if (taiKhoanDAO.getTrangThai(maNV) == -1){
             new dialog("Nhân viên chưa có tài khoản!",dialog.ERROR_DIALOG);
@@ -125,6 +130,10 @@ public class TaiKhoanBUS {
         }
         if (nhanVienBUS.getById(maNV).getChucVu().equals("Quản trị")){
             new dialog("Tài khoản của quản trị viên không thể bị khóa!",dialog.ERROR_DIALOG);
+            return;
+        }
+        dialog checkKhoaTaiKhoan = new dialog("Bạn có chắc muốn khóa tài khoản này?", dialog.WARNING_DIALOG);
+        if (checkKhoaTaiKhoan.getAction() != dialog.OK_OPTION) {
             return;
         }
         boolean flag = taiKhoanDAO.khoaTaiKhoan(maNV);

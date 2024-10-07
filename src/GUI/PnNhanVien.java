@@ -55,6 +55,7 @@ public class PnNhanVien extends JPanel {
         lblTitle.setForeground(ClMain);
         btnResetNV = new JButton(new ImageIcon("image/btn/refresh.png"));
         btnResetNV.setPreferredSize(new Dimension(40, 40));
+        btnResetNV.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnResetNV.setBorder(null); // xóa viền
         btnResetNV.setFocusable(false); // bỏ focus để không hiển thị viền khi focus
         btnResetNV.setOpaque(false); // nền trong suốt 
@@ -85,7 +86,7 @@ public class PnNhanVien extends JPanel {
         cmbGioiTinh = new JComboBox<String>();
         txtDienThoai = new JTextField(25);
         txtLuong = new JTextField(25);
-        txtTimKiem = new JTextField(25);
+        txtTimKiem = new JTextField(20);
 
         JPanel pnMaNV = new JPanel();
         lblMaNV.setFont(font);
