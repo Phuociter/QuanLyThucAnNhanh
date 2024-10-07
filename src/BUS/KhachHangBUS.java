@@ -74,7 +74,7 @@ public class KhachHangBUS {
             return false;
         }
         if (!InputValidator.IsValidNamelength(khachHang.getTen())){
-            new dialog("Họ không được vượt quá 50 ký tự!", dialog.ERROR_DIALOG);
+            new dialog("Tên khách hàng không được vượt quá 50 ký tự!", dialog.ERROR_DIALOG);
             return false;
         }
         if (!CheckName(khachHang.getTen(), "Tên khách hàng không hợp lệ!")) {
@@ -88,11 +88,16 @@ public class KhachHangBUS {
                 return false;
             }
         }
-        if(!InputValidator.IsEmpty(khachHang.getEmail())) {
+        if(!InputValidator.IsEmpty(khachHang.getDiaChi())) {
             if (!ChechAddress(khachHang.getDiaChi(), "Địa chỉ không hợp lệ!")) {
                 return false;
             }
         }
+//        if(!InputValidator.IsEmpty(khachHang.getDiaChi())){
+//            if(!InputValidator.isValidAddress(khachHang.getDiaChi())) {
+//                return false;
+//            }
+//        }
         return true;
     }
 
@@ -125,7 +130,7 @@ public class KhachHangBUS {
         ArrayList <KhachHang> khachHangs = new ArrayList<>();
         khachHangs = getListKhachHang();
         for (KhachHang kh : khachHangs){
-            if (kh.getEmail().trim().equals(Email.trim())){
+            if (kh.getEmail().trim().equals(Email.trim()) && !InputValidator.IsEmpty(Email)){
                 return true;
             }
         }
@@ -137,7 +142,7 @@ public class KhachHangBUS {
         ArrayList <KhachHang> khachHangs = new ArrayList<>();
         khachHangs = getListKhachHang();
         for (KhachHang kh : khachHangs){
-            if (kh.getEmail().trim().equals(Email.trim()) && kh.getMaKH() != maKH){
+            if (kh.getEmail().trim().equals(Email.trim()) && kh.getMaKH() != maKH && !InputValidator.IsEmpty(Email)){
                 return true;
             }
         }
