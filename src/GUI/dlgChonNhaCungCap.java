@@ -163,7 +163,8 @@ public class dlgChonNhaCungCap extends javax.swing.JDialog {
                 btnXoaActionPerformed(evt);
             }
         });
-        jPanel3.add(btnXoa);
+        // btn xóa
+//        jPanel3.add(btnXoa);
 
         jPanel1.add(jPanel3, java.awt.BorderLayout.SOUTH);
 

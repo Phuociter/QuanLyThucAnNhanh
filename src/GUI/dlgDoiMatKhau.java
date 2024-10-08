@@ -128,12 +128,25 @@ public class dlgDoiMatKhau extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnXanNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXanNhanActionPerformed
-        if(new String(txtPassCu.getPassword()).isEmpty() || new String(txtPassMoi.getPassword()).isEmpty() || new String(txtPassMoiAgain.getPassword()).isEmpty()){
-            new dialog("Không được để trống",dialog.ERROR_DIALOG);
+        if(new String(txtPassCu.getPassword()).isEmpty()){
+            new dialog("Không được để trống mật khẩu cũ",dialog.ERROR_DIALOG);
             return;
         }
+        if (String.valueOf(txtPassMoi.getPassword()).isEmpty()){
+            new dialog("Không được để trống mật khẩu mới",dialog.ERROR_DIALOG);
+            return;
+        }
+        if (String.valueOf(txtPassMoiAgain.getPassword()).isEmpty()){
+            new dialog("Không được để trống mật khẩu mới nhập lại",dialog.ERROR_DIALOG);
+            return;
+        }
+
         if(!InputValidator.isValidPass(new String(txtPassMoi.getPassword()).strip())){
-            new dialog("Mật khẩu không được có ký tự",dialog.ERROR_DIALOG);
+            new dialog("Mật khẩu không được có ký tự đặc biệt",dialog.ERROR_DIALOG);
+            return;
+        }
+        if(new String(txtPassMoi.getPassword()).contains(" ")){
+            new dialog("Mật khẩu không được có khoảng trắng",dialog.ERROR_DIALOG);
             return;
         }
         if(taiKhoanBUS.doiMatKhau(new String(txtPassCu.getPassword()),new String(txtPassMoi.getPassword()), new String(txtPassMoiAgain.getPassword()))){
