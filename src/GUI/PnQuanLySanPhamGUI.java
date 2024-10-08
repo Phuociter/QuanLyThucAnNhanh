@@ -216,7 +216,7 @@ public class PnQuanLySanPhamGUI extends JPanel {
         btnNhapExcel.setIcon(new ImageIcon("image/btn/excel.png"));
 
         JPanel pnTimKiem = new JPanel();
-        JLabel lblTimKiem = new JLabel("Từ khoá tìm");
+        JLabel lblTimKiem = new JLabel("Tìm kiếm");
         lblTimKiem.setFont(font);
         searchSelection.setPreferredSize(new Dimension(100,32));
         searchSelection.setFont(fontButton);
@@ -440,10 +440,14 @@ public class PnQuanLySanPhamGUI extends JPanel {
             new dialog("Vui lòng nhập từ khóa tìm kiếm!", dialog.ERROR_DIALOG);
             return;
         }
-        dtmSanPham.setRowCount(0);
         ArrayList<SanPham> dssp = null;
         DecimalFormat dcf = new DecimalFormat("###,###");
         if (searchType.trim().equals("Theo mã")) {
+            if (!InputValidator.isPositiveNumber(key.trim())){
+                new dialog("Vui lòng nhập đúng định dạng tìm kiếm theo mã!",1);
+                return;
+            }
+            dtmSanPham.setRowCount(0);
             SanPham sp = SPBUS.getSP(key);
             if(sp != null) {
                 Vector<Object> vec = new Vector<>();
@@ -463,6 +467,11 @@ public class PnQuanLySanPhamGUI extends JPanel {
             }
         }
         else {
+            if (!InputValidator.IsValidNameProduct(key)){
+                new dialog("Vui lòng nhập đúng định dạng tìm kiếm theo tên",1);
+                return;
+            }
+            dtmSanPham.setRowCount(0);
             dssp = SPBUS.getSPTheoTen(key);
             for (SanPham sp : dssp) {
                 Vector<Object> vec = new Vector<>();

@@ -78,7 +78,7 @@ public class PnNhanVien extends JPanel {
         lblGioiTinh = new JLabel("Giới tính");
         lblDienThoai = new JLabel("Điện thoại");
         lblLuong = new JLabel("Lương");
-        lblTimKiem = new JLabel("Từ khóa tìm");
+        lblTimKiem = new JLabel("Tìm kiếm");
         txtMaNV = new JTextField(25);
         txtMaNV.setEditable(false);
         txtHodem = new JTextField(25);
@@ -143,7 +143,8 @@ public class PnNhanVien extends JPanel {
         TimKiem.add(searchSelection);
         pnTextField.add(TimKiem);
 
-        Dimension lblSize = lblTimKiem.getPreferredSize();// nên lấy kích thước của label có độ rộng lớn nhất
+        Dimension lblSize = lblDienThoai.getPreferredSize();// nên lấy kích thước của label có độ rộng lớn nhất
+        lblSize.width += 10;
         lblMaNV.setPreferredSize(lblSize);
         lblHoDem.setPreferredSize(lblSize);
         lblGioiTinh.setPreferredSize(lblSize);
