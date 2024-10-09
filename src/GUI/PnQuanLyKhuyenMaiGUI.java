@@ -489,6 +489,7 @@ public class PnQuanLyKhuyenMaiGUI extends javax.swing.JPanel {
         spnDieuKien.setValue(0);
         ngayBD.setDate(new Date());
         ngayKT.setDate(new Date());
+        tblGiamGia.clearSelection();
     }
 
     private void addEvents() {

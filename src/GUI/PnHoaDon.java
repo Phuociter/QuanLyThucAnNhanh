@@ -4,7 +4,9 @@ import BUS.HoaDonBUS;
 import Custom.InputValidator;
 import Custom.Mytable;
 import Custom.dialog;
+import DAO.HoaDonDAO;
 import DTO.HoaDon;
+import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 
 import java.awt.BorderLayout;
@@ -16,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.*;
@@ -96,6 +99,7 @@ public class PnHoaDon extends JPanel {
         JLabel lbtxtStartDate = new JLabel("Từ ngày");
         lbtxtStartDate.setFont(font);
         JDateChooser dtcStartDate = new JDateChooser();
+        dtcStartDate.setDate(new HoaDonBUS().getHoaDonByMaHD(new HoaDonDAO().getMaHDMin()).getNgayLap());
         dtcStartDate.setPreferredSize(new Dimension(150, 30));
         pntxtStartDate.add(lbtxtStartDate);
         pntxtStartDate.add(dtcStartDate);
@@ -227,7 +231,7 @@ public class PnHoaDon extends JPanel {
                     tble.addRow(data);
                 }
                 dateMax.setDate(new Date());
-                dateMin.setDate(new Date());
+                dateMin.setDate(new HoaDonBUS().getHoaDonByMaHD(new HoaDonDAO().getMaHDMin()).getNgayLap());
                 priceMax.setText("");
                 priceMin.setText("");
                 id.setText("");
@@ -289,13 +293,17 @@ public class PnHoaDon extends JPanel {
                         return;
                     }
                 }
-                tble.setRowCount(0);
+
                 ArrayList<HoaDon> listHD = null;
                 try {
                     listHD = list.getListHD_Price_Date(dateMin.getDate(), dateMax.getDate(), priceMin.getText(), priceMax.getText());
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
+                if(listHD == null){
+                    return;
+                }
+                tble.setRowCount(0);
                 if (listHD != null && listHD.size() > 0 ) {
                     for (int i = 0; i < listHD.size(); i++) {
                         Object[] newRowData = {listHD.get(i).getMaHD(), listHD.get(i).getMaKH(), listHD.get(i).getMaNV(), listHD.get(i).getMaGiam(), listHD.get(i).getNgayLap(), listHD.get(i).getTongTien()};

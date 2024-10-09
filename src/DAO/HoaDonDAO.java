@@ -196,4 +196,48 @@ public class HoaDonDAO {
         }
         return maGiam;
     }
+    public int getMaHDMin(){
+        Connection c = null;
+        int min = Integer.MAX_VALUE;
+        try{
+            c = JDBCUtil.getConnection();
+            String sql = "SELECT MIN (maHD) as min from hoadon";
+            Statement st = c.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            if(rs.next()){
+                min = rs.getInt("min");
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        finally {
+            if(c != null){
+                JDBCUtil.closeConnection(c);
+            }
+            return min;
+        }
+    }
+    public int getMaHDMax(){
+        Connection c = null;
+        int max = Integer.MIN_VALUE;
+        try{
+            c = JDBCUtil.getConnection();
+            String sql = "SELECT MAX (maHD) as max from hoadon";
+            Statement st = c.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            if(rs.next()){
+                max = rs.getInt("max");
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        finally {
+            if(c != null){
+                JDBCUtil.closeConnection(c);
+            }
+            return max;
+        }
+    }
 }

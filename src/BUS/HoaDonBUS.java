@@ -16,6 +16,10 @@ public class HoaDonBUS {
     public ArrayList<HoaDon> getlistHD() {
         return HDDAO.getListHoaDon();
     }
+    // lấy hóa đơn theo mã hóa đơn
+    public HoaDon getHoaDonByMaHD(int maHD){
+        return HDDAO.getHoaDonTheoMHD(maHD);
+    }
 
 
     public ArrayList<HoaDon> getlistHDtheoDateVaTongTien(Date DateMin, Date DateMax, int TongTienMin, int TongTienMax) {
@@ -67,7 +71,7 @@ public class HoaDonBUS {
                 }
                 catch (Exception e){
                     new dialog("Vui lòng nhập đúng định dạng", dialog.ERROR_DIALOG);
-                    return currentList;
+                    return null;
                 }
             }
             if (InputValidator.IsEmpty(GiaMin)){
@@ -78,7 +82,7 @@ public class HoaDonBUS {
                 }
                 catch (Exception e){
                     new dialog("Vui lòng nhập đúng định dạng", dialog.ERROR_DIALOG);
-                    return currentList;
+                    return null;
                 }
 
             }
@@ -88,19 +92,19 @@ public class HoaDonBUS {
                     int PriceMax = Integer.parseInt(GiaMax);
                     if (PriceMin > PriceMax || PriceMin < 0 || PriceMax < 0) {
                         new dialog("Vui lòng nhập khoảng giá hợp lệ", dialog.ERROR_DIALOG);
-                        return currentList;
+                        return null;
                     } else {
                         return currentList = HDDAO.getListHoaDonTheoDateVaTongTien(sqlMin, sqlMax, PriceMin, PriceMax);
                     }
                 }
                 catch (Exception e){
                     new dialog("Vui lòng nhập đúng định dạng", dialog.ERROR_DIALOG);
-                    return currentList;
+                    return null;
                 }
             }
         } else {
             new dialog("Vui lòng nhập đúng khoảng ngày!", dialog.ERROR_DIALOG);
-            return currentList;
+            return null;
         }
         System.out.println("test");
         return currentList;
