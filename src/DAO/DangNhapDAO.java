@@ -24,7 +24,7 @@ public class DangNhapDAO {
         TaiKhoan taiKhoan = null;
         try {
             Connection c = JDBCUtil.getConnection();
-            String sql = "select * from taikhoan where tenDangNhap=? and matKhau=? and trangThai=1";
+            String sql = "select * from taikhoan where tenDangNhap=? and  matKhau COLLATE Latin1_General_BIN = ? and trangThai=1";
             PreparedStatement pst = c.prepareStatement(sql);
             pst.setString(1, tk.getTenDangNhap());
             pst.setString(2, tk.getMatKhau());

@@ -154,7 +154,7 @@ public class DangNhapGUI extends JFrame {
 
     private void xulydangnhap() {
         dangNhapBUS.login(txtUsername.getText(), new String(txtPassword.getPassword()));
-        if (DangNhapBUS.taiKhoanLogin == null) {
+g        if (DangNhapBUS.taiKhoanLogin == null) {
             return;
         }
         dangNhapBUS.GhiNhoTK(txtUsername.getText(), new String(txtPassword.getPassword()), ckbNhoMatKhau.isSelected());
