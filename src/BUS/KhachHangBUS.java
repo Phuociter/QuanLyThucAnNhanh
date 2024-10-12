@@ -73,6 +73,10 @@ public class KhachHangBUS {
         if (CheckEmpty(khachHang)) {
             return false;
         }
+        if (khachHang.getTen().trim().length() < 3){
+            new dialog("Tên khách hàng chứa từ 3 đến 50 ký tự!", dialog.ERROR_DIALOG);
+            return false;
+        }
         if (!InputValidator.IsValidNamelength(khachHang.getTen())){
             new dialog("Tên khách hàng không được vượt quá 50 ký tự!", dialog.ERROR_DIALOG);
             return false;

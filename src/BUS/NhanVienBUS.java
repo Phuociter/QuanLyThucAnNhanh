@@ -68,6 +68,10 @@ public class NhanVienBUS {
             new dialog("Tên không được để trống!", dialog.ERROR_DIALOG);
             return false;
         }
+        if(ho.trim().length()< 2){
+            new dialog("Họ chỉ được nhập từ 2 đến 50 ký tự!", dialog.ERROR_DIALOG);
+            return false;
+        }
         if (!InputValidator.IsValidNamelength(ho)){
             new dialog("Họ không được vượt quá 50 ký tự!", dialog.ERROR_DIALOG);
             return false;
@@ -126,8 +130,13 @@ public class NhanVienBUS {
             new dialog("Họ không được để trống!", dialog.ERROR_DIALOG);
             return false;
         }
+
         if (ten.equals("")) {
             new dialog("Tên không được để trống!", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if(ho.trim().length()< 2){
+            new dialog("Họ chỉ được nhập từ 2 đến 50 ký tự!", dialog.ERROR_DIALOG);
             return false;
         }
         if (!InputValidator.IsValidNamelength(ho)){

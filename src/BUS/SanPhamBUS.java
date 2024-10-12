@@ -108,6 +108,10 @@ public class SanPhamBUS {
             new dialog("Tên sản phẩm không được để trống!", dialog.ERROR_DIALOG);
             return false;
         }
+        if(tenSP.trim().length() < 3){
+            new dialog("Tên sản phẩm từ 3 đến 50 ký tự!", dialog.ERROR_DIALOG);
+            return false;
+        }
         if (!InputValidator.IsValidNameProduct(tenSP)){
             new dialog("Tên sản phẩm không hợp lệ!", dialog.ERROR_DIALOG);
             return false;
@@ -279,6 +283,10 @@ public class SanPhamBUS {
 
             if (ten.trim().equals("")) {
                 new dialog("Tên sản phẩm không được để trống!", dialog.ERROR_DIALOG);
+                return false;
+            }
+            if(ten.trim().length() < 3){
+                new dialog("Tên sản phẩm từ 3 đến 50 ký tự!", dialog.ERROR_DIALOG);
                 return false;
             }
             if (!InputValidator.IsValidNameProduct(ten.trim())){
