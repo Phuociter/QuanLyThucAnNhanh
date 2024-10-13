@@ -113,7 +113,7 @@ public class PnThongKe extends JPanel {
         pnThongkeDoanhThu.add(pnBarChart);
         // biểu đồ tròn
         chartPiePanel = new ChartPanel(null);
-        chartPiePanel.setPreferredSize(new Dimension(500, 300));
+        chartPiePanel.setPreferredSize(new Dimension(500, 225));
         JPanel pnPieChart = new JPanel(new BorderLayout());
         // pn Tổng doanh thu
         lbtltTongDoanhThuNam = new JLabel();
@@ -188,7 +188,7 @@ public class PnThongKe extends JPanel {
         pnThongKeLoiNhuan.add(pnBarChartLoiNhuan);
         // biểu đồ tròn
         chartPiePanelLoiNhuan = new ChartPanel(null);
-        chartPiePanelLoiNhuan.setPreferredSize(new Dimension(500, 300));
+        chartPiePanelLoiNhuan.setPreferredSize(new Dimension(500, 150));
         JPanel pnPieChartLoiNhuan = new JPanel(new BorderLayout());
         // pn lợi nhuận
         lbtltTongLoiNhuanNam = new JLabel();
