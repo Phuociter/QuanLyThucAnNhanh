@@ -399,6 +399,7 @@ public class PnQuanLyKhachHangGUI extends javax.swing.JPanel {
             }
         ));
         jScrollPane2.setViewportView(tbKhachHang);
+        jScrollPane2.setPreferredSize(new Dimension(500,290));
 
         javax.swing.GroupLayout jPanel24Layout = new javax.swing.GroupLayout(jPanel24);
         jPanel24.setLayout(jPanel24Layout);
