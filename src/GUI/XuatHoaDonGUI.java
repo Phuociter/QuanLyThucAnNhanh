@@ -488,7 +488,7 @@ public class XuatHoaDonGUI extends javax.swing.JDialog {
             tongTienDaGiam = tinhTongTienGiamGia(tongTien, giamGia.getPhanTramGiam());
         }
         txtTongTien.setText(DinhDangTongTien(tongTienDaGiam));
-        loadData();
+        // loadData();
     }
     //GEN-LAST:event_btnChonKhuyenMaiActionPerformed
     private int tinhTongTienGiamGia(int tongTien, int phanTramGiam) {
