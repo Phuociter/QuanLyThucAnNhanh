@@ -190,7 +190,8 @@ public class PnQuanLyKhuyenMaiGUI extends javax.swing.JPanel {
         jPanel8.setLayout(new java.awt.GridLayout(2, 1));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel3.setText("Mức giảm giá:");
+//        jLabel3.setText("Mức giảm giá:");
+        jLabel3.setText("Phần trăm giảm giá:");
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -524,6 +525,10 @@ public class PnQuanLyKhuyenMaiGUI extends javax.swing.JPanel {
         }
         if (!InputValidator.isPositiveNumber(txtmucGiamGia.getText()) || !InputValidator.isPositiveNumber(spnDieuKien.getValue() + "")) {
             new dialog("Mức giảm giá hoặc điều kiện không hợp lệ!", dialog.ERROR_DIALOG);
+            return false;
+        }
+        if(Integer.parseInt(txtmucGiamGia.getText()) <= 0){
+            new dialog("Mức giảm giá tối thiểu phải là 1!", dialog.ERROR_DIALOG);
             return false;
         }
         if (InputValidator.OverflowChecker(txtmucGiamGia.getText()) || Integer.parseInt(txtmucGiamGia.getText()) > 100) {

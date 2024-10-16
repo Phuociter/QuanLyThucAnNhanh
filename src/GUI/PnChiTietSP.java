@@ -146,6 +146,11 @@ public class PnChiTietSP extends JPanel {
                     spinner.setValue(SP.getSoLuong());
                     return;
                 }
+                if(value <= 0){
+                    new dialog("Số lượng tối thiểu phải là 1",1);
+                    spinner.setValue(1);
+                    return;
+                }
                 isSaved=true;
                 new dialog("đã lưu thông tin",dialog.SUCCESS_DIALOG);
                    
