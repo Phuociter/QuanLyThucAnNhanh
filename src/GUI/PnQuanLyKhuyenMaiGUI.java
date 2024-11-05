@@ -6,6 +6,9 @@ import Custom.Mytable;
 import Custom.NonEditableTableModel;
 import Custom.dialog;
 import DTO.GiamGia;
+
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.*;
@@ -422,6 +425,11 @@ public class PnQuanLyKhuyenMaiGUI extends javax.swing.JPanel {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         if (!checkInfo()) {
+            return;
+        }
+        Date BD = ngayBD.getDate();
+        if (BD.before(new Date())){
+            new dialog("Ngày bắt đầu không được nhỏ hơn ngày hiện tại",dialog.ERROR_DIALOG);
             return;
         }
         GiamGia giamGia = new GiamGia();
